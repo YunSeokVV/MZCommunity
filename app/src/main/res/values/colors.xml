@@ -3,4 +3,5 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="theme">#53A7F5</color>
+    <color name="naver_theme">#18C900</color>
 </resources>

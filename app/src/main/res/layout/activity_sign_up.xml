@@ -26,6 +26,7 @@
         android:layout_marginTop="30dp"
         android:layout_marginRight="30dp"
         android:hint="@string/input_password"
+        android:inputType="textPassword"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/emailInput" />
@@ -38,12 +39,13 @@
         android:layout_marginTop="30dp"
         android:layout_marginRight="30dp"
         android:hint="@string/password_check"
+        android:inputType="textPassword"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/passWordInput" />
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/getVerificationCode"
+        android:id="@+id/signUpEmailBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="30dp"

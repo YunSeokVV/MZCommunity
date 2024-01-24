@@ -55,6 +55,9 @@ dependencies {
     // 로그를 보기 편하게 해주는 라이브러리
     implementation("com.orhanobut:logger:2.2.0")
 
+    // 네이버 아이디로 로그인
+    implementation("com.navercorp.nid:oauth:5.9.0") // jdk 11
+
     implementation("androidx.core:core-ktx:1.10.1")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.9.0")
