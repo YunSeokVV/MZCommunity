@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.mzcommunity.R
+import com.orhanobut.logger.Logger
 class MyPageFragment : Fragment() {
 
     override fun onCreateView(
@@ -14,7 +15,7 @@ class MyPageFragment : Fragment() {
     ): View? {
         return inflater.inflate(R.layout.fragment_my_page, container, false)
 
-
+        Logger.v("onCreateView")
 
     }
 }

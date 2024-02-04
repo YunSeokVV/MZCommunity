@@ -6,10 +6,6 @@ import android.text.TextUtils
 import androidx.appcompat.app.AppCompatActivity
 import com.example.mzcommunity.R
 import com.example.mzcommunity.databinding.ActivityLoginBinding
-import com.kakao.sdk.auth.model.OAuthToken
-import com.kakao.sdk.common.model.ClientError
-import com.kakao.sdk.common.model.ClientErrorCause
-import com.kakao.sdk.common.util.Utility
 import com.kakao.sdk.user.UserApiClient
 import com.navercorp.nid.NaverIdLoginSDK
 import com.navercorp.nid.oauth.NidOAuthLogin
