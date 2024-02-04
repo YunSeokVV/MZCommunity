@@ -3,5 +3,8 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="theme">#53A7F5</color>
+    <color name="gray">#A1A6AB</color>
     <color name="naver_theme">#18C900</color>
+    <color name="kakao_theme">#FBE300</color>
+    <color name="kakao_text_theme">#3A1C1D</color>
 </resources>

@@ -58,6 +58,18 @@ dependencies {
     // 네이버 아이디로 로그인
     implementation("com.navercorp.nid:oauth:5.9.0") // jdk 11
 
+    // retrofit
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+
+    // 카카오 로그인
+    implementation("com.kakao.sdk:v2-user:2.19.0")
+
+    // 뷰페이저2
+    implementation("androidx.viewpager2:viewpager2:1.0.0")
+
+    // circleImageView
+    implementation("de.hdodenhof:circleimageview:3.1.0")
+
     implementation("androidx.core:core-ktx:1.10.1")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.9.0")

@@ -3,17 +3,14 @@ package view
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
-import android.widget.Toast
-import androidx.activity.result.ActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.example.mzcommunity.R
 import com.example.mzcommunity.databinding.ActivityLoginBinding
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
-import com.google.firebase.auth.FirebaseAuthUserCollisionException
-import com.google.firebase.auth.FirebaseAuthWeakPasswordException
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
+import com.kakao.sdk.auth.model.OAuthToken
+import com.kakao.sdk.common.model.ClientError
+import com.kakao.sdk.common.model.ClientErrorCause
+import com.kakao.sdk.common.util.Utility
+import com.kakao.sdk.user.UserApiClient
 import com.navercorp.nid.NaverIdLoginSDK
 import com.navercorp.nid.oauth.NidOAuthLogin
 import com.navercorp.nid.oauth.OAuthLoginCallback
@@ -33,18 +30,19 @@ class LoginActivity : AppCompatActivity() {
         val binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        NaverAuth.initalizeNaverIDLogin(this)
-        binding.signUpEmailBtn.setOnClickListener {
-            val intent = Intent(this, SignUpActivity::class.java)
-            startActivity(intent)
-        }
+        val intent = Intent(this, MainActivity::class.java)
+        startActivity(intent)
 
         binding.logInBtn.setOnClickListener {
+            Logger.v("Check here")
             // 이메일 주소, 비밀번호 editText중 입력하지 않은게 있는 경우
-            if (TextUtils.isEmpty(binding.emailInput.text.toString()) || TextUtils.isEmpty(binding.passWordInput.text.toString())) {
+            if (TextUtils.isEmpty(binding.emailInput.text.toString()) || TextUtils.isEmpty(
+                    binding.passWordInput.text.toString()
+                )
+            ) {
                 Util.makeToastMessage("입력하지 않은 항목이 있습니다.", this)
 
-            // 정상 로그인
+                // 정상 로그인
             } else {
                 FirebaseAuth.auth.signInWithEmailAndPassword(
                     binding.emailInput.text.toString(),
@@ -65,17 +63,24 @@ class LoginActivity : AppCompatActivity() {
             }
         }
 
+        binding.signUpEmailBtn.setOnClickListener {
+            val intent = Intent(this, SignUpActivity::class.java)
+            startActivity(intent)
+        }
+
+        NaverAuth.initalizeNaverIDLogin(this)
         // 네이버 아이디로 로그인
         binding.signUpNaver.setOnClickListener {
             val oauthLoginCallback = object : OAuthLoginCallback {
                 override fun onSuccess() {
-                    NidOAuthLogin().callProfileApi(object : NidProfileCallback<NidProfileResponse> {
+                    NidOAuthLogin().callProfileApi(object :
+                        NidProfileCallback<NidProfileResponse> {
                         override fun onSuccess(response: NidProfileResponse) {
                             Logger.v(response.profile?.email.toString())
 
-//                            // 메인화면으로 전환
-//                            val intent = Intent(baseContext, MainActivity::class.java)
-//                            startActivity(intent)
+                            // 메인화면으로 전환
+                            val intent = Intent(baseContext, MainActivity::class.java)
+                            startActivity(intent)
                         }
 
                         override fun onFailure(httpStatus: Int, message: String) {
@@ -105,6 +110,36 @@ class LoginActivity : AppCompatActivity() {
 
             NaverAuth.signUpNaver(this, oauthLoginCallback)
         }
+
+        binding.signUpKakao.setOnClickListener {
+            // 카카오톡으로 로그인
+            UserApiClient.instance.loginWithKakaoTalk(this) { token, error ->
+                if (error != null) {
+                    Logger.v("login error " + error.toString())
+                } else if (token != null) {
+                    UserApiClient.instance.me { user, error ->
+                        if (error != null) {
+                            Logger.v("user information request Failed!")
+                        } else if (user != null) {
+                            var scopes = mutableListOf<String>()
+
+                            // 사용자가 동의한 항목에 대한 정보를 사용할 수 있다.
+//                        if (user.kakaoAccount?.emailNeedsAgreement == true) {
+//
+//                        } else if(user.kakaoAccount?.profileNeedsAgreement == true) {
+//
+//                        }
+
+                            val intent = Intent(this, MainActivity::class.java)
+                            startActivity(intent)
+
+                        }
+                    }
+                }
+            }
+
+        }
+
 
     }
 }
