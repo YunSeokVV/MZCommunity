@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/editProfileBtn"
+        android:id="@+id/editProfile"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/edit"
@@ -26,6 +26,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <ImageView
+        android:id="@+id/camera"
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:src="@drawable/camera"
@@ -42,12 +43,13 @@
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
         android:gravity="center"
-        android:text="testData"
+        android:text="테스트 사용자"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/userProfileImg" />
 
     <ImageView
+        android:id="@+id/pencil"
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_marginBottom="10dp"
