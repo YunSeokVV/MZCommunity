@@ -71,12 +71,11 @@
         android:textStyle="bold"
         app:layout_constraintTop_toBottomOf="@+id/logInBtn" />
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/signUpNaver"
+    <com.google.android.gms.common.SignInButton
+        android:id="@+id/signUpGoogle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/radius_rectangle_naver"
-        android:text="N 네이버"
+
         android:textColor="@color/white"
         android:textSize="20sp"
         android:textStyle="bold"
@@ -89,7 +88,7 @@
         android:id="@+id/signUpKakao"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/radius_rectangle_kakao"
+
         android:text="K 카카오톡"
         android:textColor="@color/kakao_text_theme"
         android:layout_marginLeft="60dp"
@@ -98,8 +97,6 @@
         android:textStyle="bold"
         android:layout_marginBottom="30dp"
         app:layout_constraintBottom_toBottomOf="parent" />
-
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
