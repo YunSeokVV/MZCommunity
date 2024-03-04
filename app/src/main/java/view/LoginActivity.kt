@@ -8,22 +8,41 @@ import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import com.example.mzcommunity.R
 import com.example.mzcommunity.databinding.ActivityLoginBinding
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.tasks.Task
+import com.google.firebase.Firebase
+import com.google.firebase.FirebaseApp
+import com.google.firebase.FirebaseException
+import com.google.firebase.FirebaseTooManyRequestsException
+import com.google.firebase.appcheck.FirebaseAppCheck
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.google.firebase.auth.FirebaseAuthMissingActivityForRecaptchaException
+import com.google.firebase.auth.FirebaseAuthSettings
+import com.google.firebase.auth.PhoneAuthCredential
+import com.google.firebase.auth.PhoneAuthOptions
+import com.google.firebase.auth.PhoneAuthProvider
+import com.google.firebase.auth.auth
 import com.orhanobut.logger.AndroidLogAdapter
 import com.orhanobut.logger.Logger
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import useCase.LoginActivityUseCase
 import util.FirebaseAuth
 import util.Util
 import viewModel.LoginActivityViewModel
+import java.util.concurrent.TimeUnit
 
 @AndroidEntryPoint
 class LoginActivity : AppCompatActivity() {
-    private val loginActivityViewModel : LoginActivityViewModel by viewModels()
+    private val loginActivityViewModel: LoginActivityViewModel by viewModels()
+
 
     private var resultLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -31,7 +50,9 @@ class LoginActivity : AppCompatActivity() {
                 val data: Intent? = result.data
                 val task: Task<GoogleSignInAccount> =
                     GoogleSignIn.getSignedInAccountFromIntent(data)
-                loginActivityViewModel.signInWithGoogle(task)
+                lifecycleScope.launch {
+                    loginActivityViewModel.signInWithGoogle(task)
+                }
             }
         }
 
@@ -41,7 +62,7 @@ class LoginActivity : AppCompatActivity() {
         Logger.addLogAdapter(AndroidLogAdapter())
         val binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
+        
 
         val textView: View? = binding.signUpGoogle.getChildAt(0)
         if (textView is TextView)
@@ -84,14 +105,16 @@ class LoginActivity : AppCompatActivity() {
 
         // 구글 아이디로 로그인
         binding.signUpGoogle.setOnClickListener {
-
             googleSignIn()
-        }
-
-        binding.signUpKakao.setOnClickListener {
-
 
         }
+
+        loginActivityViewModel.isGoogleLogin.observe(this, Observer {data->
+            if(data){
+                val intent = Intent(this, MainActivity::class.java)
+                startActivity(intent)
+            }
+        })
 
 
     }
@@ -105,36 +128,5 @@ class LoginActivity : AppCompatActivity() {
         val signInIntent = mGoogleSignInClient.signInIntent
         resultLauncher.launch(signInIntent)
     }
-
-
-//    private fun handleSignInResult(completedTask: Task<GoogleSignInAccount>) {
-//        try {
-//            val account = completedTask.getResult(ApiException::class.java)
-//            val photoUrl = account.photoUrl.toString()
-//            Logger.v(photoUrl)
-//
-//            firebaseAuthWithGoogle(account)
-//        } catch (e: ApiException) {
-//            Logger.v(e.message.toString())
-//            Logger.v(e.statusCode.toString())
-//
-//        }
-//    }
-//
-//    private fun firebaseAuthWithGoogle(acct: GoogleSignInAccount) {
-//        val mAuth = FirebaseAuth.auth
-//        val credential: AuthCredential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
-//        mAuth.signInWithCredential(credential)
-//            .addOnCompleteListener(this) { task ->
-//                if (task.isSuccessful) {
-//
-//                } else {
-//
-//                    Logger.v(task.exception.toString())
-//                }
-//
-//            }
-//
-//    }
 
 }
