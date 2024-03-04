@@ -1,32 +1,22 @@
 package view
 
-import android.app.Activity.RESULT_OK
-import android.content.Intent
-import android.content.pm.PackageManager
-import android.os.Build
+import android.net.Uri
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.mzcommunity.R
 import com.example.mzcommunity.databinding.FragmentMyPageBinding
-import com.orhanobut.logger.Logger
-import android.Manifest
-import android.net.Uri
-import androidx.core.content.ContextCompat
-import androidx.core.content.PermissionChecker
-import androidx.core.content.PermissionChecker.checkSelfPermission
 import com.google.firebase.Firebase
 import com.google.firebase.storage.storage
+import com.orhanobut.logger.Logger
 import util.FirebaseAuth
 import viewModel.MyPageFragmentViewModel
-import java.security.AccessController.checkPermission
 
 class MyPageFragment : Fragment() {
     private val myPageFragmentViewModel: MyPageFragmentViewModel by viewModels()
@@ -82,7 +72,7 @@ class MyPageFragment : Fragment() {
         val storage = Firebase.storage
         var storageRef = storage.reference
 
-        var userProfile = storageRef.child("user_profile_image/userProfile.jpg")
+        var userProfile = storageRef.child("user_profile_image/"+FirebaseAuth.auth.uid.toString()+".jpg")
         val uploadTask = userProfile.putFile(uri)
         uploadTask.addOnFailureListener {
             // Handle unsuccessful uploads

@@ -82,14 +82,14 @@
         android:layout_marginLeft="60dp"
         android:layout_marginRight="60dp"
         android:layout_marginBottom="30dp"
-        app:layout_constraintBottom_toTopOf="@+id/signUpKakao" />
+        app:layout_constraintBottom_toTopOf="@+id/signUpFaceBook" />
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/signUpKakao"
+        android:id="@+id/signUpFaceBook"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
 
-        android:text="K 카카오톡"
+        android:text="페이스북으로 로그인"
         android:textColor="@color/kakao_text_theme"
         android:layout_marginLeft="60dp"
         android:layout_marginRight="60dp"
