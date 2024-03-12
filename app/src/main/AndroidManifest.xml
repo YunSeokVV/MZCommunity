@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA"/>
 
     <application
         android:name="util.GlobalApplication"
@@ -16,24 +17,30 @@
         android:theme="@style/Theme.MZCommunity"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
-        <meta-data
-            android:name="com.kakao.sdk.AppKey"
-            android:value="4427de4ee423989d3e7a7d5124440047"/>
         <activity
-            android:name="view.AuthCodeHandlerActivity"
-            android:exported="true">
-
+            android:name="view.PostingMediaActivity"
+            android:exported="false" />
+        <activity
+            android:name="view.ChooseMediaActivity"
+            android:exported="false" /> <!-- Trigger Google Play services to install the backported photo picker module. -->
+        <service
+            android:name="com.google.android.gms.metadata.ModuleDependencies"
+            android:enabled="false"
+            android:exported="false"
+            tools:ignore="MissingClass">
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <!-- Redirect URI: "kakao${NATIVE_APP_KEY}://oauth" -->
-                <data android:host="oauth"
-                    android:scheme="kakao4427de4ee423989d3e7a7d5124440047" />
+                <action android:name="com.google.android.gms.metadata.MODULE_DEPENDENCIES" />
             </intent-filter>
 
-        </activity>
+            <meta-data
+                android:name="photopicker_activity:0:required"
+                android:value="" />
+        </service>
+
+        <activity
+            android:name="view.PostingActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name="view.SignUpActivity"
             android:exported="false" />

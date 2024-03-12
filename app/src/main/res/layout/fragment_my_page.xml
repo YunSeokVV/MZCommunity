@@ -5,13 +5,36 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+
+    <ImageView
+        android:id="@+id/arrowBack"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/baseline_arrow_back_24"
+        app:layout_constraintStart_toStartOf="parent"
+        android:visibility="invisible"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/editInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp"
+        android:text="@string/edit_profile"
+        android:visibility="invisible"
+        app:layout_constraintStart_toEndOf="@+id/arrowBack"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/editProfile"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/edit"
-        android:layout_marginRight="20dp"
         android:layout_marginTop="20dp"
+        android:layout_marginRight="20dp"
+        android:text="@string/edit"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -29,15 +52,15 @@
         android:id="@+id/camera"
         android:layout_width="80dp"
         android:layout_height="80dp"
+        android:background="@color/white"
         android:src="@drawable/camera"
         android:visibility="invisible"
-        android:background="@color/white"
         app:layout_constraintBottom_toBottomOf="@+id/userProfileImg"
         app:layout_constraintEnd_toEndOf="@+id/userProfileImg" />
 
 
     <EditText
-        android:id="@+id/editText"
+        android:id="@+id/userName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="30dp"
@@ -52,12 +75,12 @@
         android:id="@+id/pencil"
         android:layout_width="20dp"
         android:layout_height="20dp"
+        android:layout_marginRight="20dp"
         android:layout_marginBottom="10dp"
         android:src="@drawable/pencil"
         android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="@+id/editText"
-        android:layout_marginRight="20dp"
-        app:layout_constraintEnd_toEndOf="@+id/editText"
+        app:layout_constraintBottom_toBottomOf="@+id/userName"
+        app:layout_constraintEnd_toEndOf="@+id/userName"
         app:layout_constraintTop_toBottomOf="@+id/userProfileImg" />
 
     <androidx.constraintlayout.widget.Guideline
