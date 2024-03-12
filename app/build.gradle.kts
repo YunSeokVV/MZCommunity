@@ -92,10 +92,14 @@ dependencies {
     // Add the dependency for the Firebase SDK for Google Analytics
     implementation("com.google.firebase:firebase-analytics")
 
-
     // Add the dependency for the Cloud Storage library
     // When using the BoM, you don't specify versions in Firebase library dependencies
     implementation("com.google.firebase:firebase-storage")
+
+    implementation("com.facebook.android:facebook-login:latest.release")
+
+    implementation("androidx.cardview:cardview:1.0.0")
+
 
     implementation("androidx.core:core-ktx:1.10.1")
     implementation("androidx.appcompat:appcompat:1.6.1")

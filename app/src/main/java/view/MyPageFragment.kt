@@ -37,8 +37,6 @@ class MyPageFragment : Fragment() {
             myPageFragmentViewModel.setEditMode()
         }
 
-        Logger.v(FirebaseAuth.auth.uid.toString())
-
         binding.userProfileImg.setOnClickListener {
             startForResult.launch("image/*")
         }

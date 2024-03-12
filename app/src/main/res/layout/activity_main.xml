@@ -21,6 +21,8 @@
         app:menu="@menu/menu_bottom_nav"
         android:background="@color/white"
         app:itemIconSize="40dp"
+        app:itemRippleColor="@color/theme"
+        app:itemActiveIndicatorStyle="@style/App.Custom.Indicator"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
