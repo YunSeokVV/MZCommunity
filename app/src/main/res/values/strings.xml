@@ -1,7 +1,10 @@
 <resources>
-    <string name="app_name">MZCommunity</string>
+    <string name="app_name_english">MZCommunity</string>
+    <string name="app_name">MZ커뮤니티</string>
     <string name="input_email">\@ 이메일입력</string>
     <string name="input_password">🔒 비밀번호 입력</string>
     <string name="password_check">🔒 비밀번호 확인</string>
+    <string name="complete">완료</string>
+    <string name="edit">수정</string>
 
 </resources>

@@ -55,6 +55,29 @@ dependencies {
     // 로그를 보기 편하게 해주는 라이브러리
     implementation("com.orhanobut:logger:2.2.0")
 
+    // 네이버 아이디로 로그인
+    implementation("com.navercorp.nid:oauth:5.9.0") // jdk 11
+
+    // retrofit
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+
+    // 카카오 로그인
+    implementation("com.kakao.sdk:v2-user:2.19.0")
+
+    // 뷰페이저2
+    implementation("androidx.viewpager2:viewpager2:1.0.0")
+
+    // circleImageView
+    implementation("de.hdodenhof:circleimageview:3.1.0")
+
+    // by viewModels 를 사용하기 위해 추가한 라이브러리
+    implementation("androidx.activity:activity-ktx:1.5.0")
+    // by viewModels 를 프레그먼트에서 사용하기 위해 추가함
+    implementation("androidx.fragment:fragment-ktx:1.6.1")
+
+    // Hilt dependencies
+    implementation("com.google.dagger:hilt-android:2.44")
+
     implementation("androidx.core:core-ktx:1.10.1")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.9.0")
