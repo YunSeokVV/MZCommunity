@@ -96,6 +96,8 @@ dependencies {
     // When using the BoM, you don't specify versions in Firebase library dependencies
     implementation("com.google.firebase:firebase-storage")
 
+    implementation("com.google.firebase:firebase-firestore:24.10.3")
+
     implementation("com.facebook.android:facebook-login:latest.release")
 
     implementation("androidx.cardview:cardview:1.0.0")

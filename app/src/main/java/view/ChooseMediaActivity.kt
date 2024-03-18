@@ -27,6 +27,10 @@ import java.io.Serializable
 
 
 class ChooseMediaActivity : AppCompatActivity() {
+    companion object{
+        var chooseMediaActivity = ChooseMediaActivity()
+    }
+
     private val chooseMediaActivityViewModel: ChooseMediaActivityViewModel by viewModels()
 
     private val imageAdapter = ImageAdapter(true)
@@ -44,6 +48,7 @@ class ChooseMediaActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_multi_image_posting)
+        chooseMediaActivity = this
         val binding = ActivityMultiImagePostingBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -75,8 +80,6 @@ class ChooseMediaActivity : AppCompatActivity() {
                     }
                     imageAdapter.setImages(choosenUrls)
                     chooseMediaActivityViewModel.setChoosen(true)
-                } else {
-                    chooseMediaActivityViewModel.setChoosen(false)
                 }
             }
 
@@ -105,7 +108,6 @@ class ChooseMediaActivity : AppCompatActivity() {
 
         binding.nextStep.setOnClickListener {
             val intent = Intent(this, PostingMediaActivity::class.java)
-
             Logger.v(imageAdapter.getImages().toString())
 
             intent.putExtra("choosenImages", imageAdapter.getImages())

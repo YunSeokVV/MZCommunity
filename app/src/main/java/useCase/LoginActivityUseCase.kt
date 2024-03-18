@@ -10,12 +10,11 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.launch
+import repository.BoardRepository
 import util.FirebaseAuth
 
-
 class LoginActivityUseCase() {
-
-    fun signInWithGoogle(completedTask: Task<GoogleSignInAccount>) = callbackFlow{
+    fun signInWithGoogle(completedTask: Task<GoogleSignInAccount>) = callbackFlow {
         try {
 
             val account = completedTask.getResult(ApiException::class.java)
