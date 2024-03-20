@@ -3,17 +3,26 @@ package view
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.example.mzcommunity.R
 import com.example.mzcommunity.databinding.ActivitySignUpBinding
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 import com.orhanobut.logger.Logger
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import util.FirebaseAuth
 import util.Util
+import viewModel.BoardFramgnetViewModel
+import viewModel.SignUpActivityViewModel
 
+@AndroidEntryPoint
 class SignUpActivity : AppCompatActivity() {
+    private val viewModel by viewModels<SignUpActivityViewModel>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign_up)
@@ -31,6 +40,9 @@ class SignUpActivity : AppCompatActivity() {
                     binding.passWordCheck.text.toString()
                 ).addOnCompleteListener(this) { task ->
                     if (task.isSuccessful) {
+                        lifecycleScope.launch {
+                            viewModel.setUserNickName(binding.emailInput.text.toString())
+                        }
                         Util.makeToastMessage("회원가입을 축하합니다! 저희앱을 사용해주셔서 감사합니다 :)", this)
                         val intent = Intent(this, MainActivity::class.java)
                         startActivity(intent)

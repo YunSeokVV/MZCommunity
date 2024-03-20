@@ -9,12 +9,12 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import model.Images
 import model.Response
-import useCase.CreatePostUseCase
 import javax.inject.Inject
 import model.Response.Success
+import useCase.PostDailyBoardUseCase
 
 @HiltViewModel
-class PostingMediaActivityViewModel @Inject constructor(private val createPostUseCase: CreatePostUseCase) :
+class PostingMediaActivityViewModel @Inject constructor(private val postDailyBoardUseCase: PostDailyBoardUseCase) :
     ViewModel() {
 
     private val _isPostingComplete = MutableLiveData<Boolean>()
@@ -25,7 +25,7 @@ class PostingMediaActivityViewModel @Inject constructor(private val createPostUs
         }
 
     fun createPost(contetns: String, uploadImagesUri: ArrayList<Images>) = viewModelScope.launch {
-        createPostUseCase(contetns, uploadImagesUri).collect {
+        postDailyBoardUseCase(contetns, uploadImagesUri).collect {
             when (it) {
                 is Response.Success -> {
                     _isPostingComplete.value = it.data?:false

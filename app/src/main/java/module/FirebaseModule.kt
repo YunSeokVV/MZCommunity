@@ -9,8 +9,12 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import repository.BoardRepository
-import repository.BoardRepositoryImpl
+import repository.GetDailyBoardRepositoryImpl
+import repository.GetDailyBoardRepositry
+import repository.LoginActivityRepository
+import repository.LoginActivityRepositoryImpl
+import repository.PostDailyBoardRepository
+import repository.PostDailyBoardRepositoryImpl
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -23,8 +27,20 @@ object FirebaseModule {
     fun provideStroageRef() = Firebase.storage
 
     @Provides
-    fun provideBoardRepository(storageReference: FirebaseStorage, fireStore : FirebaseFirestore) : BoardRepository = BoardRepositoryImpl(
-        fireStore, storageReference
+    fun provideLoginActivityRepository(fireStore : FirebaseFirestore) : LoginActivityRepository = LoginActivityRepositoryImpl(
+        fireStore
     )
+
+    @Provides
+    fun providePostingDailyBoardRepository(storageReference: FirebaseStorage, fireStore : FirebaseFirestore) : PostDailyBoardRepository = PostDailyBoardRepositoryImpl(
+        storageReference, fireStore
+    )
+
+    @Provides
+    fun provideGetDailyBoardRepository(storageReference: FirebaseStorage, fireStore : FirebaseFirestore) : GetDailyBoardRepositry = GetDailyBoardRepositoryImpl(
+        storageReference, fireStore
+    )
+
+
 
 }

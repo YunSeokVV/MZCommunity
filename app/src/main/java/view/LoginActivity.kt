@@ -33,7 +33,6 @@ import com.orhanobut.logger.Logger
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import useCase.LoginActivityUseCase
 import util.FirebaseAuth
 import util.Util
 import viewModel.LoginActivityViewModel
@@ -62,7 +61,7 @@ class LoginActivity : AppCompatActivity() {
         Logger.addLogAdapter(AndroidLogAdapter())
         val binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        
+
 
         val textView: View? = binding.signUpGoogle.getChildAt(0)
         if (textView is TextView)
@@ -86,6 +85,7 @@ class LoginActivity : AppCompatActivity() {
                     if (task.isSuccessful) {
                         val intent = Intent(this, MainActivity::class.java)
                         startActivity(intent)
+
                     } else {
                         Util.makeToastMessage("사용자 정보를 확인해주세요 :)", this)
                         try {
@@ -109,8 +109,8 @@ class LoginActivity : AppCompatActivity() {
 
         }
 
-        loginActivityViewModel.isGoogleLogin.observe(this, Observer {data->
-            if(data){
+        loginActivityViewModel.isGoogleLogin.observe(this, Observer { data ->
+            if (data) {
                 val intent = Intent(this, MainActivity::class.java)
                 startActivity(intent)
             }
@@ -122,6 +122,7 @@ class LoginActivity : AppCompatActivity() {
     private fun googleSignIn() {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.web_client_id))
+            .requestEmail()
             .build()
 
         val mGoogleSignInClient = let { GoogleSignIn.getClient(it, gso) }
