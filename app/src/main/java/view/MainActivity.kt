@@ -5,7 +5,9 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.mzcommunity.R
 import com.example.mzcommunity.databinding.ActivityMainBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -2,12 +2,12 @@ package useCase
 
 import kotlinx.coroutines.flow.flow
 import model.Images
-import repository.BoardRepository
+import repository.PostDailyBoardRepository
 import javax.inject.Inject
 
-class CreatePostUseCase @Inject constructor(private val boardRepository: BoardRepository) {
+class PostDailyBoardUseCase @Inject constructor(private val postDailyBoardRepository: PostDailyBoardRepository) {
     suspend operator fun invoke(contents: String, uploadImagesUri: ArrayList<Images>) = flow {
-        emit(boardRepository.postBoard(contents, uploadImagesUri))
+        emit(postDailyBoardRepository.postBoard(contents, uploadImagesUri))
     }
 
 }
