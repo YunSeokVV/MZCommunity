@@ -34,6 +34,9 @@ class PostingFragment : Fragment() {
 
                     // 사진 선택
                     1 -> {
+                        val rootActivity = activity as MainActivity
+                        rootActivity.showBoardFragmnet()
+
                         val intent = Intent(
                             activity,
                             ChooseMediaActivity::class.java
@@ -44,13 +47,6 @@ class PostingFragment : Fragment() {
 
             })
         builder.show()
-
-
-//        // 기존 postingActivity로 이동
-//        val intent = Intent(activity, PostingActivity::class.java)
-//        startActivity(intent)
-//        (activity as MainActivity?)?.showBoardFragmnet()
-
 
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_posting, container, false)

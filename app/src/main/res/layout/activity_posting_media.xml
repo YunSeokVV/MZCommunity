@@ -52,18 +52,35 @@
         app:layout_constraintGuide_percent="0.6" />
 
     <EditText
-        android:id="@+id/editText"
+        android:id="@+id/boardContentes"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="10dp"
         android:layout_marginLeft="10dp"
-        android:hint="@string/board_content"
-        android:gravity="top"
+        android:layout_marginTop="10dp"
         android:background="@android:color/transparent"
+        android:gravity="top"
+        android:hint="@string/board_content"
+        app:layout_constraintBottom_toTopOf="@+id/view3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/choosenPictureList" />
+
+
+    <EditText
+        android:id="@+id/boardContentesFull"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@android:color/transparent"
+        android:visibility="gone"
+        android:gravity="top"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:hint="@string/board_content"
         app:layout_constraintBottom_toTopOf="@+id/view3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/choosenPictureList" />
+        app:layout_constraintTop_toBottomOf="@+id/guideline" />
 
     <View
         android:id="@+id/view3"
@@ -71,20 +88,22 @@
         android:layout_height="1dp"
         android:background="@color/line_color"
         android:layout_marginBottom="10dp"
-        app:layout_constraintBottom_toTopOf="@+id/button2"
+        app:layout_constraintBottom_toTopOf="@+id/postBoard"
         app:layout_constraintStart_toStartOf="@+id/arrowBack" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/postBoard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="16dp"
         android:text="@string/share"
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

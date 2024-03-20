@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/fragment_board"
+        android:title=""
+        android:icon="@drawable/baseline_home_24"/>
+    <item
+        android:id="@+id/fragment_versus"
+        android:title=""
+        android:icon="@drawable/versus"/>
+    <item
+        android:id="@+id/fragment_write_board"
+        android:title=""
+        android:icon="@drawable/posting"/>
+    <item
+        android:id="@+id/fragment_my_page"
+        android:title=""
+        android:icon="@drawable/profile"/>
+</menu>
