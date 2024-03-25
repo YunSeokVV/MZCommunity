@@ -48,7 +48,6 @@ class ImageAdapter(private val isRadius : Boolean) : RecyclerView.Adapter<ImageA
     fun setImages(data : List<Images>){
         imagesData.clear()
         imagesData.addAll(data)
-        Logger.v(data.toString())
         notifyDataSetChanged()
     }
 

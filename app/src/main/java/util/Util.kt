@@ -18,7 +18,12 @@ class Util {
             var result : String
             if (key.equals("disLike") || key.equals("like")) {
                 result = (documentSnapshot.get(key) as? Long ?: 0).toString()
-            } else {
+            } else if(key.equals("writerUID")) {
+                result = documentSnapshot.get(key) as? String ?: "noWriterUID"
+            } else if(key.equals("boardContents")){
+                result = documentSnapshot.get(key) as? String ?: "noBoardContents"
+            }
+            else {
                 result = documentSnapshot.get(key) as? String ?: "nothing"
             }
             return result

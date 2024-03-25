@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:background="@color/white"
+    android:layout_height="match_parent">
 
     <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/circleImageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/userProfileImg"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
         android:src="@mipmap/ic_launcher"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp"
@@ -23,7 +25,7 @@
         android:textStyle="bold"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp"
-        app:layout_constraintStart_toEndOf="@+id/circleImageView"
+        app:layout_constraintStart_toEndOf="@+id/userProfileImg"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
@@ -33,54 +35,70 @@
         android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp"
         android:text="오늘 회사 점심인데 어떤거 같음? 평가좀"
-        app:layout_constraintStart_toEndOf="@+id/circleImageView"
+        app:layout_constraintStart_toEndOf="@+id/userProfileImg"
         app:layout_constraintTop_toBottomOf="@+id/writeName" />
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/dailyImgViewPager"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="0dp"
         android:layout_marginTop="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/userProfileImg" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
         app:layout_constraintBottom_toTopOf="@+id/into_tab_layout"
-        app:layout_constraintTop_toBottomOf="@+id/circleImageView" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        />
 
     <ImageView
         android:id="@+id/likeImg"
         android:layout_width="25dp"
         android:layout_height="25dp"
-        android:layout_marginLeft="50dp"
+        android:layout_marginLeft="10dp"
         android:background="@drawable/like"
+        app:layout_constraintBottom_toBottomOf="@+id/linearLayout"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/dailyImgViewPager" />
+        app:layout_constraintTop_toTopOf="@+id/linearLayout" />
 
     <TextView
         android:id="@+id/likeCount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
         android:text="42"
         android:textSize="20sp"
-        android:layout_marginLeft="10dp"
+        app:layout_constraintBottom_toBottomOf="@+id/linearLayout"
         app:layout_constraintStart_toEndOf="@+id/likeImg"
-        app:layout_constraintTop_toTopOf="@+id/dailyImgViewPager" />
+        app:layout_constraintTop_toTopOf="@+id/linearLayout"  />
 
     <ImageView
         android:id="@+id/disLikeImg"
         android:layout_width="25dp"
         android:layout_height="25dp"
+        android:layout_marginLeft="20dp"
         android:background="@drawable/dislike"
-        android:layout_marginLeft="40dp"
+        app:layout_constraintBottom_toBottomOf="@+id/linearLayout"
         app:layout_constraintStart_toEndOf="@+id/likeCount"
-        app:layout_constraintTop_toTopOf="@+id/dailyImgViewPager" />
+        app:layout_constraintTop_toTopOf="@+id/linearLayout" />
 
     <TextView
         android:id="@+id/disLikeCount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
         android:text="42"
         android:textSize="20sp"
-        android:layout_marginLeft="10dp"
+        app:layout_constraintBottom_toBottomOf="@+id/linearLayout"
         app:layout_constraintStart_toEndOf="@+id/disLikeImg"
-        app:layout_constraintTop_toTopOf="@+id/dailyImgViewPager" />
+        app:layout_constraintTop_toTopOf="@+id/linearLayout" />
 
 
     <LinearLayout
@@ -88,8 +106,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="@+id/linearLayout"
         app:layout_constraintStart_toEndOf="@+id/disLikeCount"
-        app:layout_constraintTop_toTopOf="@+id/disLikeImg">
+        app:layout_constraintTop_toTopOf="@+id/linearLayout">
 
         <ImageView
             android:layout_width="25dp"
@@ -102,8 +121,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="댓글 달기"
-            />
+            android:layout_marginLeft="10dp"
+            android:text="댓글 달기" />
 
     </LinearLayout>
 
@@ -111,9 +130,12 @@
         android:id="@+id/into_tab_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/black"
+        android:background="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:tabBackground="@drawable/tab_pager_selector"
+        app:tabIndicatorHeight="0dp"
         app:tabGravity="center" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

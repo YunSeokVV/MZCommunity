@@ -35,9 +35,7 @@ class PostDailyBoardRepositoryImpl @Inject constructor(
                 "disLike" to 0,
                 "writerUID" to FirebaseAuth.auth.uid
             )
-            // Firestore에 게시물 추가
             val documentReference = fireStore.collection("dailyBoard").add(board).await()
-            // 이미지 업로드 작업 수행
             val uploadTasks = uploadImagesUri.mapIndexed { idx, it ->
                 val choosenImg =
                     storage.reference.child("board/${documentReference.id}/${idx}.png")

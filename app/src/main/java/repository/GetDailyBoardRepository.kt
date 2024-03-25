@@ -1,21 +1,25 @@
 package repository
 
-import android.provider.DocumentsContract
-import com.google.firebase.firestore.DocumentReference
-import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.orhanobut.logger.Logger
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
+import model.DailyBoard
 import model.DailyboardCollection
+import model.Response
 import util.Util
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlin.reflect.typeOf
-
+import model.Response.Failure
+import model.Response.Success
 
 interface GetDailyBoardRepositry {
     //suspend fun getDailyBoard(): List<DailyPosting>
-    suspend fun getDailyBoard(): String
+    suspend fun getDailyBoard(): List<DailyBoard>
 }
 
 @Singleton
@@ -24,29 +28,65 @@ class GetDailyBoardRepositoryImpl @Inject constructor(
     private val fireStoreRef: FirebaseFirestore
 ) :
     GetDailyBoardRepositry {
-    override suspend fun getDailyBoard(): String {
+    override suspend fun getDailyBoard(): List<DailyBoard> = withContext(Dispatchers.IO) {
+
+
+        var dailyBoards = ArrayList<DailyBoard>()
+
         fireStoreRef.collection("dailyBoard").get().addOnSuccessListener { result ->
             for (document in result) {
-                Logger.v(document.toString())
-                //val tmp : String = document.get("boardContents") as? String ?: "nothing"
+                val dailyBoardCollection = DailyboardCollection(
+                    Util.parsingFireStoreDocument(document, "boardContents"),
+                    Util.parsingFireStoreDocument(document, "disLike").toInt(),
+                    Util.parsingFireStoreDocument(document, "like").toInt(),
+                    Util.parsingFireStoreDocument(document, "writerUID")
+                )
 
-                val dailyBoard = DailyboardCollection(Util.parsingFireStoreDocument(document, "boardContents"), Util.parsingFireStoreDocument(document, "disLike").toInt(), Util.parsingFireStoreDocument(document, "like").toInt(), Util.parsingFireStoreDocument(document, "writerUID"))
+                try {
+                    runBlocking {
+                        val userNicknameSnapshot = async {
+                            fireStoreRef.collection("MZUsers")
+                                .document(dailyBoardCollection.writerUID).get().await()
+                        }.await()
 
-                Logger.v("dailyBoard.writerUID "+dailyBoard.writerUID)
+                        val writerProfileUri = async {
+                            storage.reference.child("user_profile_image/" + dailyBoardCollection.writerUID + ".jpg").downloadUrl.await()
+                        }.await()
 
-                //todo : 사용자 닉네임 firestore에 추가하는 로직 구현하고 다시 여기와서 구현하기
+                        val boardImagesSnapshot = async {
+                            storage.reference.child("board/${document.id}").listAll().await()
+                        }.await()
 
-                fireStoreRef.collection("MZUsers").document(dailyBoard.writerUID).get().addOnSuccessListener {result ->
-                    //Logger.v(result.get(""))
+                        val boardImages = boardImagesSnapshot.items.map {
+                            it.downloadUrl.await()
+                        }
+
+                        val userNickName = userNicknameSnapshot.get("nickName").toString()
+                        val boardContents = dailyBoardCollection.boardContents
+                        val like = dailyBoardCollection.like
+                        val disLike = dailyBoardCollection.disLike
+
+                        val dailyBoard = DailyBoard(
+                            writerProfileUri,
+                            userNickName,
+                            boardContents,
+                            boardImages,
+                            like,
+                            disLike
+                        )
+
+                        dailyBoards.add(dailyBoard)
+
+                    }
+                } catch (e: Exception) {
+                    Logger.v(e.message.toString())
                 }
 
-            }
-
-        }
-            .addOnFailureListener {
 
             }
-        return "test"
+        }.await()
+
+        return@withContext dailyBoards
     }
 
 }

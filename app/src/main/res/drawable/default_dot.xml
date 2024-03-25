@@ -5,7 +5,7 @@
             android:innerRadius="0dp"
             android:shape="ring"
             android:useLevel="false">
-            <solid android:color="@color/white" />
+            <solid android:color="@color/line_color" />
             <stroke
                 android:color="@android:color/darker_gray"/>
         </shape>
