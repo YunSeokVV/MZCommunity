@@ -11,10 +11,10 @@ import model.Images
 import model.Response
 import javax.inject.Inject
 import model.Response.Success
-import useCase.PostDailyBoardUseCase
+import useCase.DailyBoardUseCase
 
 @HiltViewModel
-class PostingMediaActivityViewModel @Inject constructor(private val postDailyBoardUseCase: PostDailyBoardUseCase) :
+class PostingMediaActivityViewModel @Inject constructor(private val dailyBoardUseCase: DailyBoardUseCase) :
     ViewModel() {
 
     private val _isPostingComplete = MutableLiveData<Boolean>()
@@ -25,7 +25,7 @@ class PostingMediaActivityViewModel @Inject constructor(private val postDailyBoa
         }
 
     fun createPost(contetns: String, uploadImagesUri: ArrayList<Images>) = viewModelScope.launch {
-        postDailyBoardUseCase(contetns, uploadImagesUri).collect {
+        dailyBoardUseCase.postDailyBoardRepository(contetns, uploadImagesUri).collect {
             when (it) {
                 is Response.Success -> {
                     _isPostingComplete.value = it.data?:false

@@ -1,5 +1,6 @@
 package repository
 
+import android.net.Uri
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.orhanobut.logger.Logger
@@ -10,27 +11,60 @@ import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import model.DailyBoard
 import model.DailyboardCollection
+import model.Images
 import model.Response
+import util.FirebaseAuth
 import util.Util
 import javax.inject.Inject
 import javax.inject.Singleton
-import model.Response.Failure
-import model.Response.Success
 
-interface GetDailyBoardRepositry {
-    //suspend fun getDailyBoard(): List<DailyPosting>
+//interface GetDailyBoardRepositry {
+//    suspend fun getDailyBoard(): List<DailyBoard>
+//}
+
+interface DailyBoardRepository {
+    suspend fun postBoard(contents: String, uploadImagesUri: ArrayList<Images>): Response<Boolean>
     suspend fun getDailyBoard(): List<DailyBoard>
 }
 
 @Singleton
-class GetDailyBoardRepositoryImpl @Inject constructor(
+class DailyBoardRepositoryImpl @Inject constructor(
     private val storage: FirebaseStorage,
     private val fireStoreRef: FirebaseFirestore
 ) :
-    GetDailyBoardRepositry {
+    DailyBoardRepository {
+    override suspend fun postBoard(
+        contents: String,
+        uploadImagesUri: ArrayList<Images>
+    ): Response<Boolean> = withContext(Dispatchers.IO) {
+        try {
+            val fireStore = fireStoreRef
+            val board = hashMapOf(
+                "boardContents" to contents,
+                "like" to 0,
+                "disLike" to 0,
+                "writerUID" to FirebaseAuth.auth.uid
+            )
+            val documentReference = fireStore.collection("dailyBoard").add(board).await()
+            val uploadTasks = uploadImagesUri.mapIndexed { idx, it ->
+                val choosenImg =
+                    storage.reference.child("board/${documentReference.id}/${idx}.png")
+                choosenImg.putFile(Uri.parse(it.uri)).await()
+            }
+            // 모든 이미지 업로드 작업이 성공적으로 완료되었을 경우
+            if (uploadTasks.all { it.task.isSuccessful }) {
+                Logger.v("task is successful")
+                Response.Success(true)
+            } else {
+                Logger.v("task is failed")
+                Response.Success(false)
+            }
+        } catch (e: Exception) {
+            Response.Failure(e)
+        }
+    }
+
     override suspend fun getDailyBoard(): List<DailyBoard> = withContext(Dispatchers.IO) {
-
-
         var dailyBoards = ArrayList<DailyBoard>()
 
         fireStoreRef.collection("dailyBoard").get().addOnSuccessListener { result ->
