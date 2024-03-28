@@ -14,6 +14,7 @@ import com.example.mzcommunity.R
 import com.example.mzcommunity.databinding.FragmentBoardBinding
 import com.orhanobut.logger.Logger
 import dagger.hilt.android.AndroidEntryPoint
+import model.DailyBoard
 import viewModel.BoardFramgnetViewModel
 
 @AndroidEntryPoint
@@ -35,23 +36,19 @@ class BoardFragment : Fragment() {
 
         binding.dailyBoards.layoutManager =
             LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false)
-
-
-        // 일단 서버에서 데이터를 갖고 오세요
         viewModel.document.observe(requireActivity(), Observer {
-
             val dailyBoardAdapter = DailyBoardAdapter(
                 it,
                 viewModel.getUserUploadFilesUri(),
                 object : DailyBoardAdapter.IncreaseLike {
-                    override fun increaseLikse(likeNumber: Int) {
-                        Logger.v("increaseLike called")
+                    override fun increaseLike(dailyBoard: DailyBoard) {
+                        viewModel.increaseDailyBoardLike(dailyBoard)
                     }
 
                 },
-                object : DailyBoardAdapter.DecreaseLike {
-                    override fun decreaseLike(likeNumber: Int) {
-                        Logger.v("decreaseLikse called")
+                object : DailyBoardAdapter.IncreaseDisLike {
+                    override fun increaseDisLike(dailyBoard: DailyBoard) {
+                        viewModel.increaseDailyBoardDisLike(dailyBoard)
                     }
 
                 })

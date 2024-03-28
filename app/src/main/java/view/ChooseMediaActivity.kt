@@ -75,7 +75,6 @@ class ChooseMediaActivity : AppCompatActivity() {
                 if (uris.isNotEmpty()) {
                     val choosenUrls = mutableListOf<Images>()
                     for (i in uris.iterator()) {
-                        Logger.v(i.toString())
                         choosenUrls.add(Images(i.toString()))
                     }
                     imageAdapter.setImages(choosenUrls)
@@ -108,7 +107,6 @@ class ChooseMediaActivity : AppCompatActivity() {
 
         binding.nextStep.setOnClickListener {
             val intent = Intent(this, PostingMediaActivity::class.java)
-            Logger.v(imageAdapter.getImages().toString())
 
             intent.putExtra("choosenImages", imageAdapter.getImages())
             startActivity(intent)

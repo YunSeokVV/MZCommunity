@@ -43,7 +43,6 @@ class PostingMediaActivity : AppCompatActivity() {
 
         viewModel.isPostingComplete.observe(this, Observer { data ->
             if(data){
-                Logger.v("dialog dismiss")
                 progressDialog.dismiss()
                 ChooseMediaActivity.chooseMediaActivity.finish()
                 finish()
