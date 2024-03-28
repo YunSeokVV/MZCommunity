@@ -58,12 +58,13 @@
         app:layout_constraintStart_toStartOf="parent"
         />
 
-    <ImageView
+    <Button
         android:id="@+id/likeImg"
         android:layout_width="25dp"
         android:layout_height="25dp"
         android:layout_marginLeft="10dp"
         android:background="@drawable/like"
+        app:backgroundTint="@null"
         app:layout_constraintBottom_toBottomOf="@+id/linearLayout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/linearLayout" />
@@ -79,12 +80,13 @@
         app:layout_constraintStart_toEndOf="@+id/likeImg"
         app:layout_constraintTop_toTopOf="@+id/linearLayout"  />
 
-    <ImageView
+    <Button
         android:id="@+id/disLikeImg"
         android:layout_width="25dp"
         android:layout_height="25dp"
         android:layout_marginLeft="20dp"
         android:background="@drawable/dislike"
+        app:backgroundTint="@null"
         app:layout_constraintBottom_toBottomOf="@+id/linearLayout"
         app:layout_constraintStart_toEndOf="@+id/likeCount"
         app:layout_constraintTop_toTopOf="@+id/linearLayout" />

@@ -1,2 +1,9 @@
 package model
-data class DailyboardCollection(val boardContents : String, val disLike : Int, val like : Int, val writerUID : String)
+
+data class DailyboardCollection(
+    val boardContents: String,
+    val disLike: Int,
+    val like: Int,
+    val writerUID: String,
+    val favourability: String
+)

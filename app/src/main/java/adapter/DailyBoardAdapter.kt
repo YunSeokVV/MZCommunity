@@ -1,5 +1,7 @@
 package adapter
 
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
@@ -7,6 +9,8 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -22,15 +26,15 @@ class DailyBoardAdapter(
     private val dailyBoards: List<DailyBoard>,
     private val uris: List<List<Uri>>,
     private val increaseLike: IncreaseLike,
-    private val decreaseLike: DecreaseLike
+    private val increaseDisLike: IncreaseDisLike
 ) : ListAdapter<DailyBoard, DailyBoardAdapter.DailyBoardItemViewHolder>(diffUtil) {
 
-    interface IncreaseLike{
-        fun increaseLikse(likeNumber : Int)
+    interface IncreaseLike {
+        fun increaseLike(dailyBoard: DailyBoard)
     }
 
-    interface DecreaseLike{
-        fun decreaseLike(likeNumber : Int)
+    interface IncreaseDisLike {
+        fun increaseDisLike(dailyBoard: DailyBoard)
     }
 
     companion object {
@@ -46,23 +50,33 @@ class DailyBoardAdapter(
         }
     }
 
-    class DailyBoardItemViewHolder(
+    inner class DailyBoardItemViewHolder(
         private val imagesUri: List<List<Uri>>,
         private val binding: DailyBoardItemListBinding
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: DailyBoard) {
             binding.writeName.text = item.writerNickname
             binding.postingContents.text = item.boardContents
+
+            if (item.favourability.equals("like")) {
+                setThumbNailColor(true, binding.likeImg)
+            } else if (item.favourability.equals("disLike")) {
+                setThumbNailColor(true, binding.disLikeImg)
+            }
+
             binding.likeCount.text = item.like.toString()
             binding.disLikeCount.text = item.disLike.toString()
             binding.dailyImgViewPager.adapter =
-                DailyViewPagerAdapter(imagesUri.get(adapterPosition), imagesUri.get(adapterPosition).size)
+                DailyViewPagerAdapter(
+                    imagesUri.get(adapterPosition),
+                    imagesUri.get(adapterPosition).size
+                )
             TabLayoutMediator(
                 binding.intoTabLayout,
                 binding.dailyImgViewPager
             ) { tab, position -> }.attach()
 
-            if(imagesUri.get(adapterPosition).size == 1){
+            if (imagesUri.get(adapterPosition).size == 1) {
                 binding.intoTabLayout.visibility = View.GONE
             }
 
@@ -71,13 +85,99 @@ class DailyBoardAdapter(
         }
 
         init {
+
             binding.likeImg.setOnClickListener {
+                val dailyBoard = dailyBoards.get(adapterPosition)
+                increaseLike.increaseLike(dailyBoard)
+
+                // 좋아요 버튼의 색깔을 파란색으로 변경
+                if (dailyBoard.favourability.equals("usual")) {
+                    setThumbNailColor(true, binding.likeImg)
+
+                    // 좋아요 +1
+                    binding.likeCount.text =
+                        setFavourCount((binding.likeCount.text.toString()).toInt(), true).toString()
+
+                    // 사용자가 이전에 싫어요를 눌렀다가 좋아요를 누른 경우
+                } else if (dailyBoard.favourability.equals("disLike")) {
+                    setThumbNailColor(true, binding.likeImg)
+                    setThumbNailColor(false, binding.disLikeImg)
+
+                    // 좋아요 +1, 싫어요 -1
+                    binding.likeCount.text =
+                        setFavourCount((binding.likeCount.text.toString()).toInt(), true).toString()
+                    binding.disLikeCount.text =
+                        setFavourCount((binding.disLikeCount.text.toString()).toInt(), false).toString()
+
+                    // 사용자가 이전에 좋아요를 눌렀다가 다시 한번 좋아요를 누르는 경우
+                } else if (dailyBoard.favourability.equals("like")) {
+                    setThumbNailColor(false, binding.likeImg)
+
+                    // 좋아요 -1
+                    binding.likeCount.text =
+                        setFavourCount((binding.likeCount.text.toString()).toInt(), false).toString()
+                }
 
             }
 
             binding.disLikeImg.setOnClickListener {
+                val dailyBoard = dailyBoards.get(adapterPosition)
+                increaseDisLike.increaseDisLike(dailyBoard)
 
+                // 싫어요 버튼의 색깔을 파란색으로 변경
+                if (dailyBoard.favourability.equals("usual")) {
+                    setThumbNailColor(true, binding.disLikeImg)
+
+                    // 싫어요 +1
+                    binding.disLikeCount.text =
+                        setFavourCount((binding.disLikeCount.text.toString()).toInt(), true).toString()
+
+                    // 사용자가 이전에 싫어요를 눌렀다가 다시 싫어요를 누른 경우
+                } else if (dailyBoard.favourability.equals("disLike")) {
+                    setThumbNailColor(false, binding.disLikeImg)
+
+                    // 싫어요 -1
+                    binding.disLikeCount.text =
+                        setFavourCount((binding.disLikeCount.text.toString()).toInt(), false).toString()
+
+                    // 사용자가 이전에 좋아요를 눌렀다가 싫어요를 누르는 경우
+                } else if (dailyBoard.favourability.equals("like")) {
+                    setThumbNailColor(false, binding.likeImg)
+                    setThumbNailColor(true, binding.disLikeImg)
+
+                    // 좋아요 -1, 싫어요 +1
+                    binding.likeCount.text =
+                        setFavourCount((binding.likeCount.text.toString()).toInt(), false).toString()
+                    binding.disLikeCount.text =
+                        setFavourCount((binding.disLikeCount.text.toString()).toInt(), true).toString()
+                }
             }
+        }
+
+        fun setFavourCount(originalCount: Int, increase: Boolean): Int {
+            var result = originalCount
+            if (increase) {
+                result += 1
+            } else if (!increase) {
+                result -= 1
+            }
+
+            if(result == 0)
+                return 0
+
+            return result
+        }
+
+
+        fun setThumbNailColor(isActive: Boolean, thumbNail: View) {
+            var color = ContextCompat.getColor(binding.root.context, R.color.theme)
+            if (isActive) {
+                color = ContextCompat.getColor(binding.root.context, R.color.theme)
+            } else {
+                color = ContextCompat.getColor(binding.root.context, R.color.black)
+            }
+            val colorStateList = ColorStateList.valueOf(color)
+            thumbNail.setBackgroundTintList(colorStateList)
         }
 
     }

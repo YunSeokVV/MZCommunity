@@ -22,7 +22,6 @@ class ChooseMediaActivityViewModel @Inject constructor() : ViewModel() {
 
     fun setChoosen(isChoosen: Boolean) {
         _isChoosen.value = isChoosen
-        Logger.v(_isChoosen.value.toString())
     }
 
     fun setPicturedImageUri(image : Images) : List<Images>{

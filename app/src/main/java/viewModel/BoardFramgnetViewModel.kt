@@ -5,35 +5,50 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.orhanobut.logger.Logger
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import model.DailyBoard
+import model.Response
 import useCase.DailyBoardUseCase
 import javax.inject.Inject
 
 @HiltViewModel
-class BoardFramgnetViewModel @Inject constructor(private val dailyBoardUseCase: DailyBoardUseCase, private val increaseDailyBoardLikeUseCase: IncreaseDailyBoardLikeUseCase) : ViewModel(){
+class BoardFramgnetViewModel @Inject constructor(private val dailyBoardUseCase: DailyBoardUseCase) : ViewModel(){
 
     private val _documents = MutableLiveData<List<DailyBoard>>()
 
     init {
-        getDailyBoard()
+        getDailyBoards()
     }
 
-//    fun increaseDailyBoardLike(increaseDailyBoardLikeUseCase: IncreaseDailyBoardLikeUseCase) = viewModelScope.launch {
-//        increaseDailyBoardLikeUseCase(contetns, uploadImagesUri).collect {
-//            when (it) {
-//                is Response.Success -> {
-//                    _isPostingComplete.value = it.data?:false
-//                    Logger.v(_isPostingComplete.value.toString())
-//                }
-//
-//                is Response.Failure -> {
-//                    Logger.v(it.e?.message.toString())
-//                }
-//            }
-//        }
-//    }
+    fun increaseDailyBoardLike(dailyBoard: DailyBoard) = viewModelScope.launch {
+        dailyBoardUseCase.increaseDailyBoardLikeUseCase(dailyBoard).collect {
+            when (it) {
+                is Response.Success -> {
+                    getDailyBoards()
+                }
+
+                is Response.Failure -> {
+                    Logger.v(it.e?.message.toString())
+                }
+            }
+        }
+    }
+
+    fun increaseDailyBoardDisLike(dailyBoard: DailyBoard) = viewModelScope.launch {
+        dailyBoardUseCase.increaseDailyBoardDisLike(dailyBoard).collect {
+            when (it) {
+                is Response.Success -> {
+                    getDailyBoards()
+                }
+
+                is Response.Failure -> {
+                    Logger.v(it.e?.message.toString())
+                }
+            }
+        }
+    }
 
     fun getUserUploadFilesUri(): List<List<Uri>> {
         var uris = mutableListOf<List<Uri>>()
@@ -49,19 +64,11 @@ class BoardFramgnetViewModel @Inject constructor(private val dailyBoardUseCase: 
             return _documents
         }
 
-    fun getDailyBoard() = viewModelScope.launch {
+    fun getDailyBoards() = viewModelScope.launch {
 
-        dailyBoardUseCase.getDailyBoard().collect{
+        dailyBoardUseCase.getDailyBoards().collect{
             _documents.value = it
         }
-
-//        getDailyBoardUseCase().collect{
-//            Logger.v(it.toString())
-//
-//            //todo : 둘중 맞는걸로 선택해서 해야함
-//            //_documents.postValue(it)
-//            _documents.value = it
-//        }
     }
 
 }
