@@ -6,11 +6,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.viewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.mzcommunity.R
 import com.example.mzcommunity.databinding.FragmentBoardBinding
 import com.orhanobut.logger.Logger
 import dagger.hilt.android.AndroidEntryPoint
@@ -21,6 +19,7 @@ import viewModel.BoardFramgnetViewModel
 class BoardFragment : Fragment() {
     private val viewModel by viewModels<BoardFramgnetViewModel>()
     private lateinit var binding: FragmentBoardBinding
+    private lateinit var dailyBoardAdapter : DailyBoardAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -36,29 +35,33 @@ class BoardFragment : Fragment() {
 
         binding.dailyBoards.layoutManager =
             LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false)
+
+
+        dailyBoardAdapter = DailyBoardAdapter(
+            object : DailyBoardAdapter.IncreaseLike {
+                override fun increaseLike(dailyBoard: DailyBoard, adapterPosition : Int) {
+                    viewModel.increaseDailyBoardLike(dailyBoard, dailyBoard.boardUID, adapterPosition)
+                }
+
+            },
+            object : DailyBoardAdapter.IncreaseDisLike {
+                override fun increaseDisLike(dailyBoard: DailyBoard, adapterPosition : Int) {
+                    viewModel.increaseDailyBoardDisLike(dailyBoard, dailyBoard.boardUID, adapterPosition)
+                }
+
+            })
+
+
+
+        binding.dailyBoards.adapter = dailyBoardAdapter
+
         viewModel.document.observe(requireActivity(), Observer {
-            val dailyBoardAdapter = DailyBoardAdapter(
-                it,
-                viewModel.getUserUploadFilesUri(),
-                object : DailyBoardAdapter.IncreaseLike {
-                    override fun increaseLike(dailyBoard: DailyBoard) {
-                        viewModel.increaseDailyBoardLike(dailyBoard)
-                    }
-
-                },
-                object : DailyBoardAdapter.IncreaseDisLike {
-                    override fun increaseDisLike(dailyBoard: DailyBoard) {
-                        viewModel.increaseDailyBoardDisLike(dailyBoard)
-                    }
-
-                })
-            binding.dailyBoards.adapter = dailyBoardAdapter
-
+            Logger.v(it.toString())
             dailyBoardAdapter.submitList(it)
-            dailyBoardAdapter.notifyDataSetChanged()
         })
 
         return binding.root
     }
+
 
 }
