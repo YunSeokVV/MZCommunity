@@ -1,4 +1,4 @@
-package viewModel
+package viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -10,8 +10,7 @@ import kotlinx.coroutines.launch
 import model.Images
 import model.Response
 import javax.inject.Inject
-import model.Response.Success
-import useCase.DailyBoardUseCase
+import usecase.DailyBoardUseCase
 
 @HiltViewModel
 class PostingMediaActivityViewModel @Inject constructor(private val dailyBoardUseCase: DailyBoardUseCase) :

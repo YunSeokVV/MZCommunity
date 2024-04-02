@@ -1,4 +1,4 @@
-package useCase
+package usecase
 
 import kotlinx.coroutines.flow.flow
 import model.DailyBoard

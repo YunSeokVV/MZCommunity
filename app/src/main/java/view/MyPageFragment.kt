@@ -16,7 +16,7 @@ import com.google.firebase.Firebase
 import com.google.firebase.storage.storage
 import com.orhanobut.logger.Logger
 import util.FirebaseAuth
-import viewModel.MyPageFragmentViewModel
+import viewmodel.MyPageFragmentViewModel
 
 class MyPageFragment : Fragment() {
     private val myPageFragmentViewModel: MyPageFragmentViewModel by viewModels()

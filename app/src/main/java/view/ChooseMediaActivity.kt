@@ -19,11 +19,9 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mzcommunity.R
 import com.example.mzcommunity.databinding.ActivityMultiImagePostingBinding
-import com.orhanobut.logger.Logger
 import model.Images
 import util.Util
-import viewModel.ChooseMediaActivityViewModel
-import java.io.Serializable
+import viewmodel.ChooseMediaActivityViewModel
 
 
 class ChooseMediaActivity : AppCompatActivity() {

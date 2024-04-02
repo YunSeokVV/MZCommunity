@@ -1,4 +1,4 @@
-package viewModel
+package viewmodel
 
 import android.net.Uri
 import androidx.lifecycle.LiveData
@@ -10,8 +10,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import model.DailyBoard
 import model.Response
-import useCase.DailyBoardUseCase
-import java.util.Arrays
+import usecase.DailyBoardUseCase
 import javax.inject.Inject
 
 @HiltViewModel

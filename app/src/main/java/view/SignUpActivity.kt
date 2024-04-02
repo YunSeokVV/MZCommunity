@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.text.TextUtils
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.example.mzcommunity.R
 import com.example.mzcommunity.databinding.ActivitySignUpBinding
@@ -17,8 +16,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import util.FirebaseAuth
 import util.Util
-import viewModel.BoardFramgnetViewModel
-import viewModel.SignUpActivityViewModel
+import viewmodel.SignUpActivityViewModel
 
 @AndroidEntryPoint
 class SignUpActivity : AppCompatActivity() {

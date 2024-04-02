@@ -13,7 +13,7 @@ import com.example.mzcommunity.databinding.FragmentBoardBinding
 import com.orhanobut.logger.Logger
 import dagger.hilt.android.AndroidEntryPoint
 import model.DailyBoard
-import viewModel.BoardFramgnetViewModel
+import viewmodel.BoardFramgnetViewModel
 
 @AndroidEntryPoint
 class BoardFragment : Fragment() {
