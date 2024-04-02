@@ -58,8 +58,13 @@ class DailyBoardAdapter(
 
             if (item.favourability.equals("like")) {
                 setThumbNailColor(true, binding.likeImg)
+                setThumbNailColor(false, binding.disLikeImg)
             } else if (item.favourability.equals("disLike")) {
+                setThumbNailColor(false, binding.likeImg)
                 setThumbNailColor(true, binding.disLikeImg)
+            } else if(item.favourability.equals("usual")){
+                setThumbNailColor(false, binding.likeImg)
+                setThumbNailColor(false, binding.disLikeImg)
             }
 
             binding.likeCount.text = item.like.toString()
@@ -86,7 +91,6 @@ class DailyBoardAdapter(
 
         init {
             binding.likeImg.setOnClickListener {
-                //val dailyBoard = dailyBoards.get(adapterPosition)
                 val dailyBoard = currentList.get(adapterPosition)
                 increaseLike.increaseLike(dailyBoard, adapterPosition)
 
@@ -127,7 +131,6 @@ class DailyBoardAdapter(
             }
 
             binding.disLikeImg.setOnClickListener {
-                //val dailyBoard = dailyBoards.get(adapterPosition)
                 val dailyBoard = currentList.get(adapterPosition)
                 increaseDisLike.increaseDisLike(dailyBoard, adapterPosition)
 
@@ -170,7 +173,9 @@ class DailyBoardAdapter(
                             true
                         ).toString()
                 }
+
             }
+
         }
 
         fun setFavourCount(originalCount: Int, increase: Boolean): Int {
