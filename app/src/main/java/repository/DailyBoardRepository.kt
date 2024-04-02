@@ -7,7 +7,9 @@ import com.google.firebase.firestore.SetOptions
 import com.google.firebase.storage.FirebaseStorage
 import com.orhanobut.logger.Logger
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
@@ -24,6 +26,9 @@ import javax.inject.Singleton
 interface DailyBoardRepository {
     suspend fun postBoard(contents: String, uploadImagesUri: ArrayList<Images>): Response<Boolean>
     suspend fun getDailyBoards(): List<DailyBoard>
+
+    suspend fun getDailyBoard(documentId: String): DailyBoard
+
     suspend fun increaseDailyBoardLike(dailyBoard: DailyBoard): Response<Boolean>
     suspend fun increaseDailyBoardDisLike(dailyBoard: DailyBoard): Response<Boolean>
 }
@@ -131,6 +136,60 @@ class DailyBoardRepositoryImpl @Inject constructor(
         return@withContext dailyBoards
     }
 
+    override suspend fun getDailyBoard(documentId: String): DailyBoard =
+        withContext(Dispatchers.IO) {
+            var dailyBoard: DailyBoard
+            try {
+                val document =
+                    fireStoreRef.collection("dailyBoard").document(documentId).get().await()
+                val dailyBoardCollection = DailyboardCollection(
+                    Util.parsingFireStoreDocument(document, "boardContents"),
+                    Util.parsingFireStoreDocument(document, "disLike").toInt(),
+                    Util.parsingFireStoreDocument(document, "like").toInt(),
+                    Util.parsingFireStoreDocument(document, "writerUID"),
+                    Util.parsingFireStoreDocument(document, "userFavourability"),
+                )
+
+                val userNicknameSnapshot =
+                    fireStoreRef.collection("MZUsers").document(dailyBoardCollection.writerUID)
+                        .get().await()
+                val writerProfileUri =
+                    storage.reference.child("user_profile_image/" + dailyBoardCollection.writerUID + ".jpg").downloadUrl.await()
+                val boardImagesSnapshot =
+                    storage.reference.child("board/${document.id}").listAll().await()
+                val boardImages = boardImagesSnapshot.items.map {
+                    it.downloadUrl.await()
+                }
+
+                val boardUID = document.id
+                val userNickName = userNicknameSnapshot.get("nickName").toString()
+                val boardContents = dailyBoardCollection.boardContents
+                val like = dailyBoardCollection.like
+                val disLike = dailyBoardCollection.disLike
+                val userFavourability = dailyBoardCollection.favourability
+
+
+                dailyBoard = DailyBoard(
+                    writerProfileUri,
+                    userNickName,
+                    boardContents,
+                    boardImages,
+                    disLike,
+                    like,
+                    boardUID,
+                    userFavourability
+                )
+
+
+            } catch (e: Exception) {
+                Logger.v(e.message.toString())
+                dailyBoard = DailyBoard(Uri.parse("nothing"),"nothing","nothing",
+                    emptyList(),0,0,"nothing","nothing")
+            }
+
+            return@withContext dailyBoard
+        }
+
     override suspend fun increaseDailyBoardLike(dailyBoard: DailyBoard): Response<Boolean> =
         withContext(Dispatchers.IO) {
             try {
@@ -145,15 +204,15 @@ class DailyBoardRepositoryImpl @Inject constructor(
 
                     // 사용자의 게시글에 대한 호감도가 좋아요였던 경우
                 } else if (dailyBoard.favourability.equals("like")) {
-                    if(dailyBoard.like != 0)
-                    documentReference.update("like", FieldValue.increment(-1)).await()
+                    if (dailyBoard.like != 0)
+                        documentReference.update("like", FieldValue.increment(-1)).await()
                     documentReference.set(setUserFavour("usual"), SetOptions.merge()).await()
 
                     // 사용자의 게시글에 대한 호감도가 싫어요였던 경우
                 } else if (dailyBoard.favourability.equals("disLike")) {
                     documentReference.update("like", FieldValue.increment(1)).await()
-                    if(dailyBoard.disLike != 0)
-                    documentReference.update("disLike", FieldValue.increment(-1)).await()
+                    if (dailyBoard.disLike != 0)
+                        documentReference.update("disLike", FieldValue.increment(-1)).await()
                     documentReference.set(setUserFavour("like"), SetOptions.merge()).await()
                 }
 
@@ -179,8 +238,8 @@ class DailyBoardRepositoryImpl @Inject constructor(
                 }
                 // 사용자의 게시글에 대한 호감도가 좋아요였던 경우
                 else if (dailyBoard.favourability.equals("like")) {
-                    if(dailyBoard.like != 0)
-                    documentReference.update("like", FieldValue.increment(-1)).await()
+                    if (dailyBoard.like != 0)
+                        documentReference.update("like", FieldValue.increment(-1)).await()
                     documentReference.update("disLike", FieldValue.increment(1)).await()
                     documentReference.set(setUserFavour("disLike"), SetOptions.merge()).await()
 
@@ -188,8 +247,8 @@ class DailyBoardRepositoryImpl @Inject constructor(
                 }
                 // 사용자의 게시글에 대한 호감도가 싫어요였던 경우
                 else if (dailyBoard.favourability.equals("disLike")) {
-                    if(dailyBoard.disLike != 0)
-                    documentReference.update("disLike", FieldValue.increment(-1)).await()
+                    if (dailyBoard.disLike != 0)
+                        documentReference.update("disLike", FieldValue.increment(-1)).await()
                     documentReference.set(setUserFavour("usual"), SetOptions.merge()).await()
                     Response.Success(true)
                 }

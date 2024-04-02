@@ -1,8 +1,8 @@
-package viewModel
+package viewmodel
 
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import useCase.SetUserNicknameUseCase
+import usecase.SetUserNicknameUseCase
 import javax.inject.Inject
 
 @HiltViewModel

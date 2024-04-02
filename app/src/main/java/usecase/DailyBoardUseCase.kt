@@ -1,4 +1,4 @@
-package useCase
+package usecase
 
 import kotlinx.coroutines.flow.flow
 import model.DailyBoard
@@ -17,6 +17,10 @@ class DailyBoardUseCase @Inject constructor(private val dailyBoardRepository: Da
 
     suspend fun getDailyBoards() = flow {
         emit(dailyBoardRepository.getDailyBoards())
+    }
+
+    suspend fun getDailyBoard(documentId : String) = flow {
+        emit(dailyBoardRepository.getDailyBoard(documentId))
     }
 
     suspend fun postDailyBoardRepository(contents: String, uploadImagesUri: ArrayList<Images>) = flow {

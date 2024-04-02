@@ -9,11 +9,9 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mzcommunity.R
 import com.example.mzcommunity.databinding.ActivityPostingMediaBinding
-import com.orhanobut.logger.Logger
 import dagger.hilt.android.AndroidEntryPoint
 import model.Images
-import viewModel.PostingMediaActivityViewModel
-import java.io.Serializable
+import viewmodel.PostingMediaActivityViewModel
 
 @AndroidEntryPoint
 class PostingMediaActivity : AppCompatActivity() {

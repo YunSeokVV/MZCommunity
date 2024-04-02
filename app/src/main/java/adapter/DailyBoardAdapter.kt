@@ -23,24 +23,22 @@ import com.orhanobut.logger.Logger
 import model.DailyBoard
 
 class DailyBoardAdapter(
-    private val dailyBoards: List<DailyBoard>,
-    private val uris: List<List<Uri>>,
     private val increaseLike: IncreaseLike,
     private val increaseDisLike: IncreaseDisLike
 ) : ListAdapter<DailyBoard, DailyBoardAdapter.DailyBoardItemViewHolder>(diffUtil) {
 
     interface IncreaseLike {
-        fun increaseLike(dailyBoard: DailyBoard)
+        fun increaseLike(dailyBoard: DailyBoard, adapterPosition: Int)
     }
 
     interface IncreaseDisLike {
-        fun increaseDisLike(dailyBoard: DailyBoard)
+        fun increaseDisLike(dailyBoard: DailyBoard, adapterPosition: Int)
     }
 
     companion object {
         private val diffUtil = object : DiffUtil.ItemCallback<DailyBoard>() {
             override fun areItemsTheSame(oldItem: DailyBoard, newItem: DailyBoard): Boolean {
-                return oldItem === newItem
+                return oldItem.boardUID == newItem.boardUID
             }
 
             override fun areContentsTheSame(oldItem: DailyBoard, newItem: DailyBoard): Boolean {
@@ -60,8 +58,13 @@ class DailyBoardAdapter(
 
             if (item.favourability.equals("like")) {
                 setThumbNailColor(true, binding.likeImg)
+                setThumbNailColor(false, binding.disLikeImg)
             } else if (item.favourability.equals("disLike")) {
+                setThumbNailColor(false, binding.likeImg)
                 setThumbNailColor(true, binding.disLikeImg)
+            } else if(item.favourability.equals("usual")){
+                setThumbNailColor(false, binding.likeImg)
+                setThumbNailColor(false, binding.disLikeImg)
             }
 
             binding.likeCount.text = item.like.toString()
@@ -84,11 +87,12 @@ class DailyBoardAdapter(
                 .into(binding.userProfileImg)
         }
 
-        init {
 
+
+        init {
             binding.likeImg.setOnClickListener {
-                val dailyBoard = dailyBoards.get(adapterPosition)
-                increaseLike.increaseLike(dailyBoard)
+                val dailyBoard = currentList.get(adapterPosition)
+                increaseLike.increaseLike(dailyBoard, adapterPosition)
 
                 // 좋아요 버튼의 색깔을 파란색으로 변경
                 if (dailyBoard.favourability.equals("usual")) {
@@ -107,7 +111,10 @@ class DailyBoardAdapter(
                     binding.likeCount.text =
                         setFavourCount((binding.likeCount.text.toString()).toInt(), true).toString()
                     binding.disLikeCount.text =
-                        setFavourCount((binding.disLikeCount.text.toString()).toInt(), false).toString()
+                        setFavourCount(
+                            (binding.disLikeCount.text.toString()).toInt(),
+                            false
+                        ).toString()
 
                     // 사용자가 이전에 좋아요를 눌렀다가 다시 한번 좋아요를 누르는 경우
                 } else if (dailyBoard.favourability.equals("like")) {
@@ -115,14 +122,17 @@ class DailyBoardAdapter(
 
                     // 좋아요 -1
                     binding.likeCount.text =
-                        setFavourCount((binding.likeCount.text.toString()).toInt(), false).toString()
+                        setFavourCount(
+                            (binding.likeCount.text.toString()).toInt(),
+                            false
+                        ).toString()
                 }
 
             }
 
             binding.disLikeImg.setOnClickListener {
-                val dailyBoard = dailyBoards.get(adapterPosition)
-                increaseDisLike.increaseDisLike(dailyBoard)
+                val dailyBoard = currentList.get(adapterPosition)
+                increaseDisLike.increaseDisLike(dailyBoard, adapterPosition)
 
                 // 싫어요 버튼의 색깔을 파란색으로 변경
                 if (dailyBoard.favourability.equals("usual")) {
@@ -130,7 +140,10 @@ class DailyBoardAdapter(
 
                     // 싫어요 +1
                     binding.disLikeCount.text =
-                        setFavourCount((binding.disLikeCount.text.toString()).toInt(), true).toString()
+                        setFavourCount(
+                            (binding.disLikeCount.text.toString()).toInt(),
+                            true
+                        ).toString()
 
                     // 사용자가 이전에 싫어요를 눌렀다가 다시 싫어요를 누른 경우
                 } else if (dailyBoard.favourability.equals("disLike")) {
@@ -138,7 +151,10 @@ class DailyBoardAdapter(
 
                     // 싫어요 -1
                     binding.disLikeCount.text =
-                        setFavourCount((binding.disLikeCount.text.toString()).toInt(), false).toString()
+                        setFavourCount(
+                            (binding.disLikeCount.text.toString()).toInt(),
+                            false
+                        ).toString()
 
                     // 사용자가 이전에 좋아요를 눌렀다가 싫어요를 누르는 경우
                 } else if (dailyBoard.favourability.equals("like")) {
@@ -147,11 +163,19 @@ class DailyBoardAdapter(
 
                     // 좋아요 -1, 싫어요 +1
                     binding.likeCount.text =
-                        setFavourCount((binding.likeCount.text.toString()).toInt(), false).toString()
+                        setFavourCount(
+                            (binding.likeCount.text.toString()).toInt(),
+                            false
+                        ).toString()
                     binding.disLikeCount.text =
-                        setFavourCount((binding.disLikeCount.text.toString()).toInt(), true).toString()
+                        setFavourCount(
+                            (binding.disLikeCount.text.toString()).toInt(),
+                            true
+                        ).toString()
                 }
+
             }
+
         }
 
         fun setFavourCount(originalCount: Int, increase: Boolean): Int {
@@ -162,7 +186,7 @@ class DailyBoardAdapter(
                 result -= 1
             }
 
-            if(result == 0)
+            if (result == 0)
                 return 0
 
             return result
@@ -185,14 +209,34 @@ class DailyBoardAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DailyBoardItemViewHolder {
         val binding =
             DailyBoardItemListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return DailyBoardItemViewHolder(uris, binding)
+
+        //return DailyBoardItemViewHolder(uris, binding)
+        return DailyBoardItemViewHolder(getUserUploadFilesUri(), binding)
     }
 
     override fun onBindViewHolder(holder: DailyBoardItemViewHolder, position: Int) {
-        holder.bind(dailyBoards.get(position))
+        //holder.bind(dailyBoards.get(position))
+        holder.bind(currentList.get(position))
 
 
     }
 
+//    fun getUserUploadFilesUri(): List<List<Uri>> {
+//        var uris = mutableListOf<List<Uri>>()
+//        _documents.value?.forEach {
+//            uris.add(it.images)
+//        }
+//
+//        return uris
+//    }
+
+
+    fun getUserUploadFilesUri(): List<List<Uri>> {
+        var uris = mutableListOf<List<Uri>>()
+        currentList.forEach {
+            uris.add(it.images)
+        }
+        return uris
+    }
 
 }

@@ -1,4 +1,4 @@
-package viewModel
+package viewmodel
 
 import android.net.Uri
 import androidx.lifecycle.LiveData
@@ -10,7 +10,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import model.DailyBoard
 import model.Response
-import useCase.DailyBoardUseCase
+import usecase.DailyBoardUseCase
 import javax.inject.Inject
 
 @HiltViewModel
@@ -22,11 +22,11 @@ class BoardFramgnetViewModel @Inject constructor(private val dailyBoardUseCase: 
         getDailyBoards()
     }
 
-    fun increaseDailyBoardLike(dailyBoard: DailyBoard) = viewModelScope.launch {
+    fun increaseDailyBoardLike(dailyBoard: DailyBoard, documentId : String, adapterPosition : Int) = viewModelScope.launch {
         dailyBoardUseCase.increaseDailyBoardLikeUseCase(dailyBoard).collect {
             when (it) {
                 is Response.Success -> {
-                    getDailyBoards()
+                    getDailyBoard(documentId, adapterPosition)
                 }
 
                 is Response.Failure -> {
@@ -36,11 +36,11 @@ class BoardFramgnetViewModel @Inject constructor(private val dailyBoardUseCase: 
         }
     }
 
-    fun increaseDailyBoardDisLike(dailyBoard: DailyBoard) = viewModelScope.launch {
+    fun increaseDailyBoardDisLike(dailyBoard: DailyBoard, documentId : String, adapterPosition : Int) = viewModelScope.launch {
         dailyBoardUseCase.increaseDailyBoardDisLike(dailyBoard).collect {
             when (it) {
                 is Response.Success -> {
-                    getDailyBoards()
+                    getDailyBoard(documentId, adapterPosition)
                 }
 
                 is Response.Failure -> {
@@ -62,12 +62,20 @@ class BoardFramgnetViewModel @Inject constructor(private val dailyBoardUseCase: 
     val document: LiveData<List<DailyBoard>>
         get() {
             return _documents
+
         }
 
     fun getDailyBoards() = viewModelScope.launch {
-
         dailyBoardUseCase.getDailyBoards().collect{
             _documents.value = it
+        }
+    }
+
+    fun getDailyBoard(documentId : String, adapterPosition : Int) = viewModelScope.launch {
+        dailyBoardUseCase.getDailyBoard(documentId).collect{
+            val updateList = _documents.value?.toMutableList() ?: mutableListOf()
+            updateList.set(adapterPosition, it)
+            _documents.value = updateList
         }
     }
 
