@@ -9,6 +9,7 @@
     <string name="board_hint">게시글의 내용을 입력해주세요</string>
     <string name="edit">수정</string>
     <string name="posting">등록</string>
+    <string name="comment_hint">댓글을 입력하세요 ...</string>
     <string name="share">공유</string>
     <string name="next">다음</string>
     <string name="choose_images">업로드할 이미지 선택</string>

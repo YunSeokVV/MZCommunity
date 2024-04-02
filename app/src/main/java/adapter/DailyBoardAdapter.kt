@@ -24,7 +24,8 @@ import model.DailyBoard
 
 class DailyBoardAdapter(
     private val increaseLike: IncreaseLike,
-    private val increaseDisLike: IncreaseDisLike
+    private val increaseDisLike: IncreaseDisLike,
+    private val showComment : ShowComment
 ) : ListAdapter<DailyBoard, DailyBoardAdapter.DailyBoardItemViewHolder>(diffUtil) {
 
     interface IncreaseLike {
@@ -33,6 +34,10 @@ class DailyBoardAdapter(
 
     interface IncreaseDisLike {
         fun increaseDisLike(dailyBoard: DailyBoard, adapterPosition: Int)
+    }
+
+    interface ShowComment{
+        fun showComment()
     }
 
     companion object {
@@ -90,6 +95,10 @@ class DailyBoardAdapter(
 
 
         init {
+            binding.comment.setOnClickListener {
+                showComment.showComment()
+            }
+
             binding.likeImg.setOnClickListener {
                 val dailyBoard = currentList.get(adapterPosition)
                 increaseLike.increaseLike(dailyBoard, adapterPosition)
@@ -220,15 +229,6 @@ class DailyBoardAdapter(
 
 
     }
-
-//    fun getUserUploadFilesUri(): List<List<Uri>> {
-//        var uris = mutableListOf<List<Uri>>()
-//        _documents.value?.forEach {
-//            uris.add(it.images)
-//        }
-//
-//        return uris
-//    }
 
 
     fun getUserUploadFilesUri(): List<List<Uri>> {

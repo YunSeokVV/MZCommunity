@@ -49,6 +49,13 @@ class BoardFragment : Fragment() {
                     viewModel.increaseDailyBoardDisLike(dailyBoard, dailyBoard.boardUID, adapterPosition)
                 }
 
+            },
+            object : DailyBoardAdapter.ShowComment{
+                override fun showComment() {
+                    val bottomSheetFragment = BottomSheetFragment()
+                    bottomSheetFragment.show(childFragmentManager, bottomSheetFragment.tag)
+                }
+
             })
 
 
