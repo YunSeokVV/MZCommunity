@@ -37,7 +37,7 @@ class DailyBoardAdapter(
     }
 
     interface ShowComment{
-        fun showComment()
+        fun showComment(dailyBoard: DailyBoard)
     }
 
     companion object {
@@ -96,7 +96,8 @@ class DailyBoardAdapter(
 
         init {
             binding.comment.setOnClickListener {
-                showComment.showComment()
+                val dailyBoard = currentList.get(adapterPosition)
+                showComment.showComment(dailyBoard)
             }
 
             binding.likeImg.setOnClickListener {
@@ -219,15 +220,11 @@ class DailyBoardAdapter(
         val binding =
             DailyBoardItemListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
 
-        //return DailyBoardItemViewHolder(uris, binding)
         return DailyBoardItemViewHolder(getUserUploadFilesUri(), binding)
     }
 
     override fun onBindViewHolder(holder: DailyBoardItemViewHolder, position: Int) {
-        //holder.bind(dailyBoards.get(position))
         holder.bind(currentList.get(position))
-
-
     }
 
 

@@ -37,8 +37,8 @@ object FirebaseModule {
     )
 
     @Provides
-    fun provideDailyCommentRepostiroy(firestore : FirebaseFirestore) : DailyCommentRepostiroy = DailyCommentRepostiroyImpl(
-        firestore
+    fun provideDailyCommentRepostiroy(storageReference: FirebaseStorage, fireStore : FirebaseFirestore) : DailyCommentRepostiroy = DailyCommentRepostiroyImpl(
+        fireStore, storageReference
     )
 
 }
