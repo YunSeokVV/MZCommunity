@@ -50,15 +50,6 @@ class BoardFramgnetViewModel @Inject constructor(private val dailyBoardUseCase: 
         }
     }
 
-    fun getUserUploadFilesUri(): List<List<Uri>> {
-        var uris = mutableListOf<List<Uri>>()
-        _documents.value?.forEach {
-            uris.add(it.images)
-        }
-
-        return uris
-    }
-
     val document: LiveData<List<DailyBoard>>
         get() {
             return _documents

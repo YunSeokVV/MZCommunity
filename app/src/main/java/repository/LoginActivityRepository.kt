@@ -26,7 +26,6 @@ class LoginActivityRepositoryImpl @Inject constructor(private val firestore: Fir
                 )
 
                 firestore.collection("MZUsers").document(FirebaseAuth.auth.uid.toString()).set(nickName).addOnSuccessListener {
-                    Logger.v("Success called")
                 }
 
                 Success(true)

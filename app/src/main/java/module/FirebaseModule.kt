@@ -11,6 +11,8 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import repository.DailyBoardRepository
 import repository.DailyBoardRepositoryImpl
+import repository.DailyCommentRepostiroy
+import repository.DailyCommentRepostiroyImpl
 import repository.LoginActivityRepository
 import repository.LoginActivityRepositoryImpl
 
@@ -32,6 +34,11 @@ object FirebaseModule {
     @Provides
     fun provideDailyBoardRepository(storageReference: FirebaseStorage, fireStore : FirebaseFirestore) : DailyBoardRepository = DailyBoardRepositoryImpl(
         storageReference, fireStore
+    )
+
+    @Provides
+    fun provideDailyCommentRepostiroy(storageReference: FirebaseStorage, fireStore : FirebaseFirestore) : DailyCommentRepostiroy = DailyCommentRepostiroyImpl(
+        fireStore, storageReference
     )
 
 }

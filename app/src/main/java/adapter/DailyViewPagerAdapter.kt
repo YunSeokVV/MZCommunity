@@ -11,9 +11,7 @@ class DailyViewPagerAdapter(private val imagesUri: List<Uri>, private val itemCo
     RecyclerView.Adapter<DailyViewPagerAdapter.ViewHolder>() {
 
     class ViewHolder(val binding: DailyBoardRowItemBinding) :
-        RecyclerView.ViewHolder(binding.root) {
-
-    }
+        RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(
         DailyBoardRowItemBinding.inflate(
