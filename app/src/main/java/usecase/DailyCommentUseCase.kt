@@ -10,6 +10,10 @@ class DailyCommentUseCase @Inject constructor(private val dailyCommentRepostiroy
         emit(dailyCommentRepostiroy.postDailyComment(contents, parentUID))
     }
 
+    suspend fun postReply(contents: String, parentUID: String) = flow{
+        emit(dailyCommentRepostiroy.postReply(contents, parentUID))
+    }
+
     suspend fun getDailyComments(parentUID : String) = flow {
         emit(dailyCommentRepostiroy.getDailyComments(parentUID))
     }

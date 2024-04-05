@@ -38,7 +38,7 @@
         app:layout_constraintTop_toBottomOf="@+id/writeName" />
 
     <TextView
-        android:id="@+id/postComment"
+        android:id="@+id/selectReply"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
@@ -58,6 +58,6 @@
         android:visibility="gone"
         android:textColor="@color/gray"
         app:layout_constraintStart_toEndOf="@+id/userProfileImg"
-        app:layout_constraintTop_toBottomOf="@+id/postComment" />
+        app:layout_constraintTop_toBottomOf="@+id/selectReply" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -18,6 +18,8 @@ interface DailyCommentRepostiroy {
 
     suspend fun postDailyComment(contents: String, parentUID : String): Response<Boolean>
 
+    suspend fun postReply(contents: String, parentUID: String) : Response<Boolean>
+
     suspend fun getDailyComments(parentUID : String): List<Comment>
 }
 
@@ -38,6 +40,29 @@ class DailyCommentRepostiroyImpl @Inject constructor(
                 )
 
                 fireStore.collection("dailyBoardComment").add(dailyBoardComment)
+                    .addOnSuccessListener {
+                        Response.Success(true)
+                    }.addOnFailureListener {
+                        Response.Success(false)
+                    }.await()
+
+                Response.Success(true)
+            } catch (e: Exception) {
+                Response.Failure(e)
+            }
+        }
+
+    override suspend fun postReply(contents: String, parentUID: String): Response<Boolean> =
+        withContext(Dispatchers.IO) {
+            try {
+                val fireStore = fireStoreRef
+                val dailyBoardComment = hashMapOf(
+                    "writerUID" to FirebaseAuth.auth.uid,
+                    "commentContents" to contents,
+                    "parentUID" to parentUID
+                )
+
+                fireStore.collection("nestedComment").add(dailyBoardComment)
                     .addOnSuccessListener {
                         Response.Success(true)
                     }.addOnFailureListener {

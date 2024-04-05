@@ -1,16 +1,19 @@
 package adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.mzcommunity.databinding.DailyBoardCommentItemBinding
+import com.orhanobut.logger.Logger
 import model.Comment
 
-class DailyBoardCommentAdapter(private val comments : List<Comment>) :
+class DailyBoardCommentAdapter(private val comments: List<Comment>, private val popstReplyListener: PostReplyOnClickListener) :
     RecyclerView.Adapter<DailyBoardCommentAdapter.DailyBoardCommentViewHolder>() {
 
+        interface PostReplyOnClickListener{
+            fun postReplyClick(userNickName : String)
+        }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = DailyBoardCommentViewHolder(
         DailyBoardCommentItemBinding.inflate(
@@ -29,12 +32,16 @@ class DailyBoardCommentAdapter(private val comments : List<Comment>) :
 
 
     inner class DailyBoardCommentViewHolder(private val binding: DailyBoardCommentItemBinding) :
-        RecyclerView.ViewHolder(binding.root){
-            fun bind(item : Comment){
-                Glide.with(binding.root.context).load(item.witerUri).into(binding.userProfileImg)
-                binding.writeName.setText(item.writerName)
-                binding.postingContents.setText(item.contents)
-
+        RecyclerView.ViewHolder(binding.root) {
+        fun bind(item: Comment) {
+            Glide.with(binding.root.context).load(item.witerUri).into(binding.userProfileImg)
+            binding.writeName.setText(item.writerName)
+            binding.postingContents.setText(item.contents)
+            binding.selectReply.setOnClickListener{
+                popstReplyListener.postReplyClick(item.writerName)
             }
         }
+
+
+    }
 }
