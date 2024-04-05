@@ -64,6 +64,8 @@ class BottomSheetFragment(private val parentUID : String) : BottomSheetDialogFra
             Logger.v(it.toString())
             adapter = DailyBoardCommentAdapter(it)
             binding.comment.adapter = adapter
+            binding.comment.visibility = View.VISIBLE
+            binding.loadingText.visibility = View.GONE
         })
 
 

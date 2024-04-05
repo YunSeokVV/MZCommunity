@@ -13,6 +13,7 @@
     <string name="post_comment">답글달기</string>
     <string name="show_comment">답글 더 보기</string>
     <string name="comment_hint">댓글을 입력하세요 ...</string>
+    <string name="loading">로딩중입니다 ...</string>
     <string name="share">공유</string>
     <string name="next">다음</string>
     <string name="choose_images">업로드할 이미지 선택</string>
