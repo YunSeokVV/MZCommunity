@@ -17,6 +17,16 @@ import javax.inject.Inject
 @HiltViewModel
 class BottomSheetFragmentViewModel @Inject constructor(private val dailyCommentUseCase: DailyCommentUseCase) :ViewModel() {
 
+    // 사용자가 답글을 쓰는 것인지 댓글을 쓰는 것인지 판별해주는 변수
+    var isReplyMode = false
+
+    // 댓글의 UID값이 담긴다. 대댓글을 쓰기위해 필요.
+    lateinit var choosenReplyUID : String
+
+    // 대댓글을 쓰기 위해 태그한 사용자
+    lateinit var tagedUser: String
+
+
     private val _parentUID = MutableLiveData<String>()
     val parentUID : LiveData<String>
         get() {
@@ -62,7 +72,7 @@ class BottomSheetFragmentViewModel @Inject constructor(private val dailyCommentU
     }
 
     fun postReply(contents: String, parentUID: String) = viewModelScope.launch {
-        dailyCommentUseCase.postDailyComment(contents, parentUID).collect{
+        dailyCommentUseCase.postReply(contents, parentUID).collect{
             when(it){
                 is Response.Success -> {
                     _isPostingComplte.value = it.data?:false

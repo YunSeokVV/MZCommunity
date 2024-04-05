@@ -32,5 +32,12 @@ class Util {
             }
             return result
         }
+
+        fun removeStr(original: String, deleteStr : String): String {
+            var result = original
+            result = result.substring(deleteStr.length)
+            return result
+        }
+
     }
 }

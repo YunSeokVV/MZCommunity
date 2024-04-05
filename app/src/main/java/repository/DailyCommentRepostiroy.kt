@@ -84,8 +84,8 @@ class DailyCommentRepostiroyImpl @Inject constructor(
                     runBlocking {
                         val profile: Uri = storage.reference.child("user_profile_image/" + it.get("writerUID") + ".jpg").downloadUrl.await()
                         val userDoc = fireStore.collection("MZUsers").document(it.get("writerUID").toString()).get().await()
-                        val nickName = userDoc.get("nickName").toString() ?: "알 수 없는 사용자"
-                        val comment = Comment(profile, nickName, it.get("commentContents").toString())
+                        val nickName = userDoc.get("nickName").toString()
+                        val comment = Comment(profile, nickName, it.get("commentContents").toString(), it.id)
                         comments.add(comment)
                     }
                 }

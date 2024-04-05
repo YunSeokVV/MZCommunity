@@ -8,12 +8,15 @@ import com.example.mzcommunity.databinding.DailyBoardCommentItemBinding
 import com.orhanobut.logger.Logger
 import model.Comment
 
-class DailyBoardCommentAdapter(private val comments: List<Comment>, private val popstReplyListener: PostReplyOnClickListener) :
+class DailyBoardCommentAdapter(
+    private val comments: List<Comment>,
+    private val popstReplyListener: PostReplyOnClickListener
+) :
     RecyclerView.Adapter<DailyBoardCommentAdapter.DailyBoardCommentViewHolder>() {
 
-        interface PostReplyOnClickListener{
-            fun postReplyClick(userNickName : String)
-        }
+    interface PostReplyOnClickListener {
+        fun postReplyClick(comment: Comment)
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = DailyBoardCommentViewHolder(
         DailyBoardCommentItemBinding.inflate(
@@ -37,8 +40,8 @@ class DailyBoardCommentAdapter(private val comments: List<Comment>, private val 
             Glide.with(binding.root.context).load(item.witerUri).into(binding.userProfileImg)
             binding.writeName.setText(item.writerName)
             binding.postingContents.setText(item.contents)
-            binding.selectReply.setOnClickListener{
-                popstReplyListener.postReplyClick(item.writerName)
+            binding.selectReply.setOnClickListener {
+                popstReplyListener.postReplyClick(item)
             }
         }
 
