@@ -57,7 +57,6 @@ class BoardFragment : Fragment() {
         binding.dailyBoards.adapter = dailyBoardAdapter
 
         viewModel.document.observe(requireActivity(), Observer {
-            Logger.v(it.toString())
             dailyBoardAdapter.submitList(it)
         })
 

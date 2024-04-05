@@ -1,7 +1,10 @@
 package repository
 
 import android.net.Uri
+import com.google.firebase.Timestamp
+import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.google.firebase.storage.FirebaseStorage
 import com.orhanobut.logger.Logger
 import kotlinx.coroutines.Dispatchers
@@ -36,7 +39,8 @@ class DailyCommentRepostiroyImpl @Inject constructor(
                 val dailyBoardComment = hashMapOf(
                     "commentContents" to contents,
                     "writerUID" to FirebaseAuth.auth.uid,
-                    "parentUID" to parentUID
+                    "parentUID" to parentUID,
+                    "postingTime" to Timestamp.now()
                 )
 
                 fireStore.collection("dailyBoardComment").add(dailyBoardComment)
@@ -79,7 +83,7 @@ class DailyCommentRepostiroyImpl @Inject constructor(
         var comments = mutableListOf<Comment>()
         val fireStore = fireStoreRef
         try {
-            fireStore.collection("dailyBoardComment").whereEqualTo("parentUID", parentUID).get().addOnSuccessListener {documents ->
+            fireStore.collection("dailyBoardComment").orderBy("postingTime", Query.Direction.ASCENDING).whereEqualTo("parentUID", parentUID).get().addOnSuccessListener { documents ->
                 documents.forEach {
                     runBlocking {
                         val profile: Uri = storage.reference.child("user_profile_image/" + it.get("writerUID") + ".jpg").downloadUrl.await()

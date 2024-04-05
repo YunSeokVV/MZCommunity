@@ -61,7 +61,8 @@ class BottomSheetFragmentViewModel @Inject constructor(private val dailyCommentU
         dailyCommentUseCase.postDailyComment(contents, parentUID).collect{
             when(it){
                 is Response.Success -> {
-                    _isPostingComplte.value = it.data?:false
+                    getDailyComments(parentUID)
+                    //_isPostingComplte.value = it.data?:false
                 }
 
                 is Response.Failure -> {
@@ -88,6 +89,7 @@ class BottomSheetFragmentViewModel @Inject constructor(private val dailyCommentU
     fun getDailyComments(parentUID : String) = viewModelScope.launch {
         dailyCommentUseCase.getDailyComments(parentUID).collect{
             _dailyBoardComments.value = it
+            _isPostingComplte.value = true
         }
     }
 
