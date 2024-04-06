@@ -40,6 +40,7 @@ class DailyCommentRepostiroyImpl @Inject constructor(
                     "commentContents" to contents,
                     "writerUID" to FirebaseAuth.auth.uid,
                     "parentUID" to parentUID,
+                    "hasNestedComment" to false,
                     "postingTime" to Timestamp.now()
                 )
 
@@ -60,18 +61,23 @@ class DailyCommentRepostiroyImpl @Inject constructor(
         withContext(Dispatchers.IO) {
             try {
                 val fireStore = fireStoreRef
-                val dailyBoardComment = hashMapOf(
+                val dailyBoardReply = hashMapOf(
                     "writerUID" to FirebaseAuth.auth.uid,
                     "commentContents" to contents,
-                    "parentUID" to parentUID
+                    "parentUID" to parentUID,
+                    "postingTime" to Timestamp.now()
                 )
 
-                fireStore.collection("nestedComment").add(dailyBoardComment)
-                    .addOnSuccessListener {
-                        Response.Success(true)
-                    }.addOnFailureListener {
-                        Response.Success(false)
-                    }.await()
+                fireStore.collection("nestedComment").add(dailyBoardReply).await()
+
+                val dailyBoardComment = hashMapOf(
+                    "hasNestedComment" to true
+                )
+
+                fireStore.collection("dailyBoardComment").document(parentUID).update(
+                    dailyBoardComment as Map<String, Any>
+                ).await()
+
 
                 Response.Success(true)
             } catch (e: Exception) {
