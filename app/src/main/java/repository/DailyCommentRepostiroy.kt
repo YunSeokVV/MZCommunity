@@ -95,7 +95,7 @@ class DailyCommentRepostiroyImpl @Inject constructor(
                         val profile: Uri = storage.reference.child("user_profile_image/" + it.get("writerUID") + ".jpg").downloadUrl.await()
                         val userDoc = fireStore.collection("MZUsers").document(it.get("writerUID").toString()).get().await()
                         val nickName = userDoc.get("nickName").toString()
-                        val comment = Comment(profile, nickName, it.get("commentContents").toString(), it.id)
+                        val comment = Comment(profile, nickName, it.get("commentContents").toString(), it.id, it.getBoolean("hasNestedComment")?:false)
                         comments.add(comment)
                     }
                 }
