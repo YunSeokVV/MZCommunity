@@ -42,6 +42,12 @@ class BottomSheetFragmentViewModel @Inject constructor(private val dailyCommentU
             return _isPostingComplte
         }
 
+    private val _nestedComments = MutableLiveData<List<Comment>>()
+    val nestedComment : LiveData<List<Comment>>
+        get() {
+            return _nestedComments
+        }
+
     val dailyBoardComments : LiveData<List<Comment>>
         get() {
             return _dailyBoardComments
@@ -49,7 +55,6 @@ class BottomSheetFragmentViewModel @Inject constructor(private val dailyCommentU
 
 
     init{
-        //_parentUID.value?.let { getDailyComments(it) }
         Logger.v(_parentUID.value.toString())
     }
 
@@ -62,7 +67,6 @@ class BottomSheetFragmentViewModel @Inject constructor(private val dailyCommentU
             when(it){
                 is Response.Success -> {
                     getDailyComments(parentUID)
-                    //_isPostingComplte.value = it.data?:false
                 }
 
                 is Response.Failure -> {
@@ -90,6 +94,12 @@ class BottomSheetFragmentViewModel @Inject constructor(private val dailyCommentU
         dailyCommentUseCase.getDailyComments(parentUID).collect{
             _dailyBoardComments.value = it
             _isPostingComplte.value = true
+        }
+    }
+
+    fun getNestedComments(parentUID: String) = viewModelScope.launch {
+        dailyCommentUseCase.getNestedComments(parentUID).collect{
+            _nestedComments.value = it
         }
     }
 

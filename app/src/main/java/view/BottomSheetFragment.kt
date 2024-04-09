@@ -2,6 +2,7 @@ package view
 
 
 import adapter.DailyBoardCommentAdapter
+import adapter.DailyBoardNestedCommentAdapter
 import android.content.Context
 import android.content.DialogInterface
 import android.content.DialogInterface.OnKeyListener
@@ -19,6 +20,7 @@ import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.mzcommunity.R
 import com.example.mzcommunity.databinding.FragmentBottomSheetBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -97,6 +99,18 @@ class BottomSheetFragment(private val parentUID : String) : BottomSheetDialogFra
                     inputComment.setSelection(inputComment.length())
                     viewModel.isReplyMode = true
 
+                }
+
+            }, object : DailyBoardCommentAdapter.ShowCommentListener{
+                override fun showNestedComment(comment: Comment, recyclerView: RecyclerView) {
+                    viewModel.getNestedComments(comment.commentUID)
+
+                    viewModel.nestedComment.observe(requireActivity(), Observer { nestedComments ->
+                        adapter.setNestedCommentsList(nestedComments)
+
+                        val dailyBoardNestedCommentAdapter = DailyBoardNestedCommentAdapter(adapter.nestedCommentList)
+                        recyclerView.adapter = dailyBoardNestedCommentAdapter
+                    })
                 }
 
             })

@@ -24,6 +24,8 @@ interface DailyCommentRepostiroy {
     suspend fun postReply(contents: String, parentUID: String) : Response<Boolean>
 
     suspend fun getDailyComments(parentUID : String): List<Comment>
+
+    suspend fun getNestedComments(parentUID : String): List<Comment>
 }
 
 @Singleton
@@ -90,6 +92,29 @@ class DailyCommentRepostiroyImpl @Inject constructor(
         val fireStore = fireStoreRef
         try {
             fireStore.collection("dailyBoardComment").orderBy("postingTime", Query.Direction.ASCENDING).whereEqualTo("parentUID", parentUID).get().addOnSuccessListener { documents ->
+                documents.forEach {
+                    runBlocking {
+                        val profile: Uri = storage.reference.child("user_profile_image/" + it.get("writerUID") + ".jpg").downloadUrl.await()
+                        val userDoc = fireStore.collection("MZUsers").document(it.get("writerUID").toString()).get().await()
+                        val nickName = userDoc.get("nickName").toString()
+                        val comment = Comment(profile, nickName, it.get("commentContents").toString(), it.id, it.getBoolean("hasNestedComment")?:false)
+                        comments.add(comment)
+                    }
+                }
+            }.await()
+
+
+        } catch (e : Exception){
+            Logger.v(e.message.toString())
+        }
+        return@withContext comments
+    }
+
+    override suspend fun getNestedComments(parentUID: String): List<Comment> = withContext(Dispatchers.IO) {
+        var comments = mutableListOf<Comment>()
+        val fireStore = fireStoreRef
+        try {
+            fireStore.collection("nestedComment").orderBy("postingTime", Query.Direction.ASCENDING).whereEqualTo("parentUID", parentUID).get().addOnSuccessListener { documents ->
                 documents.forEach {
                     runBlocking {
                         val profile: Uri = storage.reference.child("user_profile_image/" + it.get("writerUID") + ".jpg").downloadUrl.await()

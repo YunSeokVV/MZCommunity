@@ -7,8 +7,8 @@
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/userProfileImg"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp"
         android:src="@mipmap/ic_launcher"
@@ -47,27 +47,5 @@
         android:text="@string/post_comment"
         app:layout_constraintStart_toEndOf="@+id/userProfileImg"
         app:layout_constraintTop_toBottomOf="@+id/postingContents" />
-
-    <TextView
-        android:id="@+id/showComment"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="30dp"
-        android:layout_marginTop="10dp"
-        android:text="@string/show_comment"
-        android:visibility="gone"
-        android:textColor="@color/gray"
-        app:layout_constraintStart_toEndOf="@+id/userProfileImg"
-        app:layout_constraintTop_toBottomOf="@+id/selectReply" />
-
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/nestedCommentRecyler"
-        android:layout_width="0dp"
-        android:visibility="gone"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/selectReply"
-        app:layout_constraintTop_toBottomOf="@+id/selectReply" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
