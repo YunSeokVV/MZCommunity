@@ -20,7 +20,7 @@ class BottomSheetFragmentViewModel @Inject constructor(private val dailyCommentU
     // 사용자가 답글을 쓰는 것인지 댓글을 쓰는 것인지 판별해주는 변수
     var isReplyMode = false
 
-    // 댓글의 UID값이 담긴다. 대댓글을 쓰기위해 필요.
+    // 부모 댓글의 UID값이 담긴다. 대댓글을 쓰기위해 필요.
     lateinit var choosenReplyUID : String
 
     // 대댓글을 쓰기 위해 태그한 사용자
@@ -53,11 +53,6 @@ class BottomSheetFragmentViewModel @Inject constructor(private val dailyCommentU
             return _dailyBoardComments
         }
 
-
-    init{
-        Logger.v(_parentUID.value.toString())
-    }
-
     fun setParentUID(uid : String){
         _parentUID.value = uid
     }
@@ -80,6 +75,7 @@ class BottomSheetFragmentViewModel @Inject constructor(private val dailyCommentU
         dailyCommentUseCase.postReply(contents, parentUID).collect{
             when(it){
                 is Response.Success -> {
+                    getNestedComments(choosenReplyUID)
                     _isPostingComplte.value = it.data?:false
                 }
 

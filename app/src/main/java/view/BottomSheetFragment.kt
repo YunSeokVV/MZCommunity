@@ -15,6 +15,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.viewModels
@@ -47,7 +48,6 @@ class BottomSheetFragment(private val parentUID : String) : BottomSheetDialogFra
 
         viewModel.setParentUID(parentUID)
         viewModel.parentUID.observe(this, Observer {
-            Logger.v(it)
             viewModel.getDailyComments(it)
         })
 
@@ -82,33 +82,22 @@ class BottomSheetFragment(private val parentUID : String) : BottomSheetDialogFra
         viewModel.dailyBoardComments.observe(this, Observer {
             adapter = DailyBoardCommentAdapter(it, object : DailyBoardCommentAdapter.PostReplyOnClickListener{
                 override fun postReplyClick(comment : Comment) {
-                    viewModel.choosenReplyUID = comment.commentUID
-                    val userNickName = comment.writerName
-                    inputComment.requestFocus()
-                    imm.showSoftInput(inputComment, InputMethodManager.SHOW_IMPLICIT)
-                    inputComment.setText("$userNickName")
-                    val spannableStringBuilder = SpannableStringBuilder(userNickName)
-                    spannableStringBuilder.setSpan(
-                        ForegroundColorSpan(ContextCompat.getColor(requireContext(), R.color.theme)),
-                        0,
-                        inputComment.text.length,
-                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                    inputComment.text = spannableStringBuilder
-                    viewModel.tagedUser = inputComment.text.toString()
-                    inputComment.append(" ")
-                    inputComment.setSelection(inputComment.length())
-                    viewModel.isReplyMode = true
-
+                    setTagedUser(comment)
                 }
 
             }, object : DailyBoardCommentAdapter.ShowCommentListener{
                 override fun showNestedComment(comment: Comment, recyclerView: RecyclerView) {
+                    val parentUID = comment.commentUID
+                    Logger.v(comment.commentUID)
                     viewModel.getNestedComments(comment.commentUID)
-
                     viewModel.nestedComment.observe(requireActivity(), Observer { nestedComments ->
                         adapter.setNestedCommentsList(nestedComments)
+                        val dailyBoardNestedCommentAdapter = DailyBoardNestedCommentAdapter(adapter.nestedCommentList, object : DailyBoardNestedCommentAdapter.PostReplyOnClickListener{
+                            override fun postReplyClick(comment: Comment) {
+                                setTagedUser(comment, parentUID)
+                            }
 
-                        val dailyBoardNestedCommentAdapter = DailyBoardNestedCommentAdapter(adapter.nestedCommentList)
+                        })
                         recyclerView.adapter = dailyBoardNestedCommentAdapter
                     })
                 }
@@ -135,5 +124,47 @@ class BottomSheetFragment(private val parentUID : String) : BottomSheetDialogFra
         }
 
         return binding.root
+    }
+
+    fun setTagedUser(comment : Comment){
+        viewModel.choosenReplyUID = comment.commentUID
+        val inputComment = binding.inputComment
+        val userNickName = comment.writerName
+        inputComment.requestFocus()
+        val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.showSoftInput(inputComment, InputMethodManager.SHOW_IMPLICIT)
+        inputComment.setText("$userNickName")
+        val spannableStringBuilder = SpannableStringBuilder(userNickName)
+        spannableStringBuilder.setSpan(
+            ForegroundColorSpan(ContextCompat.getColor(requireContext(), R.color.theme)),
+            0,
+            inputComment.text.length,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        inputComment.text = spannableStringBuilder
+        viewModel.tagedUser = inputComment.text.toString()
+        inputComment.append(" ")
+        inputComment.setSelection(inputComment.length())
+        viewModel.isReplyMode = true
+    }
+
+    fun setTagedUser(comment : Comment, parentUID: String){
+        viewModel.choosenReplyUID = parentUID
+        val inputComment = binding.inputComment
+        val userNickName = comment.writerName
+        inputComment.requestFocus()
+        val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.showSoftInput(inputComment, InputMethodManager.SHOW_IMPLICIT)
+        inputComment.setText("$userNickName")
+        val spannableStringBuilder = SpannableStringBuilder(userNickName)
+        spannableStringBuilder.setSpan(
+            ForegroundColorSpan(ContextCompat.getColor(requireContext(), R.color.theme)),
+            0,
+            inputComment.text.length,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        inputComment.text = spannableStringBuilder
+        viewModel.tagedUser = inputComment.text.toString()
+        inputComment.append(" ")
+        inputComment.setSelection(inputComment.length())
+        viewModel.isReplyMode = true
     }
 }

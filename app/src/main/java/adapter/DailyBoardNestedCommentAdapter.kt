@@ -9,8 +9,13 @@ import com.example.mzcommunity.databinding.DailyBoardCommentItemBinding
 import com.orhanobut.logger.Logger
 import model.Comment
 
-class DailyBoardNestedCommentAdapter(private val neestedComments: List<Comment>) :
+class DailyBoardNestedCommentAdapter(private val neestedComments: List<Comment>, private val postReplyOnClickListener : PostReplyOnClickListener) :
     RecyclerView.Adapter<DailyBoardNestedCommentAdapter.NestedCommentViewHolder>() {
+
+    interface PostReplyOnClickListener {
+        fun postReplyClick(comment: Comment)
+    }
+
     inner class NestedCommentViewHolder(private val binding: DailyBoardCommentItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(item: Comment) {
@@ -18,7 +23,8 @@ class DailyBoardNestedCommentAdapter(private val neestedComments: List<Comment>)
             binding.writeName.setText(item.writerName)
             binding.postingContents.setText(item.contents)
             binding.selectReply.setOnClickListener {
-                //popstReplyListener.postReplyClick(item)
+
+                postReplyOnClickListener.postReplyClick(item)
             }
 
         }
