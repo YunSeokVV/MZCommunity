@@ -1,7 +1,10 @@
 package repository
 
 import android.net.Uri
+import com.google.firebase.Timestamp
+import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.google.firebase.storage.FirebaseStorage
 import com.orhanobut.logger.Logger
 import kotlinx.coroutines.Dispatchers
@@ -18,7 +21,11 @@ interface DailyCommentRepostiroy {
 
     suspend fun postDailyComment(contents: String, parentUID : String): Response<Boolean>
 
+    suspend fun postReply(contents: String, parentUID: String) : Response<Boolean>
+
     suspend fun getDailyComments(parentUID : String): List<Comment>
+
+    suspend fun getNestedComments(parentUID : String): List<Comment>
 }
 
 @Singleton
@@ -34,7 +41,9 @@ class DailyCommentRepostiroyImpl @Inject constructor(
                 val dailyBoardComment = hashMapOf(
                     "commentContents" to contents,
                     "writerUID" to FirebaseAuth.auth.uid,
-                    "parentUID" to parentUID
+                    "parentUID" to parentUID,
+                    "hasNestedComment" to false,
+                    "postingTime" to Timestamp.now()
                 )
 
                 fireStore.collection("dailyBoardComment").add(dailyBoardComment)
@@ -50,17 +59,68 @@ class DailyCommentRepostiroyImpl @Inject constructor(
             }
         }
 
+    override suspend fun postReply(contents: String, parentUID: String): Response<Boolean> =
+        withContext(Dispatchers.IO) {
+            try {
+                val fireStore = fireStoreRef
+                val dailyBoardReply = hashMapOf(
+                    "writerUID" to FirebaseAuth.auth.uid,
+                    "commentContents" to contents,
+                    "parentUID" to parentUID,
+                    "postingTime" to Timestamp.now()
+                )
+
+                fireStore.collection("nestedComment").add(dailyBoardReply).await()
+
+                val dailyBoardComment = hashMapOf(
+                    "hasNestedComment" to true
+                )
+
+                fireStore.collection("dailyBoardComment").document(parentUID).update(
+                    dailyBoardComment as Map<String, Any>
+                ).await()
+
+
+                Response.Success(true)
+            } catch (e: Exception) {
+                Response.Failure(e)
+            }
+        }
+
     override suspend fun getDailyComments(parentUID : String): List<Comment> = withContext(Dispatchers.IO) {
         var comments = mutableListOf<Comment>()
         val fireStore = fireStoreRef
         try {
-            fireStore.collection("dailyBoardComment").whereEqualTo("parentUID", parentUID).get().addOnSuccessListener {documents ->
+            fireStore.collection("dailyBoardComment").orderBy("postingTime", Query.Direction.ASCENDING).whereEqualTo("parentUID", parentUID).get().addOnSuccessListener { documents ->
                 documents.forEach {
                     runBlocking {
                         val profile: Uri = storage.reference.child("user_profile_image/" + it.get("writerUID") + ".jpg").downloadUrl.await()
                         val userDoc = fireStore.collection("MZUsers").document(it.get("writerUID").toString()).get().await()
-                        val nickName = userDoc.get("nickName").toString() ?: "알 수 없는 사용자"
-                        val comment = Comment(profile, nickName, it.get("commentContents").toString())
+                        val nickName = userDoc.get("nickName").toString()
+                        val comment = Comment(profile, nickName, it.get("commentContents").toString(), it.id, it.getBoolean("hasNestedComment")?:false)
+                        comments.add(comment)
+                    }
+                }
+            }.await()
+
+
+        } catch (e : Exception){
+            Logger.v(e.message.toString())
+        }
+        return@withContext comments
+    }
+
+    override suspend fun getNestedComments(parentUID: String): List<Comment> = withContext(Dispatchers.IO) {
+        var comments = mutableListOf<Comment>()
+        val fireStore = fireStoreRef
+        try {
+            fireStore.collection("nestedComment").orderBy("postingTime", Query.Direction.ASCENDING).whereEqualTo("parentUID", parentUID).get().addOnSuccessListener { documents ->
+                documents.forEach {
+                    runBlocking {
+                        val profile: Uri = storage.reference.child("user_profile_image/" + it.get("writerUID") + ".jpg").downloadUrl.await()
+                        val userDoc = fireStore.collection("MZUsers").document(it.get("writerUID").toString()).get().await()
+                        val nickName = userDoc.get("nickName").toString()
+                        val comment = Comment(profile, nickName, it.get("commentContents").toString(), it.id, it.getBoolean("hasNestedComment")?:false)
                         comments.add(comment)
                     }
                 }
