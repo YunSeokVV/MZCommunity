@@ -15,6 +15,8 @@ import repository.DailyCommentRepostiroy
 import repository.DailyCommentRepostiroyImpl
 import repository.LoginActivityRepository
 import repository.LoginActivityRepositoryImpl
+import repository.VersusRepostiroy
+import repository.VersusRepostiroyImpl
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -38,6 +40,11 @@ object FirebaseModule {
 
     @Provides
     fun provideDailyCommentRepostiroy(storageReference: FirebaseStorage, fireStore : FirebaseFirestore) : DailyCommentRepostiroy = DailyCommentRepostiroyImpl(
+        fireStore, storageReference
+    )
+
+    @Provides
+    fun provideVersusBoard(storageReference: FirebaseStorage, fireStore: FirebaseFirestore) : VersusRepostiroy = VersusRepostiroyImpl(
         fireStore, storageReference
     )
 

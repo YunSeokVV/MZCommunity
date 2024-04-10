@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <application
         android:name="util.GlobalApplication"
@@ -17,6 +17,9 @@
         android:theme="@style/Theme.MZCommunity"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
+        <activity
+            android:name="view.PostingVersusActivity"
+            android:exported="false" />
         <activity
             android:name="view.PostingMediaActivity"
             android:exported="false" />

@@ -11,6 +11,7 @@ import com.example.mzcommunity.R
 import com.example.mzcommunity.databinding.ActivityPostingMediaBinding
 import dagger.hilt.android.AndroidEntryPoint
 import model.Images
+import util.Util
 import viewmodel.PostingMediaActivityViewModel
 
 @AndroidEntryPoint
@@ -22,7 +23,6 @@ class PostingMediaActivity : AppCompatActivity() {
         setContentView(R.layout.activity_posting_media)
         val binding = ActivityPostingMediaBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        val progressDialog = ProgressDialog(this)
         val intent = intent
         val uploadImagesUri = intent.getSerializableExtra("choosenImages") as ArrayList<Images>
 
@@ -41,7 +41,7 @@ class PostingMediaActivity : AppCompatActivity() {
 
         viewModel.isPostingComplete.observe(this, Observer { data ->
             if(data){
-                progressDialog.dismiss()
+                Util.showProgressDialog(this, false)
                 ChooseMediaActivity.chooseMediaActivity.finish()
                 finish()
 
@@ -53,7 +53,7 @@ class PostingMediaActivity : AppCompatActivity() {
         }
 
         binding.postBoard.setOnClickListener {
-            progressDialog.show()
+            Util.showProgressDialog(this, true)
             if (uploadImagesUri.isEmpty()) {
                 viewModel.createPost(binding.boardContentesFull.text.toString(), uploadImagesUri)
             } else {
