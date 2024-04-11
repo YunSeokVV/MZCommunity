@@ -2,7 +2,9 @@ package repository
 
 import android.net.Uri
 import com.example.mzcommunity.R
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
 import com.google.firebase.storage.FirebaseStorage
 import com.orhanobut.logger.Logger
 import kotlinx.coroutines.CoroutineScope
@@ -26,6 +28,7 @@ interface VersusRepostiroy {
     ): Response<Boolean>
 
     suspend fun getRandomVersusBoard() : VersusBoard
+    suspend fun voteOpinion(opinion1Vote : Boolean, versusBoardUID : String) : Response<Boolean>
 }
 
 @Singleton
@@ -79,6 +82,28 @@ class VersusRepostiroyImpl @Inject constructor(
             versusBoard = VersusBoard(Uri.parse("nothing"),"알 수 없는 사용자","주제","의견1",0, "의견2",0,"unKnown",false)
         }
         return@withContext versusBoard
+    }
+
+    override suspend fun voteOpinion(opinion1Vote: Boolean, versusBoardUID : String): Response<Boolean> = withContext(Dispatchers.IO) {
+        try {
+            val favour = hashMapOf(
+                FirebaseAuth.auth.uid to true
+            )
+
+            val userUID = hashMapOf(
+                FirebaseAuth.auth.uid to favour
+            )
+            val documentReference = firestore.collection("versusBoard").document(versusBoardUID)
+            val updateOpinion = if(opinion1Vote) "opinion1VoteCount" else "opinion2VoteCount"
+            documentReference.update(updateOpinion, FieldValue.increment(1)).await()
+            documentReference.set(userUID, SetOptions.merge()).await()
+
+
+            Response.Success(true)
+        } catch (e: Exception) {
+            Logger.v(e.message.toString())
+            Response.Failure(e)
+        }
     }
 
 }

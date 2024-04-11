@@ -6,7 +6,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.orhanobut.logger.Logger
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import model.Response
 import model.VersusBoard
 import usecase.VersusUsecase
 import javax.inject.Inject
@@ -15,7 +17,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class VersusFragmnetViewModel @Inject constructor(private val versusUseCase : VersusUsecase) : ViewModel() {
-
+    private lateinit var boardUID : String
     private val _versusBoard = MutableLiveData<VersusBoard>()
 
     private var _opinion1Percent : Int = 0
@@ -33,6 +35,12 @@ class VersusFragmnetViewModel @Inject constructor(private val versusUseCase : Ve
     val versusBoard : LiveData<VersusBoard>
         get() {return _versusBoard}
 
+
+    private var _voteComplte = MutableLiveData<Boolean>()
+    val voteComplte : LiveData<Boolean>get() {
+        return _voteComplte
+    }
+
     init {
         getRandomVersusBoard()
     }
@@ -43,6 +51,7 @@ class VersusFragmnetViewModel @Inject constructor(private val versusUseCase : Ve
             Logger.v(it.toString())
             _versusBoard.value = it
             getPercentage(true, it.opinion1Count.toInt(), it.opinion2Count.toInt())
+            boardUID =it.boardUID
         }
     }
 
@@ -66,6 +75,21 @@ class VersusFragmnetViewModel @Inject constructor(private val versusUseCase : Ve
     fun addVoteCount(original : Int) : Int{
         val result = original + 1
         return result
+    }
+
+    fun voteOpinion(opinion1Vote: Boolean) = viewModelScope.launch {
+        versusUseCase.voteOpinion(opinion1Vote, boardUID).collect{
+            Logger.v(it.toString())
+            when(it){
+                is Response.Success -> {
+                    _voteComplte.value = it.data?:false
+                }
+
+                is Response.Failure -> {
+                    Logger.v(it.e?.message.toString())
+                }
+            }
+        }
     }
 
 }

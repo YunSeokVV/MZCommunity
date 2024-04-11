@@ -10,6 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
 import com.example.mzcommunity.databinding.FragmentVersusBinding
+import com.orhanobut.logger.Logger
 import dagger.hilt.android.AndroidEntryPoint
 import viewmodel.VersusFragmnetViewModel
 
@@ -59,10 +60,15 @@ class VersusFragment : Fragment() {
         }
 
 
+        viewModel.voteComplte.observe(requireActivity(), Observer {
+            Logger.v(it.toString())
+        })
+
         return binding.root
     }
 
     fun vote(opinionOne : Boolean){
+        viewModel.voteOpinion(opinionOne)
         val visibleView = if (opinionOne) binding.choice1Checked else binding.choice2Checked
         visibleView.visibility = View.VISIBLE
 

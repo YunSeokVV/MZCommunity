@@ -19,4 +19,8 @@ class VersusUsecase @Inject constructor(private val versusRepository: VersusRepo
     ) = flow {
         emit(versusRepository.getRandomVersusBoard())
     }
+
+    suspend fun voteOpinion(opinion1Vote: Boolean, versusBoardUID : String) = flow{
+        emit(versusRepository.voteOpinion(opinion1Vote, versusBoardUID))
+    }
 }
