@@ -63,4 +63,9 @@ class VersusFragmnetViewModel @Inject constructor(private val versusUseCase : Ve
         }
     }
 
+    fun addVoteCount(original : Int) : Int{
+        val result = original + 1
+        return result
+    }
+
 }

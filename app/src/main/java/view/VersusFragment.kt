@@ -41,11 +41,11 @@ class VersusFragment : Fragment() {
             binding.writeName.text = it.writerName
             binding.title.text = it.boardTitle
             binding.choosenChoice1.text = it.opinion1
-            binding.choosenChoice1Percent.text = viewModel.opinion1Percent.toString()
+            binding.choosenChoice1Percent.text = viewModel.opinion1Percent.toString()+"%"
             binding.choosenChoice1Count.text = it.opinion1Count.toString()
 
             binding.choosenChoice2.text = it.opinion2
-            binding.choosenChoice2Percent.text = viewModel.opinion2Percent.toString()
+            binding.choosenChoice2Percent.text = viewModel.opinion2Percent.toString()+"%"
             binding.choosenChoice2Count.text = it.opinion2Count.toString()
 
         })
@@ -65,6 +65,11 @@ class VersusFragment : Fragment() {
     fun vote(opinionOne : Boolean){
         val visibleView = if (opinionOne) binding.choice1Checked else binding.choice2Checked
         visibleView.visibility = View.VISIBLE
+
+        if(opinionOne)
+            binding.choosenChoice1Count.text = viewModel.addVoteCount(binding.choosenChoice1Count.text.toString().toInt()).toString()
+        else
+            binding.choosenChoice2Count.text = viewModel.addVoteCount(binding.choosenChoice2Count.text.toString().toInt()).toString()
 
         binding.choosenChoice1.visibility = View.VISIBLE
         binding.choosenChoice1Percent.visibility = View.VISIBLE
