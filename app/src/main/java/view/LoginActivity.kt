@@ -48,7 +48,6 @@ class LoginActivity : AppCompatActivity() {
         val binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
         val textView: View? = binding.signUpGoogle.getChildAt(0)
         if (textView is TextView)
             textView.setText(getString(R.string.start_with_google));

@@ -41,5 +41,4 @@ class VersusActivityViewModel @Inject constructor(private val versusUsecase: Ver
             }
         }
     }
-
 }

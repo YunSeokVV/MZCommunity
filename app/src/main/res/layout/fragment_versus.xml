@@ -52,7 +52,6 @@
         app:layout_constraintTop_toTopOf="@+id/guideline1" />
 
     <TextView
-        android:visibility="gone"
         android:id="@+id/choice1Text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -66,6 +65,7 @@
         app:layout_constraintTop_toTopOf="@+id/choice1" />
 
     <ImageView
+        android:visibility="gone"
         android:id="@+id/choice1Checked"
         android:layout_width="30dp"
         android:layout_height="30dp"
@@ -76,6 +76,7 @@
         app:layout_constraintTop_toTopOf="@+id/choice1" />
 
     <TextView
+        android:visibility="gone"
         android:id="@+id/choosenChoice1"
         android:layout_marginTop="50dp"
         android:textColor="@color/black"
@@ -89,6 +90,7 @@
         app:layout_constraintTop_toTopOf="@+id/choice1" />
 
     <TextView
+        android:visibility="gone"
         android:id="@+id/choosenChoice1Percent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -102,6 +104,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
+        android:visibility="gone"
         android:id="@+id/choosenChoice1Count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -119,14 +122,12 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@color/sky_blue"
-
         app:layout_constraintBottom_toTopOf="@+id/guideline3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/choice1" />
 
     <TextView
-        android:visibility="gone"
         android:id="@+id/choice2Text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -140,6 +141,7 @@
         app:layout_constraintTop_toBottomOf="@+id/choice1" />
 
     <ImageView
+        android:visibility="gone"
         android:id="@+id/choice2Checked"
         android:layout_width="30dp"
         android:layout_height="30dp"
@@ -150,6 +152,7 @@
         app:layout_constraintTop_toBottomOf="@+id/choice1" />
 
     <TextView
+        android:visibility="gone"
         android:id="@+id/choosenChoice2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -163,6 +166,7 @@
         app:layout_constraintTop_toBottomOf="@+id/choice1" />
 
     <TextView
+        android:visibility="gone"
         android:id="@+id/choosenChoice2Percent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -176,6 +180,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
+        android:visibility="gone"
         android:id="@+id/choosenChoice2Count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

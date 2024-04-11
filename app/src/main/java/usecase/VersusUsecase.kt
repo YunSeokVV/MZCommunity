@@ -14,4 +14,9 @@ class VersusUsecase @Inject constructor(private val versusRepository: VersusRepo
     ) = flow {
         emit(versusRepository.postVersusBoard(boardTitle, opinion1, opinion2, writerUID))
     }
+
+    suspend fun getRandomVersusBoard(
+    ) = flow {
+        emit(versusRepository.getRandomVersusBoard())
+    }
 }

@@ -10,7 +10,6 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mzcommunity.databinding.FragmentBoardBinding
-import com.orhanobut.logger.Logger
 import dagger.hilt.android.AndroidEntryPoint
 import model.DailyBoard
 import viewmodel.BoardFramgnetViewModel

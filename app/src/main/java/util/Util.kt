@@ -1,12 +1,13 @@
 package util
 
 import android.content.Context
-import android.provider.DocumentsContract.Document
-import android.text.TextUtils
 import android.widget.Toast
+import com.example.mzcommunity.R
 import com.google.firebase.firestore.DocumentSnapshot
 import com.orhanobut.logger.Logger
+import dagger.hilt.android.qualifiers.ApplicationContext
 import view.ProgressDialog
+import java.util.Random
 
 class Util {
 
@@ -49,6 +50,12 @@ class Util {
             } else {
                 progressDialog?.dismiss()
             }
+        }
+
+        fun getRanNum(ranNum: Int): Int {
+            // 0~ranNum 사이의 랜덤 숫자
+            val randomNum = Random().nextInt(ranNum)
+            return randomNum
         }
 
     }
