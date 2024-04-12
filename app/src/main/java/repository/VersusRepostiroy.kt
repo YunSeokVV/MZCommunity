@@ -63,7 +63,20 @@ class VersusRepostiroyImpl @Inject constructor(
         var versusBoard : VersusBoard
         try {
             val snapshot = firestore.collection("versusBoard").get().await()
-            val document = snapshot.documents[Util.getRanNum(snapshot.size())]
+
+            val notVotedList = snapshot.documents.mapNotNull{item ->
+                val uid : String = item.get("writerUID") as? String ?: "noUID"
+                val userVoted = item.get("votedUser") as? Map<String, Any>
+                val voted = userVoted?.get(uid) as? Boolean ?: false
+                // 사용자가 이전에 투표하지 않은 질문만 보여준다.
+                if(!voted){
+                    item
+                } else{
+                    null
+                }
+            }
+
+            val document = notVotedList.get(Util.getRanNum(notVotedList.size))
             val writerUID : String = document.get("writerUID") as String
             val writerDocu = firestore.collection("MZUsers").document(writerUID).get().await()
 
@@ -74,9 +87,9 @@ class VersusRepostiroyImpl @Inject constructor(
             val opinion1VoteCount = document.get("opinion1VoteCount") as? Long ?: 0
             val opinion2 = document.get("opinion2") as? String ?: "의견2"
             val opinion2VoteCount = document.get("opinion2VoteCount") as? Long ?: 0
+
             val userVoted = document.get(writerUID) as? Boolean ?: false
             versusBoard = VersusBoard(writerProfileUri,writerName,boardTitle,opinion1,opinion1VoteCount, opinion2,opinion2VoteCount,document.id,userVoted)
-
         } catch (e : Exception){
             Logger.v(e.message.toString())
             versusBoard = VersusBoard(Uri.parse("nothing"),"알 수 없는 사용자","주제","의견1",0, "의견2",0,"unKnown",false)
@@ -91,7 +104,7 @@ class VersusRepostiroyImpl @Inject constructor(
             )
 
             val userUID = hashMapOf(
-                FirebaseAuth.auth.uid to favour
+                "votedUser" to favour
             )
             val documentReference = firestore.collection("versusBoard").document(versusBoardUID)
             val updateOpinion = if(opinion1Vote) "opinion1VoteCount" else "opinion2VoteCount"

@@ -16,12 +16,13 @@ class PostingVersusActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         val binding = ActivityPostingVersusBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
+        val progressDialog = ProgressDialog(this)
         binding.posting.setOnClickListener {
             val inputTitle = binding.inputTitle.text.toString()
             val inputOpinion1 = binding.inputOpinion1.text.toString()
             val inputOpinion2 = binding.inputOpinion2.text.toString()
-            Util.showProgressDialog(this, true)
+            //Util.showProgressDialog(this, true)
+            progressDialog.show()
             viewModel.postVersusBoard(
                 inputTitle,
                 inputOpinion1,
@@ -33,6 +34,7 @@ class PostingVersusActivity : AppCompatActivity() {
         viewModel.postingResponse.observe(this, Observer {
             if(it){
                 Util.showProgressDialog(this, false)
+                progressDialog.dismiss()
                 finish()
             }
         })

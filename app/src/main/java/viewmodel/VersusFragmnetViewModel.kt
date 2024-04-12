@@ -48,7 +48,6 @@ class VersusFragmnetViewModel @Inject constructor(private val versusUseCase : Ve
 
     fun getRandomVersusBoard() = viewModelScope.launch {
         versusUseCase.getRandomVersusBoard().collect{
-            Logger.v(it.toString())
             _versusBoard.value = it
             getPercentage(true, it.opinion1Count.toInt(), it.opinion2Count.toInt())
             boardUID =it.boardUID
