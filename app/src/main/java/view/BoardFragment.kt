@@ -45,7 +45,7 @@ class BoardFragment : Fragment() {
             },
             object : DailyBoardAdapter.ShowComment{
                 override fun showComment(dailyBoard : DailyBoard) {
-                    val bottomSheetFragment = BottomSheetFragment(dailyBoard.boardUID)
+                    val bottomSheetFragment = BottomSheetFragment(dailyBoard.boardUID,"dailyBoardComment", "dailyBoardNestedComment", "dailyBoardComment")
                     bottomSheetFragment.show(childFragmentManager, bottomSheetFragment.tag)
                 }
 

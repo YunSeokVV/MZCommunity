@@ -17,7 +17,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class VersusFragmnetViewModel @Inject constructor(private val versusUseCase : VersusUsecase) : ViewModel() {
-    private lateinit var boardUID : String
+    private lateinit var _boardUID : String
+    val boardUID : String
+        get() {
+            return _boardUID
+        }
     private val _versusBoard = MutableLiveData<VersusBoard>()
 
     private var _opinion1Percent : Int = 0
@@ -50,7 +54,7 @@ class VersusFragmnetViewModel @Inject constructor(private val versusUseCase : Ve
         versusUseCase.getRandomVersusBoard().collect{
             _versusBoard.value = it
             getPercentage(true, it.opinion1Count.toInt(), it.opinion2Count.toInt())
-            boardUID =it.boardUID
+            _boardUID =it.boardUID
         }
     }
 
@@ -77,7 +81,7 @@ class VersusFragmnetViewModel @Inject constructor(private val versusUseCase : Ve
     }
 
     fun voteOpinion(opinion1Vote: Boolean) = viewModelScope.launch {
-        versusUseCase.voteOpinion(opinion1Vote, boardUID).collect{
+        versusUseCase.voteOpinion(opinion1Vote, _boardUID).collect{
             Logger.v(it.toString())
             when(it){
                 is Response.Success -> {
