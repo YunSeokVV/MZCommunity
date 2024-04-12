@@ -4,8 +4,6 @@ package view
 import adapter.DailyBoardCommentAdapter
 import adapter.DailyBoardNestedCommentAdapter
 import android.content.Context
-import android.content.DialogInterface
-import android.content.DialogInterface.OnKeyListener
 import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableStringBuilder
@@ -15,9 +13,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
 import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -33,7 +29,7 @@ import viewmodel.BottomSheetFragmentViewModel
 
 
 @AndroidEntryPoint
-class BottomSheetFragment(private val parentUID : String) : BottomSheetDialogFragment() {
+class BottomSheetFragment(private val parentUID : String, private val collectionName : String, private val nestedCommentCollection : String, private val commentName : String) : BottomSheetDialogFragment() {
     private lateinit var binding : FragmentBottomSheetBinding
     private val viewModel by viewModels<BottomSheetFragmentViewModel>()
     private lateinit var adapter : DailyBoardCommentAdapter
@@ -48,7 +44,8 @@ class BottomSheetFragment(private val parentUID : String) : BottomSheetDialogFra
 
         viewModel.setParentUID(parentUID)
         viewModel.parentUID.observe(this, Observer {
-            viewModel.getDailyComments(it)
+            Logger.v(it)
+            viewModel.getComments(it,collectionName)
         })
 
         viewModel.isPostingComplete.observe(this, Observer { data ->
@@ -66,11 +63,11 @@ class BottomSheetFragment(private val parentUID : String) : BottomSheetDialogFra
                 // 대댓글을 쓰는 경우
                 if(viewModel.isReplyMode){
                     val reply = Util.removeStr(inputComment.text.toString(), viewModel.tagedUser)
-                    viewModel.postReply(reply, viewModel.choosenReplyUID)
+                    viewModel.postReply(reply, viewModel.choosenReplyUID, nestedCommentCollection, commentName)
                 }
                 // 댓글을 쓰는 경우
                 else{
-                    viewModel.postDailyComment(inputComment.text.toString(), parentUID)
+                    viewModel.postComment(inputComment.text.toString(), parentUID, collectionName)
                 }
             }
         }
@@ -89,7 +86,7 @@ class BottomSheetFragment(private val parentUID : String) : BottomSheetDialogFra
                 override fun showNestedComment(comment: Comment, recyclerView: RecyclerView) {
                     val parentUID = comment.commentUID
                     Logger.v(comment.commentUID)
-                    viewModel.getNestedComments(comment.commentUID)
+                    viewModel.getNestedComments(comment.commentUID, nestedCommentCollection)
                     viewModel.nestedComment.observe(requireActivity(), Observer { nestedComments ->
                         adapter.setNestedCommentsList(nestedComments)
                         val dailyBoardNestedCommentAdapter = DailyBoardNestedCommentAdapter(adapter.nestedCommentList, object : DailyBoardNestedCommentAdapter.PostReplyOnClickListener{

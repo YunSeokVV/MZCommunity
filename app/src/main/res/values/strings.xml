@@ -14,6 +14,11 @@
     <string name="show_comment">답글 더 보기</string>
     <string name="comment_hint">댓글을 입력하세요 ...</string>
     <string name="loading">로딩중입니다 ...</string>
+    <string name="choice1">짜장면</string>
+    <string name="inputTitle">문제의 제목을 입력해주세요</string>
+    <string name="opinion1Hint">의견1 의 내용을 입력해주세요</string>
+    <string name="opinion2Hint">의견2 의 내용을 입력해주세요</string>
+    <string name="choice2">짬뽕</string>
     <string name="share">공유</string>
     <string name="next">다음</string>
     <string name="choose_images">업로드할 이미지 선택</string>
@@ -24,7 +29,6 @@
     <string name="start_with_google">구글로 시작</string>
     <string name="new_posting">새 게시물</string>
     <string name="web_client_id">182206387797-937s8p4la5t3ege43gubj51j453h57gt.apps.googleusercontent.com</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 
 </resources>

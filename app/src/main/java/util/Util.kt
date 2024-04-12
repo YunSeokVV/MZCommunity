@@ -1,15 +1,18 @@
 package util
 
 import android.content.Context
-import android.provider.DocumentsContract.Document
-import android.text.TextUtils
 import android.widget.Toast
+import com.example.mzcommunity.R
 import com.google.firebase.firestore.DocumentSnapshot
 import com.orhanobut.logger.Logger
+import dagger.hilt.android.qualifiers.ApplicationContext
+import view.ProgressDialog
+import java.util.Random
 
 class Util {
 
     companion object {
+        var progressDialog: ProgressDialog? = null
         fun makeToastMessage(contents: String, context: Context) {
             Toast.makeText(context, contents, Toast.LENGTH_SHORT).show()
         }
@@ -26,17 +29,33 @@ class Util {
                 result = documentSnapshot.get(key) as? String ?: "noBoardContents"
             } else if (key.equals("userFavourability")) {
                 val userFavour = documentSnapshot.get(key) as? Map<String, Any>
-                result = (userFavour?.get(FirebaseAuth.auth.uid.toString())?:"usual").toString()
+                result = (userFavour?.get(FirebaseAuth.auth.uid.toString()) ?: "usual").toString()
             } else {
                 result = documentSnapshot.get(key) as? String ?: "nothing"
             }
             return result
         }
 
-        fun removeStr(original: String, deleteStr : String): String {
+        fun removeStr(original: String, deleteStr: String): String {
             var result = original
             result = result.substring(deleteStr.length)
             return result
+        }
+
+        fun showProgressDialog(context: Context, showDialog: Boolean) {
+            progressDialog = progressDialog ?: ProgressDialog(context)
+
+            if (showDialog) {
+                progressDialog?.show()
+            } else {
+                progressDialog?.dismiss()
+            }
+        }
+
+        fun getRanNum(ranNum: Int): Int {
+            // 0~ranNum 사이의 랜덤 숫자
+            val randomNum = Random().nextInt(ranNum)
+            return randomNum
         }
 
     }

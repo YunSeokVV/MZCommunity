@@ -34,6 +34,7 @@ class PostingFragment : Fragment() {
 
                     // 사진 선택
                     1 -> {
+                        // 게시글 작성이 완료된 시점에 일상게시글 화면을 보여준다
                         val rootActivity = activity as MainActivity
                         rootActivity.showBoardFragmnet()
 
