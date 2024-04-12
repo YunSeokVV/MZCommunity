@@ -15,11 +15,13 @@ import com.example.mzcommunity.databinding.FragmentMyPageBinding
 import com.google.firebase.Firebase
 import com.google.firebase.storage.storage
 import com.orhanobut.logger.Logger
+import dagger.hilt.android.AndroidEntryPoint
 import util.FirebaseAuth
 import viewmodel.MyPageFragmentViewModel
 
+@AndroidEntryPoint
 class MyPageFragment : Fragment() {
-    private val myPageFragmentViewModel: MyPageFragmentViewModel by viewModels()
+    private val viewModel: MyPageFragmentViewModel by viewModels()
     private lateinit var binding: FragmentMyPageBinding
 
     private val startForResult =
@@ -34,14 +36,14 @@ class MyPageFragment : Fragment() {
     ): View? {
         binding = FragmentMyPageBinding.inflate(layoutInflater)
         binding.editProfile.setOnClickListener {
-            myPageFragmentViewModel.setEditMode()
+            viewModel.setEditMode()
         }
 
         binding.userProfileImg.setOnClickListener {
             startForResult.launch("image/*")
         }
 
-        myPageFragmentViewModel.isEditMode.observe(requireActivity(), Observer<Boolean> { data ->
+        viewModel.isEditMode.observe(requireActivity(), Observer<Boolean> { data ->
             if (data) {
                 binding.editProfile.text = getString(R.string.complete)
                 binding.camera.visibility = View.VISIBLE
@@ -62,6 +64,12 @@ class MyPageFragment : Fragment() {
             }
         })
 
+        viewModel.user.observe(requireActivity(), Observer {
+            Logger.v(it.toString())
+            Glide.with(requireContext()).load(it.profileUri).into(binding.userProfileImg)
+            binding.userName.setText(it.nickName)
+        })
+
 
         return binding.root
     }
@@ -73,11 +81,10 @@ class MyPageFragment : Fragment() {
         var userProfile = storageRef.child("user_profile_image/"+FirebaseAuth.auth.uid.toString()+".jpg")
         val uploadTask = userProfile.putFile(uri)
         uploadTask.addOnFailureListener {
-            // Handle unsuccessful uploads
-            Logger.v("upload failed ")
+            Logger.v(it.message.toString())
 
         }.addOnSuccessListener { taskSnapshot ->
-            // taskSnapshot.metadata contains file metadata such as size, content-type, etc.
+
             Logger.v("upload complete")
         }
     }

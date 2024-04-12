@@ -15,6 +15,8 @@ import repository.CommentRepostiroy
 import repository.CommentRepostiroyImpl
 import repository.LoginActivityRepository
 import repository.LoginActivityRepositoryImpl
+import repository.MyPageRepository
+import repository.MyPageRepositoryImpl
 import repository.VersusRepostiroy
 import repository.VersusRepostiroyImpl
 
@@ -46,6 +48,11 @@ object FirebaseModule {
     @Provides
     fun provideVersusBoard(storageReference: FirebaseStorage, fireStore: FirebaseFirestore) : VersusRepostiroy = VersusRepostiroyImpl(
         fireStore, storageReference
+    )
+
+    @Provides
+    fun provideMypageRepository(storageReference: FirebaseStorage, fireStore: FirebaseFirestore) : MyPageRepository = MyPageRepositoryImpl(
+        storageReference, fireStore
     )
 
 }
