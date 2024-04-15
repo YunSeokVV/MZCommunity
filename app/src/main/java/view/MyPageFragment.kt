@@ -23,11 +23,11 @@ import viewmodel.MyPageFragmentViewModel
 class MyPageFragment : Fragment() {
     private val viewModel: MyPageFragmentViewModel by viewModels()
     private lateinit var binding: FragmentMyPageBinding
-
+    private lateinit var profileUri : Uri
     private val startForResult =
         registerForActivityResult(ActivityResultContracts.GetContent()) {
             it?.let { Glide.with(this).load(it).into(binding.userProfileImg) }
-            it?.let { uri -> uploadtMyProfile(uri) }
+            profileUri = (it ?: R.drawable.user_profile2) as Uri
         }
 
     override fun onCreateView(
@@ -52,6 +52,12 @@ class MyPageFragment : Fragment() {
                 binding.editInfo.visibility = View.VISIBLE
                 binding.userProfileImg.isEnabled = true
                 binding.userName.isEnabled = true
+
+                binding.editProfile.setOnClickListener {
+                    viewModel.updateProfile(binding.userName.text.toString(), profileUri)
+                    viewModel.setEditMode()
+                }
+
             } else {
                 binding.editProfile.text = getString(R.string.edit)
                 binding.camera.visibility = View.INVISIBLE
@@ -65,28 +71,15 @@ class MyPageFragment : Fragment() {
         })
 
         viewModel.user.observe(requireActivity(), Observer {
-            Logger.v(it.toString())
+            Logger.v(it.nickName)
+            profileUri = it.profileUri
             Glide.with(requireContext()).load(it.profileUri).into(binding.userProfileImg)
+            it.nickName
             binding.userName.setText(it.nickName)
         })
 
 
         return binding.root
-    }
-
-    fun uploadtMyProfile(uri : Uri){
-        val storage = Firebase.storage
-        var storageRef = storage.reference
-
-        var userProfile = storageRef.child("user_profile_image/"+FirebaseAuth.auth.uid.toString()+".jpg")
-        val uploadTask = userProfile.putFile(uri)
-        uploadTask.addOnFailureListener {
-            Logger.v(it.message.toString())
-
-        }.addOnSuccessListener { taskSnapshot ->
-
-            Logger.v("upload complete")
-        }
     }
 
 }

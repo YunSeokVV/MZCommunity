@@ -4,6 +4,7 @@ package view
 import adapter.DailyBoardCommentAdapter
 import adapter.DailyBoardNestedCommentAdapter
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableStringBuilder
@@ -12,8 +13,11 @@ import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -33,6 +37,7 @@ class BottomSheetFragment(private val parentUID : String, private val collection
     private lateinit var binding : FragmentBottomSheetBinding
     private val viewModel by viewModels<BottomSheetFragmentViewModel>()
     private lateinit var adapter : DailyBoardCommentAdapter
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -41,6 +46,9 @@ class BottomSheetFragment(private val parentUID : String, private val collection
         val inputComment = binding.inputComment
         val progressDialog = ProgressDialog(requireContext())
         val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+
+        requireActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_UNSPECIFIED);
+
 
         viewModel.setParentUID(parentUID)
         viewModel.parentUID.observe(this, Observer {

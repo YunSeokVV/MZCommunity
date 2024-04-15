@@ -29,17 +29,14 @@ class MyPageRepositoryImpl @Inject constructor(
     override suspend fun updateProfile(nickName: String, profile: Uri) =
         withContext(Dispatchers.IO) {
             try {
+                Logger.v(nickName)
                 val choosenImg =
                     storage.reference.child("user_profile_image/" + FirebaseAuth.auth.uid.toString() + ".jpg")
                 choosenImg.putFile(profile).await()
 
-                val nickName = hashMapOf(
-                    "nickName" to nickName
-                )
-
                 fireStoreRef.collection("MZUsers").document(FirebaseAuth.auth.uid.toString())
                     .update(
-                        nickName as Map<String, Any>
+                        "nickName",nickName
                     ).await()
                 Response.Success(true)
             } catch (e: Exception) {
