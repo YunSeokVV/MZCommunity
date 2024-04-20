@@ -52,7 +52,6 @@ class BottomSheetFragment(private val parentUID : String, private val collection
 
         viewModel.setParentUID(parentUID)
         viewModel.parentUID.observe(this, Observer {
-            Logger.v(it)
             viewModel.getComments(it,collectionName)
         })
 

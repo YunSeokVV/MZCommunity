@@ -61,6 +61,7 @@ class BottomSheetFragmentViewModel @Inject constructor(private val commentUseCas
             commentUseCase.postComment(contents, parentUID, collectionName).collect {
                 when (it) {
                     is Response.Success -> {
+                        _isPostingComplte.value = it.data ?: false
                         getComments(parentUID, collectionName)
                     }
 
