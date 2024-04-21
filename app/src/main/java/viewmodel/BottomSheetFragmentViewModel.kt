@@ -16,6 +16,8 @@ import javax.inject.Inject
 class BottomSheetFragmentViewModel @Inject constructor(private val commentUseCase: CommentUseCase) :
     ViewModel() {
 
+    var isProgressLoading = false
+
     // 사용자가 답글을 쓰는 것인지 댓글을 쓰는 것인지 판별해주는 변수
     var isReplyMode = false
 
@@ -95,7 +97,6 @@ class BottomSheetFragmentViewModel @Inject constructor(private val commentUseCas
 
     fun getComments(parentUID: String, collectionName: String) = viewModelScope.launch {
         commentUseCase.getComments(parentUID, collectionName).collect {
-            Logger.v(it.toString())
             _dailyBoardComments.value = it
             _isPostingComplte.value = true
         }
