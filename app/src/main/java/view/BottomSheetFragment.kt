@@ -4,11 +4,11 @@ package view
 import adapter.DailyBoardCommentAdapter
 import adapter.DailyBoardNestedCommentAdapter
 import android.content.Context
-import android.os.Build
 import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
+import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -16,8 +16,6 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContextCompat
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -85,7 +83,7 @@ class BottomSheetFragment(private val parentUID : String, private val collection
             LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false)
 
         viewModel.dailyBoardComments.observe(this, Observer {
-            adapter = DailyBoardCommentAdapter(it, object : DailyBoardCommentAdapter.PostReplyOnClickListener{
+            adapter = DailyBoardCommentAdapter(it.toMutableList<Comment?>(), object : DailyBoardCommentAdapter.PostReplyOnClickListener{
                 override fun postReplyClick(comment : Comment) {
                     setTagedUser(comment)
                 }
@@ -110,6 +108,25 @@ class BottomSheetFragment(private val parentUID : String, private val collection
             })
             binding.comment.adapter = adapter
             binding.comment.visibility = View.VISIBLE
+            binding.comment.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+
+
+                    if(!binding.comment.canScrollVertically(1)){
+                        val linearLayoutManager : LinearLayoutManager = binding.comment.layoutManager as LinearLayoutManager
+                        if(!viewModel.isProgressLoading){
+                            if(linearLayoutManager != null && linearLayoutManager.findLastCompletelyVisibleItemPosition() == adapter.itemCount -1){
+                                //loadMore()
+                                adapter.showProgress()
+                                viewModel.isProgressLoading = true
+                            }
+                        }
+                    }
+
+                }
+            })
+
             binding.loadingText.visibility = View.GONE
         })
 
