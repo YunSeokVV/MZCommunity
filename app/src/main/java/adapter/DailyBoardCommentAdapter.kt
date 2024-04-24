@@ -11,6 +11,7 @@ import com.example.mzcommunity.databinding.DailyBoardCommentItemBinding
 import com.example.mzcommunity.databinding.ItemLoadingBinding
 import com.orhanobut.logger.Logger
 import model.Comment
+import model.User
 import view.LoadingViewHolder
 
 
@@ -34,7 +35,11 @@ class DailyBoardCommentAdapter(
         fun showNestedComment(comment: Comment, recyclerView: RecyclerView)
     }
 
-
+    fun addComment(loginedUser : User, contents : String, parentUID : String){
+        val comment = Comment(loginedUser.profileUri, loginedUser.nickName, contents, parentUID, false)
+        comments.add(0, comment)
+        notifyItemInserted(0)
+    }
 
     fun showProgress() {
         comments.add(null)

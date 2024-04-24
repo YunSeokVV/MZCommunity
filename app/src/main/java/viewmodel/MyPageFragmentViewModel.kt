@@ -11,11 +11,11 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import model.Response
 import model.User
-import usecase.MypageUsecasae
+import usecase.UserUsecase
 import javax.inject.Inject
 
 @HiltViewModel
-class MyPageFragmentViewModel @Inject constructor(private val mypageUsecasae: MypageUsecasae) :
+class MyPageFragmentViewModel @Inject constructor(private val mypageUsecasae: UserUsecase) :
     ViewModel() {
     init {
         getUserProfile()

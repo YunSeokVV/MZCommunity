@@ -15,8 +15,8 @@ import repository.CommentRepostiroy
 import repository.CommentRepostiroyImpl
 import repository.LoginActivityRepository
 import repository.LoginActivityRepositoryImpl
-import repository.MyPageRepository
-import repository.MyPageRepositoryImpl
+import repository.UserRepository
+import repository.UserRepositoryImpl
 import repository.VersusRepostiroy
 import repository.VersusRepostiroyImpl
 
@@ -51,7 +51,7 @@ object FirebaseModule {
     )
 
     @Provides
-    fun provideMypageRepository(storageReference: FirebaseStorage, fireStore: FirebaseFirestore) : MyPageRepository = MyPageRepositoryImpl(
+    fun provideUserRepository(storageReference: FirebaseStorage, fireStore: FirebaseFirestore) : UserRepository = UserRepositoryImpl(
         storageReference, fireStore
     )
 
