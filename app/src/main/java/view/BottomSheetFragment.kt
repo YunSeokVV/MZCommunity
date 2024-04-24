@@ -31,10 +31,15 @@ import viewmodel.BottomSheetFragmentViewModel
 
 
 @AndroidEntryPoint
-class BottomSheetFragment(private val parentUID : String, private val collectionName : String, private val nestedCommentCollection : String, private val commentName : String) : BottomSheetDialogFragment() {
-    private lateinit var binding : FragmentBottomSheetBinding
+class BottomSheetFragment(
+    private val parentUID: String,
+    private val collectionName: String,
+    private val nestedCommentCollection: String,
+    private val commentName: String
+) : BottomSheetDialogFragment() {
+    private lateinit var binding: FragmentBottomSheetBinding
     private val viewModel by viewModels<BottomSheetFragmentViewModel>()
-    private lateinit var adapter : DailyBoardCommentAdapter
+    private lateinit var adapter: DailyBoardCommentAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,36 +48,46 @@ class BottomSheetFragment(private val parentUID : String, private val collection
         binding = FragmentBottomSheetBinding.inflate(inflater)
         val inputComment = binding.inputComment
         val progressDialog = ProgressDialog(requireContext())
-        val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        val imm =
+            requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
 
-        requireActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_UNSPECIFIED);
+        requireActivity().getWindow()
+            .setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_UNSPECIFIED);
 
 
         viewModel.setParentUID(parentUID)
         viewModel.parentUID.observe(this, Observer {
-            Logger.v(it)
-            viewModel.getComments(it,collectionName)
+
+            viewModel.getComments(it, collectionName)
         })
 
         viewModel.isPostingComplete.observe(this, Observer { data ->
-            if(data){
+            if (data) {
                 inputComment.setText("")
                 progressDialog.dismiss()
             }
+
+            //todo : 내가 작성한 댓글을 추가할 것
+
         })
 
         binding.postComment.setOnClickListener {
-            if(inputComment.text.toString().isEmpty()){
+            if (inputComment.text.toString().isEmpty()) {
                 Util.makeToastMessage("댓글을 입력해주세요!", requireContext())
-            } else{
+            } else {
                 progressDialog.show()
                 // 대댓글을 쓰는 경우
-                if(viewModel.isReplyMode){
+                if (viewModel.isReplyMode) {
                     val reply = Util.removeStr(inputComment.text.toString(), viewModel.tagedUser)
-                    viewModel.postReply(reply, viewModel.choosenReplyUID, nestedCommentCollection, commentName)
+                    viewModel.postReply(
+                        reply,
+                        viewModel.choosenReplyUID,
+                        nestedCommentCollection,
+                        commentName
+                    )
                 }
                 // 댓글을 쓰는 경우
-                else{
+                else {
                     viewModel.postComment(inputComment.text.toString(), parentUID, collectionName)
                 }
             }
@@ -82,60 +97,82 @@ class BottomSheetFragment(private val parentUID : String, private val collection
         binding.comment.layoutManager =
             LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false)
 
-        viewModel.dailyBoardComments.observe(this, Observer {
-            adapter = DailyBoardCommentAdapter(it.toMutableList<Comment?>(), object : DailyBoardCommentAdapter.PostReplyOnClickListener{
-                override fun postReplyClick(comment : Comment) {
+        adapter = DailyBoardCommentAdapter(
+            object : DailyBoardCommentAdapter.PostReplyOnClickListener {
+                override fun postReplyClick(comment: Comment) {
                     setTagedUser(comment)
                 }
 
-            }, object : DailyBoardCommentAdapter.ShowCommentListener{
+            },
+            object : DailyBoardCommentAdapter.ShowCommentListener {
                 override fun showNestedComment(comment: Comment, recyclerView: RecyclerView) {
                     val parentUID = comment.commentUID
                     Logger.v(comment.commentUID)
                     viewModel.getNestedComments(comment.commentUID, nestedCommentCollection)
-                    viewModel.nestedComment.observe(requireActivity(), Observer { nestedComments ->
-                        adapter.setNestedCommentsList(nestedComments)
-                        val dailyBoardNestedCommentAdapter = DailyBoardNestedCommentAdapter(adapter.nestedCommentList, object : DailyBoardNestedCommentAdapter.PostReplyOnClickListener{
-                            override fun postReplyClick(comment: Comment) {
-                                setTagedUser(comment, parentUID)
-                            }
+                    viewModel.nestedComment.observe(
+                        requireActivity(),
+                        Observer { nestedComments ->
+                            adapter.setNestedCommentsList(nestedComments)
+                            val dailyBoardNestedCommentAdapter = DailyBoardNestedCommentAdapter(
+                                adapter.nestedCommentList,
+                                object :
+                                    DailyBoardNestedCommentAdapter.PostReplyOnClickListener {
+                                    override fun postReplyClick(comment: Comment) {
+                                        setTagedUser(comment, parentUID)
+                                    }
 
+                                })
+                            recyclerView.adapter = dailyBoardNestedCommentAdapter
                         })
-                        recyclerView.adapter = dailyBoardNestedCommentAdapter
-                    })
                 }
 
             })
-            binding.comment.adapter = adapter
-            binding.comment.visibility = View.VISIBLE
-            binding.comment.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    super.onScrolled(recyclerView, dx, dy)
 
 
-                    if(!binding.comment.canScrollVertically(1)){
-                        val linearLayoutManager : LinearLayoutManager = binding.comment.layoutManager as LinearLayoutManager
-                        if(!viewModel.isProgressLoading){
-                            if(linearLayoutManager != null && linearLayoutManager.findLastCompletelyVisibleItemPosition() == adapter.itemCount -1){
-                                //loadMore()
-                                adapter.showProgress()
-                                viewModel.isProgressLoading = true
-                            }
+        // 리사이클러뷰 초기설정
+        binding.comment.adapter = adapter
+        binding.comment.visibility = View.VISIBLE
+        binding.comment.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if (!binding.comment.canScrollVertically(1)) {
+                    if (!viewModel.showProgress) {
+                        viewModel.showProgress = true
+                        val linearLayoutManager: LinearLayoutManager =
+                            binding.comment.layoutManager as LinearLayoutManager
+                        if (linearLayoutManager != null && linearLayoutManager.findLastCompletelyVisibleItemPosition() == adapter.itemCount - 1) {
+                            adapter.showProgress()
+                            viewModel.getMoreComments(
+                                viewModel.parentUID.value ?: "nothing",
+                                collectionName
+                            )
                         }
                     }
-
                 }
-            })
 
+            }
+        })
+
+
+        viewModel.isProgressLoading.observe(this, Observer { isProgressLoading ->
+            if (!isProgressLoading) {
+
+                adapter.hideProgress()
+            }
+        })
+
+        viewModel.dailyBoardComments.observe(this, Observer {
+            adapter.comments.addAll(it)
+            adapter.notifyItemRangeInserted(it.size, it.size)
             binding.loadingText.visibility = View.GONE
         })
 
         // 백스페이스를 눌러서 태그한 사용자를 지우는 경우 대댓글 모드 해제
         inputComment.setOnKeyListener { v, keyCode, event ->
-            if(viewModel.isReplyMode){
-                if(keyCode == KeyEvent.KEYCODE_DEL){
+            if (viewModel.isReplyMode) {
+                if (keyCode == KeyEvent.KEYCODE_DEL) {
                     val isRreplyMode = viewModel.tagedUser.length
-                    if(inputComment.text.length < isRreplyMode){
+                    if (inputComment.text.length < isRreplyMode) {
                         imm.hideSoftInputFromWindow(inputComment.windowToken, 0)
                         inputComment.setText("")
                         viewModel.isReplyMode = false
@@ -148,12 +185,13 @@ class BottomSheetFragment(private val parentUID : String, private val collection
         return binding.root
     }
 
-    fun setTagedUser(comment : Comment){
+    fun setTagedUser(comment: Comment) {
         viewModel.choosenReplyUID = comment.commentUID
         val inputComment = binding.inputComment
         val userNickName = comment.writerName
         inputComment.requestFocus()
-        val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        val imm =
+            requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.showSoftInput(inputComment, InputMethodManager.SHOW_IMPLICIT)
         inputComment.setText("$userNickName")
         val spannableStringBuilder = SpannableStringBuilder(userNickName)
@@ -161,7 +199,8 @@ class BottomSheetFragment(private val parentUID : String, private val collection
             ForegroundColorSpan(ContextCompat.getColor(requireContext(), R.color.theme)),
             0,
             inputComment.text.length,
-            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
         inputComment.text = spannableStringBuilder
         viewModel.tagedUser = inputComment.text.toString()
         inputComment.append(" ")
@@ -169,12 +208,13 @@ class BottomSheetFragment(private val parentUID : String, private val collection
         viewModel.isReplyMode = true
     }
 
-    fun setTagedUser(comment : Comment, parentUID: String){
+    fun setTagedUser(comment: Comment, parentUID: String) {
         viewModel.choosenReplyUID = parentUID
         val inputComment = binding.inputComment
         val userNickName = comment.writerName
         inputComment.requestFocus()
-        val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        val imm =
+            requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.showSoftInput(inputComment, InputMethodManager.SHOW_IMPLICIT)
         inputComment.setText("$userNickName")
         val spannableStringBuilder = SpannableStringBuilder(userNickName)
@@ -182,7 +222,8 @@ class BottomSheetFragment(private val parentUID : String, private val collection
             ForegroundColorSpan(ContextCompat.getColor(requireContext(), R.color.theme)),
             0,
             inputComment.text.length,
-            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
         inputComment.text = spannableStringBuilder
         viewModel.tagedUser = inputComment.text.toString()
         inputComment.append(" ")

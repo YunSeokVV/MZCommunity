@@ -18,13 +18,13 @@ private const val ITEM = 0
 private const val LOADING = 1
 
 class DailyBoardCommentAdapter(
-    private var comments: MutableList<Comment?>,
     private val popstReplyListener: PostReplyOnClickListener,
     private val showCommentListener: ShowCommentListener
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     var nestedCommentList = listOf<Comment>()
 
+    var comments = mutableListOf<Comment?>()
 
     interface PostReplyOnClickListener {
         fun postReplyClick(comment: Comment)
@@ -34,9 +34,16 @@ class DailyBoardCommentAdapter(
         fun showNestedComment(comment: Comment, recyclerView: RecyclerView)
     }
 
+
+
     fun showProgress() {
         comments.add(null)
-        notifyItemInserted(comments.size - 1)
+        notifyItemInserted(comments.size)
+    }
+
+    fun hideProgress() {
+        comments.removeAt(comments.size-1)
+        notifyItemRemoved(comments.size)
     }
 
     override fun getItemViewType(position: Int): Int {

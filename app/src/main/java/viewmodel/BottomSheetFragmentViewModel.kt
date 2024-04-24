@@ -4,6 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.android.gms.tasks.Task
+import com.google.firebase.firestore.QuerySnapshot
 import com.orhanobut.logger.Logger
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -16,7 +18,9 @@ import javax.inject.Inject
 class BottomSheetFragmentViewModel @Inject constructor(private val commentUseCase: CommentUseCase) :
     ViewModel() {
 
-    var isProgressLoading = false
+    var showProgress: Boolean = false
+
+    var isProgressLoading = MutableLiveData<Boolean>(true)
 
     // 사용자가 답글을 쓰는 것인지 댓글을 쓰는 것인지 판별해주는 변수
     var isReplyMode = false
@@ -27,8 +31,8 @@ class BottomSheetFragmentViewModel @Inject constructor(private val commentUseCas
     // 대댓글을 쓰기 위해 태그한 사용자
     lateinit var tagedUser: String
 
-
     private val _parentUID = MutableLiveData<String>()
+
     val parentUID: LiveData<String>
         get() {
             return _parentUID
@@ -36,7 +40,7 @@ class BottomSheetFragmentViewModel @Inject constructor(private val commentUseCas
 
     private val _isPostingComplte = MutableLiveData<Boolean>()
 
-    private val _dailyBoardComments = MutableLiveData<List<Comment>>()
+    val dailyBoardComments = MutableLiveData<MutableList<Comment>>()
 
     val isPostingComplete: LiveData<Boolean>
         get() {
@@ -49,13 +53,18 @@ class BottomSheetFragmentViewModel @Inject constructor(private val commentUseCas
             return _nestedComments
         }
 
-    val dailyBoardComments: LiveData<List<Comment>>
-        get() {
-            return _dailyBoardComments
-        }
-
     fun setParentUID(uid: String) {
         _parentUID.value = uid
+    }
+
+    fun getMoreComments(parentUID: String, collectionName: String) = viewModelScope.launch {
+        commentUseCase.getMoreComments(parentUID, collectionName).collect {
+            isProgressLoading.value = false
+            dailyBoardComments.value = it.toMutableList()
+
+            showProgress = false
+        }
+
     }
 
     fun postComment(contents: String, parentUID: String, collectionName: String) =
@@ -64,7 +73,7 @@ class BottomSheetFragmentViewModel @Inject constructor(private val commentUseCas
                 when (it) {
                     is Response.Success -> {
                         _isPostingComplte.value = it.data ?: false
-                        getComments(parentUID, collectionName)
+
                     }
 
                     is Response.Failure -> {
@@ -97,12 +106,12 @@ class BottomSheetFragmentViewModel @Inject constructor(private val commentUseCas
 
     fun getComments(parentUID: String, collectionName: String) = viewModelScope.launch {
         commentUseCase.getComments(parentUID, collectionName).collect {
-            _dailyBoardComments.value = it
-            _isPostingComplte.value = true
+            dailyBoardComments.value = it.toMutableList()
+
         }
     }
 
-    fun getNestedComments(parentUID: String, nestedCommentName : String) = viewModelScope.launch {
+    fun getNestedComments(parentUID: String, nestedCommentName: String) = viewModelScope.launch {
         commentUseCase.getNestedComments(parentUID, nestedCommentName).collect {
             _nestedComments.value = it
         }
