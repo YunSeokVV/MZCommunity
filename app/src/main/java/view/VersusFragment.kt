@@ -13,10 +13,11 @@ import com.bumptech.glide.Glide
 import com.example.mzcommunity.databinding.FragmentVersusBinding
 import com.orhanobut.logger.Logger
 import dagger.hilt.android.AndroidEntryPoint
+import model.User
 import viewmodel.VersusFragmnetViewModel
 
 @AndroidEntryPoint
-class VersusFragment : Fragment() {
+class VersusFragment(private val userProfile : User) : Fragment() {
     private lateinit var binding: FragmentVersusBinding
     private val viewModel by viewModels<VersusFragmnetViewModel>()
     override fun onCreateView(
@@ -61,7 +62,7 @@ class VersusFragment : Fragment() {
         }
 
         binding.comment.setOnClickListener {
-            val bottomSheetFragment = BottomSheetFragment(viewModel.boardUID, "versusBoardComment","versusBoardNestedComment", "versusBoardComment")
+            val bottomSheetFragment = BottomSheetFragment(viewModel.boardUID, "versusBoardComment","versusBoardNestedComment", "versusBoardComment", userProfile)
             bottomSheetFragment.show(childFragmentManager, bottomSheetFragment.tag)
         }
 

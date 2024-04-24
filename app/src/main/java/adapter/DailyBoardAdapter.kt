@@ -27,19 +27,6 @@ class DailyBoardAdapter(
     private val increaseDisLike: IncreaseDisLike,
     private val showComment : ShowComment
 ) : ListAdapter<DailyBoard, DailyBoardAdapter.DailyBoardItemViewHolder>(diffUtil) {
-
-    interface IncreaseLike {
-        fun increaseLike(dailyBoard: DailyBoard, adapterPosition: Int)
-    }
-
-    interface IncreaseDisLike {
-        fun increaseDisLike(dailyBoard: DailyBoard, adapterPosition: Int)
-    }
-
-    interface ShowComment{
-        fun showComment(dailyBoard: DailyBoard)
-    }
-
     companion object {
         private val diffUtil = object : DiffUtil.ItemCallback<DailyBoard>() {
             override fun areItemsTheSame(oldItem: DailyBoard, newItem: DailyBoard): Boolean {
@@ -51,6 +38,17 @@ class DailyBoardAdapter(
             }
 
         }
+    }
+    interface IncreaseLike {
+        fun increaseLike(dailyBoard: DailyBoard, adapterPosition: Int)
+    }
+
+    interface IncreaseDisLike {
+        fun increaseDisLike(dailyBoard: DailyBoard, adapterPosition: Int)
+    }
+
+    interface ShowComment{
+        fun showComment(dailyBoard: DailyBoard)
     }
 
     inner class DailyBoardItemViewHolder(
@@ -91,8 +89,6 @@ class DailyBoardAdapter(
             Glide.with(binding.root.context).load(item.writerProfileUri)
                 .into(binding.userProfileImg)
         }
-
-
 
         init {
             binding.comment.setOnClickListener {
@@ -201,7 +197,6 @@ class DailyBoardAdapter(
 
             return result
         }
-
 
         fun setThumbNailColor(isActive: Boolean, thumbNail: View) {
             var color = ContextCompat.getColor(binding.root.context, R.color.theme)

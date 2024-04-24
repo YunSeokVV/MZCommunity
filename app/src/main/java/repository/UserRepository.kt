@@ -14,16 +14,16 @@ import util.FirebaseAuth
 import javax.inject.Inject
 import javax.inject.Singleton
 
-interface MyPageRepository {
+interface UserRepository {
     suspend fun updateProfile(nickName: String, profile: Uri): Response<Boolean>
     suspend fun getUserProfile(): User
 }
 
 @Singleton
-class MyPageRepositoryImpl @Inject constructor(
+class UserRepositoryImpl @Inject constructor(
     private val storage: FirebaseStorage,
     private val fireStoreRef: FirebaseFirestore
-) : MyPageRepository {
+) : UserRepository {
 
 
     override suspend fun updateProfile(nickName: String, profile: Uri) =

@@ -26,6 +26,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.orhanobut.logger.Logger
 import dagger.hilt.android.AndroidEntryPoint
 import model.Comment
+import model.User
 import util.Util
 import viewmodel.BottomSheetFragmentViewModel
 
@@ -35,7 +36,8 @@ class BottomSheetFragment(
     private val parentUID: String,
     private val collectionName: String,
     private val nestedCommentCollection: String,
-    private val commentName: String
+    private val commentName: String,
+    private val loginedUser : User
 ) : BottomSheetDialogFragment() {
     private lateinit var binding: FragmentBottomSheetBinding
     private val viewModel by viewModels<BottomSheetFragmentViewModel>()
@@ -63,12 +65,10 @@ class BottomSheetFragment(
 
         viewModel.isPostingComplete.observe(this, Observer { data ->
             if (data) {
+                adapter.addComment(loginedUser, inputComment.text.toString(), parentUID)
                 inputComment.setText("")
                 progressDialog.dismiss()
             }
-
-            //todo : 내가 작성한 댓글을 추가할 것
-
         })
 
         binding.postComment.setOnClickListener {
