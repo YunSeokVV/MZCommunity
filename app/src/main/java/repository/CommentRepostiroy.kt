@@ -1,9 +1,12 @@
 package repository
 
 import android.net.Uri
+import com.google.android.gms.tasks.Task
 import com.google.firebase.Timestamp
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.storage.FirebaseStorage
 import com.orhanobut.logger.Logger
 import kotlinx.coroutines.Dispatchers
@@ -31,9 +34,17 @@ interface CommentRepostiroy {
         commentName: String
     ): Response<Boolean>
 
-    suspend fun getComments(parentUID: String, collectionName: String): List<Comment>
+    suspend fun getComments(
+        parentUID: String,
+        collectionName: String
+    ): List<Comment>
 
-    suspend fun getNestedComments(parentUID: String, nestedCommentName : String): List<Comment>
+    suspend fun getMoreComments(
+        parentUID: String,
+        collectionName: String
+    ): List<Comment>
+
+    suspend fun getNestedComments(parentUID: String, nestedCommentName: String): List<Comment>
 }
 
 @Singleton
@@ -42,6 +53,7 @@ class CommentRepostiroyImpl @Inject constructor(
     private val storage: FirebaseStorage,
 ) :
     CommentRepostiroy {
+    lateinit var recentTask: Query
     override suspend fun postComment(
         contents: String,
         parentUID: String,
@@ -104,32 +116,41 @@ class CommentRepostiroyImpl @Inject constructor(
             }
         }
 
-    override suspend fun getComments(parentUID: String, collectionName: String): List<Comment> =
+    override suspend fun getComments(
+        parentUID: String,
+        collectionName: String,
+    ): List<Comment> =
         withContext(Dispatchers.IO) {
             var comments = mutableListOf<Comment>()
             val fireStore = fireStoreRef
             try {
+                recentTask = fireStore.collection(collectionName)
+                    .orderBy("postingTime", Query.Direction.DESCENDING)
+                    .limit(5)
+                    .whereEqualTo("parentUID", parentUID)
+
                 fireStore.collection(collectionName)
-                    .orderBy("postingTime", Query.Direction.ASCENDING)
+                    .orderBy("postingTime", Query.Direction.DESCENDING)
+                    .limit(5)
                     .whereEqualTo("parentUID", parentUID).get().addOnSuccessListener { documents ->
-                    documents.forEach {
-                        runBlocking {
-                            val profile: Uri =
-                                storage.reference.child("user_profile_image/" + it.get("writerUID") + ".jpg").downloadUrl.await()
-                            val userDoc = fireStore.collection("MZUsers")
-                                .document(it.get("writerUID").toString()).get().await()
-                            val nickName = userDoc.get("nickName").toString()
-                            val comment = Comment(
-                                profile,
-                                nickName,
-                                it.get("commentContents").toString(),
-                                it.id,
-                                it.getBoolean("hasNestedComment") ?: false
-                            )
-                            comments.add(comment)
+                        documents.forEach {
+                            runBlocking {
+                                val profile: Uri =
+                                    storage.reference.child("user_profile_image/" + it.get("writerUID") + ".jpg").downloadUrl.await()
+                                val userDoc = fireStore.collection("MZUsers")
+                                    .document(it.get("writerUID").toString()).get().await()
+                                val nickName = userDoc.get("nickName").toString()
+                                val comment = Comment(
+                                    profile,
+                                    nickName,
+                                    it.get("commentContents").toString(),
+                                    it.id,
+                                    it.getBoolean("hasNestedComment") ?: false
+                                )
+                                comments.add(comment)
+                            }
                         }
-                    }
-                }.await()
+                    }.await()
 
 
             } catch (e: Exception) {
@@ -138,32 +159,78 @@ class CommentRepostiroyImpl @Inject constructor(
             return@withContext comments
         }
 
-    override suspend fun getNestedComments(parentUID: String, nestedCommentName : String): List<Comment> =
+    override suspend fun getMoreComments(
+        parentUID: String,
+        collectionName: String,
+    ): List<Comment> =
+        withContext(Dispatchers.IO) {
+            var comments = mutableListOf<Comment>()
+            val fireStore = fireStoreRef
+            try {
+
+                val documentSnapshot = recentTask.get().await()
+                val lastVisible = documentSnapshot.documents[documentSnapshot.size() - 1]
+                val next = fireStore.collection(collectionName)
+                    .orderBy("postingTime", Query.Direction.DESCENDING)
+                    .whereEqualTo("parentUID", parentUID)
+                    .startAfter(lastVisible)
+                    .limit(5)
+
+                recentTask = next
+                val documents = next.get().await()
+                documents.forEach {
+
+                        val profile: Uri =
+                            storage.reference.child("user_profile_image/" + it.get("writerUID") + ".jpg").downloadUrl.await()
+                        val userDoc = fireStore.collection("MZUsers")
+                            .document(it.get("writerUID").toString()).get().await()
+                        val nickName = userDoc.get("nickName").toString()
+                        val comment = Comment(
+                            profile,
+                            nickName,
+                            it.get("commentContents").toString(),
+                            it.id,
+                            it.getBoolean("hasNestedComment") ?: false
+                        )
+                        comments.add(comment)
+
+                }
+
+            } catch (e: Exception) {
+                Logger.v(e.message.toString())
+            }
+            return@withContext comments
+        }
+
+    override suspend fun getNestedComments(
+        parentUID: String,
+        nestedCommentName: String
+    ): List<Comment> =
         withContext(Dispatchers.IO) {
             var comments = mutableListOf<Comment>()
             val fireStore = fireStoreRef
             try {
                 fireStore.collection(nestedCommentName)
-                    .orderBy("postingTime", Query.Direction.ASCENDING)
+                    .orderBy("postingTime", Query.Direction.DESCENDING)
                     .whereEqualTo("parentUID", parentUID).get().addOnSuccessListener { documents ->
-                    documents.forEach {
-                        runBlocking {
-                            val profile: Uri =
-                                storage.reference.child("user_profile_image/" + it.get("writerUID") + ".jpg").downloadUrl.await()
-                            val userDoc = fireStore.collection("MZUsers")
-                                .document(it.get("writerUID").toString()).get().await()
-                            val nickName = userDoc.get("nickName").toString()
-                            val comment = Comment(
-                                profile,
-                                nickName,
-                                it.get("commentContents").toString(),
-                                it.id,
-                                it.getBoolean("hasNestedComment") ?: false
-                            )
-                            comments.add(comment)
+                        documents.forEach {
+                            runBlocking {
+                                val profile: Uri =
+                                    storage.reference.child("user_profile_image/" + it.get("writerUID") + ".jpg").downloadUrl.await()
+                                val userDoc = fireStore.collection("MZUsers")
+                                    .document(it.get("writerUID").toString()).get().await()
+                                val nickName = userDoc.get("nickName").toString()
+                                val comment = Comment(
+                                    profile,
+                                    nickName,
+                                    it.get("commentContents").toString(),
+                                    it.id,
+                                    it.getBoolean("hasNestedComment") ?: false
+                                )
+                                comments.add(comment)
+                            }
                         }
-                    }
-                }.await()
+                    }.await()
 
 
             } catch (e: Exception) {
