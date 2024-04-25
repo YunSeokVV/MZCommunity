@@ -4,8 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.android.gms.tasks.Task
-import com.google.firebase.firestore.QuerySnapshot
 import com.orhanobut.logger.Logger
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -39,13 +37,13 @@ class BottomSheetFragmentViewModel @Inject constructor(private val commentUseCas
         }
 
     private val _isPostingComplte = MutableLiveData<Boolean>()
-
-    val dailyBoardComments = MutableLiveData<MutableList<Comment>>()
-
     val isPostingComplete: LiveData<Boolean>
         get() {
             return _isPostingComplte
         }
+    val dailyBoardComments = MutableLiveData<MutableList<Comment>>()
+
+
 
     private val _nestedComments = MutableLiveData<List<Comment>>()
     val nestedComment: LiveData<List<Comment>>
@@ -93,7 +91,6 @@ class BottomSheetFragmentViewModel @Inject constructor(private val commentUseCas
             .collect {
                 when (it) {
                     is Response.Success -> {
-                        getNestedComments(choosenReplyUID, nestedCommentCollection)
                         _isPostingComplte.value = it.data ?: false
                     }
 

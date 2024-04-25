@@ -211,7 +211,7 @@ class CommentRepostiroyImpl @Inject constructor(
             val fireStore = fireStoreRef
             try {
                 fireStore.collection(nestedCommentName)
-                    .orderBy("postingTime", Query.Direction.DESCENDING)
+                    .orderBy("postingTime", Query.Direction.ASCENDING)
                     .whereEqualTo("parentUID", parentUID).get().addOnSuccessListener { documents ->
                         documents.forEach {
                             runBlocking {
