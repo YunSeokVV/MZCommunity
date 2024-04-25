@@ -23,20 +23,21 @@ class DailyBoardCommentAdapter(
     private val showCommentListener: ShowCommentListener
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    var nestedCommentList = listOf<Comment>()
+    var nestedCommentList = mutableListOf<Comment>()
 
     var comments = mutableListOf<Comment?>()
 
     interface PostReplyOnClickListener {
-        fun postReplyClick(comment: Comment)
+        fun postReplyClick(comment: Comment, recyclerView: RecyclerView)
     }
 
     interface ShowCommentListener {
         fun showNestedComment(comment: Comment, recyclerView: RecyclerView)
     }
 
-    fun addComment(loginedUser : User, contents : String, parentUID : String){
-        val comment = Comment(loginedUser.profileUri, loginedUser.nickName, contents, parentUID, false)
+    fun addComment(loginedUser: User, contents: String, parentUID: String) {
+        val comment =
+            Comment(loginedUser.profileUri, loginedUser.nickName, contents, parentUID, false)
         comments.add(0, comment)
         notifyItemInserted(0)
     }
@@ -47,7 +48,7 @@ class DailyBoardCommentAdapter(
     }
 
     fun hideProgress() {
-        comments.removeAt(comments.size-1)
+        comments.removeAt(comments.size - 1)
         notifyItemRemoved(comments.size)
     }
 
@@ -95,7 +96,7 @@ class DailyBoardCommentAdapter(
             binding.writeName.setText(item.writerName)
             binding.postingContents.setText(item.contents)
             binding.selectReply.setOnClickListener {
-                popstReplyListener.postReplyClick(item)
+                popstReplyListener.postReplyClick(item, nestedRecyclerView)
             }
 
             if (item.hasNestedComment) {
@@ -109,17 +110,19 @@ class DailyBoardCommentAdapter(
                 nestedRecyclerView.visibility = View.VISIBLE
                 nestedRecyclerView.layoutManager =
                     LinearLayoutManager(binding.root.context, LinearLayoutManager.VERTICAL, false)
-
-
             }
-
         }
     }
 
     fun setNestedCommentsList(comments: List<Comment>) {
-        Logger.v(comments.toString())
-        nestedCommentList = comments
+        nestedCommentList = comments.toMutableList()
     }
 
+    fun addNestedCommentItem(loginedUser: User, contents: String, parentUID: String){
+        val comment =
+            Comment(loginedUser.profileUri, loginedUser.nickName, contents, parentUID, false)
+
+        nestedCommentList.add(comment)
+    }
 
 }

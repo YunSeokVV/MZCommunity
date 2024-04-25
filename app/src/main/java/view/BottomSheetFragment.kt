@@ -37,11 +37,12 @@ class BottomSheetFragment(
     private val collectionName: String,
     private val nestedCommentCollection: String,
     private val commentName: String,
-    private val loginedUser : User
+    private val loginedUser: User
 ) : BottomSheetDialogFragment() {
     private lateinit var binding: FragmentBottomSheetBinding
     private val viewModel by viewModels<BottomSheetFragmentViewModel>()
     private lateinit var adapter: DailyBoardCommentAdapter
+    private lateinit var nestedRecyclerView: RecyclerView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -65,7 +66,17 @@ class BottomSheetFragment(
 
         viewModel.isPostingComplete.observe(this, Observer { data ->
             if (data) {
-                adapter.addComment(loginedUser, inputComment.text.toString(), parentUID)
+                if (viewModel.isReplyMode) {
+                    adapter.addNestedCommentItem(
+                        loginedUser,
+                        Util.removeStr(inputComment.text.toString(), viewModel.tagedUser),
+                        parentUID
+                    )
+                    nestedRecyclerView.adapter?.notifyItemInserted(adapter.nestedCommentList.size)
+                    viewModel.isReplyMode = false
+                } else {
+                    adapter.addComment(loginedUser, inputComment.text.toString(), parentUID)
+                }
                 inputComment.setText("")
                 progressDialog.dismiss()
             }
@@ -99,15 +110,16 @@ class BottomSheetFragment(
 
         adapter = DailyBoardCommentAdapter(
             object : DailyBoardCommentAdapter.PostReplyOnClickListener {
-                override fun postReplyClick(comment: Comment) {
+                override fun postReplyClick(comment: Comment, recyclerView: RecyclerView) {
+                    nestedRecyclerView = recyclerView
                     setTagedUser(comment)
                 }
 
             },
             object : DailyBoardCommentAdapter.ShowCommentListener {
                 override fun showNestedComment(comment: Comment, recyclerView: RecyclerView) {
+                    nestedRecyclerView = recyclerView
                     val parentUID = comment.commentUID
-                    Logger.v(comment.commentUID)
                     viewModel.getNestedComments(comment.commentUID, nestedCommentCollection)
                     viewModel.nestedComment.observe(
                         requireActivity(),
@@ -122,7 +134,7 @@ class BottomSheetFragment(
                                     }
 
                                 })
-                            recyclerView.adapter = dailyBoardNestedCommentAdapter
+                            nestedRecyclerView.adapter = dailyBoardNestedCommentAdapter
                         })
                 }
 
