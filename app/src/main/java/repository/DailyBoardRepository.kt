@@ -1,6 +1,7 @@
 package repository
 
 import android.net.Uri
+import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
@@ -51,18 +52,20 @@ class DailyBoardRepositoryImpl @Inject constructor(
                 "disLike" to 0,
                 "writerUID" to FirebaseAuth.auth.uid
             )
+            val urls = mutableListOf<String>()
             val documentReference = fireStore.collection("dailyBoard").add(board).await()
-            val uploadTasks = uploadImagesUri.mapIndexed { idx, it ->
-                val choosenImg =
-                    storage.reference.child("board/${documentReference.id}/${idx}.png")
+
+            uploadImagesUri.mapIndexed { idx, it ->
+                val choosenImg = storage.reference.child("board/${documentReference.id}/${idx}.png")
                 choosenImg.putFile(Uri.parse(it.uri)).await()
+                val imageUrls = choosenImg.downloadUrl.await().toString()
+                urls.add(imageUrls)
             }
-            // 모든 이미지 업로드 작업이 성공적으로 완료되었을 경우
-            if (uploadTasks.all { it.task.isSuccessful }) {
-                Response.Success(true)
-            } else {
-                Response.Success(false)
-            }
+
+            fireStoreRef.collection("dailyBoard").document(documentReference.id)
+                .update("imagesURL", urls).await()
+
+            Response.Success(true)
         } catch (e: Exception) {
             Response.Failure(e)
         }
@@ -183,8 +186,10 @@ class DailyBoardRepositoryImpl @Inject constructor(
 
             } catch (e: Exception) {
                 Logger.v(e.message.toString())
-                dailyBoard = DailyBoard(Uri.parse("nothing"),"nothing","nothing",
-                    emptyList(),0,0,"nothing","nothing")
+                dailyBoard = DailyBoard(
+                    Uri.parse("nothing"), "nothing", "nothing",
+                    emptyList(), 0, 0, "nothing", "nothing"
+                )
             }
 
             return@withContext dailyBoard
