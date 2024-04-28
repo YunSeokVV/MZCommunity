@@ -2,17 +2,15 @@ package util
 
 import android.content.Context
 import android.widget.Toast
-import com.example.mzcommunity.R
 import com.google.firebase.firestore.DocumentSnapshot
-import com.orhanobut.logger.Logger
-import dagger.hilt.android.qualifiers.ApplicationContext
 import view.ProgressDialog
 import java.util.Random
 
 class Util {
 
     companion object {
-        var progressDialog: ProgressDialog? = null
+        private var progressDialog: ProgressDialog? = null
+
         fun makeToastMessage(contents: String, context: Context) {
             Toast.makeText(context, contents, Toast.LENGTH_SHORT).show()
         }
@@ -43,12 +41,14 @@ class Util {
         }
 
         fun showProgressDialog(context: Context, showDialog: Boolean) {
+
             progressDialog = progressDialog ?: ProgressDialog(context)
 
             if (showDialog) {
                 progressDialog?.show()
             } else {
                 progressDialog?.dismiss()
+                progressDialog = null
             }
         }
 

@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.orhanobut.logger.Logger
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import model.Images
+import model.File
 import model.Response
 import javax.inject.Inject
 import usecase.DailyBoardUseCase
@@ -23,8 +23,8 @@ class PostingMediaActivityViewModel @Inject constructor(private val dailyBoardUs
             return _isPostingComplete
         }
 
-    fun createPost(contetns: String, uploadImagesUri: ArrayList<Images>) = viewModelScope.launch {
-        dailyBoardUseCase.postDailyBoardRepository(contetns, uploadImagesUri).collect {
+    fun createPost(contetns: String, uploadFileUri: List<File>) = viewModelScope.launch {
+        dailyBoardUseCase.postDailyBoardRepository(contetns, uploadFileUri).collect {
             when (it) {
                 is Response.Success -> {
                     _isPostingComplete.value = it.data?:false
