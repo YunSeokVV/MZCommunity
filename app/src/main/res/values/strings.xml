@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name_english">MZCommunity</string>
     <string name="app_name">MZ커뮤니티</string>
     <string name="board_content">게시글의 내용을 입력해주세요</string>
     <string name="input_email">\@ 이메일입력</string>
