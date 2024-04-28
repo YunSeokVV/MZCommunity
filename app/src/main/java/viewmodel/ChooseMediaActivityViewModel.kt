@@ -9,22 +9,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ChooseMediaActivityViewModel @Inject constructor() : ViewModel() {
-    private val _isChoosen = MutableLiveData<Boolean>(false)
 
-    private val picturedImageUri = mutableListOf<Images>()
-
-    val isChoosen: LiveData<Boolean>
-        get() {
-            return _isChoosen
-        }
-
-    fun setChoosen(isChoosen: Boolean) {
-        _isChoosen.value = isChoosen
-    }
-
-    fun setPicturedImageUri(image : Images) : List<Images>{
-        picturedImageUri.add(image)
-        return picturedImageUri
-    }
 
 }
