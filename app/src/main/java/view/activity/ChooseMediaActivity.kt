@@ -1,9 +1,7 @@
 package view.activity
 
 import adapter.ImageAdapter
-import android.app.Activity
 import android.app.AlertDialog
-import android.content.ContentResolver
 import android.content.ContentValues
 import android.content.DialogInterface
 import android.content.Intent
@@ -22,8 +20,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mzcommunity.R
 import com.example.mzcommunity.databinding.ActivityMultiImagePostingBinding
-import com.orhanobut.logger.Logger
-import model.Images
+import model.File
 import util.Util
 import viewmodel.ChooseMediaActivityViewModel
 
@@ -41,8 +38,8 @@ class ChooseMediaActivity : AppCompatActivity() {
         ActivityResultContracts.StartActivityForResult(),
         ActivityResultCallback { activityResult ->
             if (activityResult.resultCode == RESULT_OK) {
-                val image = mutableListOf<Images>()
-                image.add(Images(cam_uri.toString()))
+                val image = mutableListOf<File>()
+                image.add(File(cam_uri.toString()))
                 imageAdapter.setImages(
                     image
                 )
@@ -75,12 +72,12 @@ class ChooseMediaActivity : AppCompatActivity() {
         imagesRecyclerView.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
 
-        val pickImages =
+        val pickFile =
             registerForActivityResult(ActivityResultContracts.PickMultipleVisualMedia(5)) { uris ->
                 if (uris.isNotEmpty()) {
-                    val choosenUrls = mutableListOf<Images>()
+                    val choosenUrls = mutableListOf<File>()
                     for (i in uris.iterator()) {
-                        choosenUrls.add(Images(i.toString()))
+                        choosenUrls.add(File(i.toString()))
                     }
                     imageAdapter.setImages(choosenUrls)
                     showUplodableView(binding, true)
@@ -107,7 +104,7 @@ class ChooseMediaActivity : AppCompatActivity() {
                     when (which) {
                         // 사진 선택
                         0 -> {
-                            pickImages.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                            pickFile.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
                         }
 
                         // 동영상 선택

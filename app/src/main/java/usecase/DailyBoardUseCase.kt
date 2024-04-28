@@ -2,7 +2,7 @@ package usecase
 
 import kotlinx.coroutines.flow.flow
 import model.DailyBoard
-import model.Images
+import model.File
 import repository.DailyBoardRepository
 import javax.inject.Inject
 
@@ -23,7 +23,7 @@ class DailyBoardUseCase @Inject constructor(private val dailyBoardRepository: Da
         emit(dailyBoardRepository.getDailyBoard(documentId))
     }
 
-    suspend fun postDailyBoardRepository(contents: String, uploadImagesUri: ArrayList<Images>) = flow {
-        emit(dailyBoardRepository.postBoard(contents, uploadImagesUri))
+    suspend fun postDailyBoardRepository(contents: String, uploadFileUri: List<File>) = flow {
+        emit(dailyBoardRepository.postBoard(contents, uploadFileUri))
     }
 }

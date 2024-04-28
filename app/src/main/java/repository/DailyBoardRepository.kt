@@ -1,23 +1,19 @@
 package repository
 
 import android.net.Uri
-import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.storage.FirebaseStorage
 import com.orhanobut.logger.Logger
-import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import model.DailyBoard
 import model.DailyboardCollection
-import model.Images
+import model.File
 import model.Response
 import util.FirebaseAuth
 import util.Util
@@ -25,7 +21,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 interface DailyBoardRepository {
-    suspend fun postBoard(contents: String, uploadImagesUri: ArrayList<Images>): Response<Boolean>
+    suspend fun postBoard(contents: String, uploadFileUri: List<File>): Response<Boolean>
     suspend fun getDailyBoards(): List<DailyBoard>
 
     suspend fun getDailyBoard(documentId: String): DailyBoard
@@ -42,7 +38,7 @@ class DailyBoardRepositoryImpl @Inject constructor(
     DailyBoardRepository {
     override suspend fun postBoard(
         contents: String,
-        uploadImagesUri: ArrayList<Images>
+        uploadFileUri: List<File>
     ): Response<Boolean> = withContext(Dispatchers.IO) {
         try {
             val fireStore = fireStoreRef
@@ -55,8 +51,8 @@ class DailyBoardRepositoryImpl @Inject constructor(
             val urls = mutableListOf<String>()
             val documentReference = fireStore.collection("dailyBoard").add(board).await()
 
-            uploadImagesUri.mapIndexed { idx, it ->
-                val choosenImg = storage.reference.child("board/${documentReference.id}/${idx}.png")
+            uploadFileUri.mapIndexed { idx, it ->
+                val choosenImg = storage.reference.child("board/${documentReference.id}/${idx}")
                 choosenImg.putFile(Uri.parse(it.uri)).await()
                 val imageUrls = choosenImg.downloadUrl.await().toString()
                 urls.add(imageUrls)

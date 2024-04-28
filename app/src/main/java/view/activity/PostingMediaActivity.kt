@@ -11,9 +11,8 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mzcommunity.R
 import com.example.mzcommunity.databinding.ActivityPostingMediaBinding
-import com.orhanobut.logger.Logger
 import dagger.hilt.android.AndroidEntryPoint
-import model.Images
+import model.File
 import util.Util
 import viewmodel.PostingMediaActivityViewModel
 
@@ -21,6 +20,7 @@ import viewmodel.PostingMediaActivityViewModel
 class PostingMediaActivity : AppCompatActivity() {
     private val imageAdapter = ImageAdapter(false)
     private val viewModel: PostingMediaActivityViewModel by viewModels()
+    private var choosenFiles = mutableListOf<File>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_posting_media)
@@ -43,6 +43,13 @@ class PostingMediaActivity : AppCompatActivity() {
 
         binding.postBoard.setOnClickListener {
             Util.showProgressDialog(this, true)
+
+            val contents = if (binding.boardContentes.text.isEmpty()) {
+                binding.boardContentesFull.text.toString()
+            } else {
+                binding.boardContentes.text.toString()
+            }
+            viewModel.createPost(contents, choosenFiles)
         }
 
     }
@@ -56,25 +63,28 @@ class PostingMediaActivity : AppCompatActivity() {
         }
 
         if (intent.getSerializableExtra("choosenImages") != null) {
-            val uploadImagesUri = intent.getSerializableExtra("choosenImages") as ArrayList<Images>
+            val uploadFileUri = intent.getSerializableExtra("choosenImages") as ArrayList<File>
             val imagesRecyclerView = binding.choosenPictureList
             imagesRecyclerView.adapter = imageAdapter
             imagesRecyclerView.layoutManager =
                 LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-            imageAdapter.setImages(uploadImagesUri)
-
+            imageAdapter.setImages(uploadFileUri)
+            choosenFiles.addAll(uploadFileUri)
             return
         }
 
         if (intent.getSerializableExtra("choosenVideo") != null) {
-            val uri = intent.getStringExtra("choosenVideo")
+            val uri = intent.getStringExtra("choosenVideo") ?: "nothing"
             binding.choosenVideo.visibility = View.VISIBLE
             binding.choosenPictureList.visibility = View.GONE
-
             binding.choosenVideo.setVideoURI(Uri.parse(uri))
             binding.choosenVideo.setOnPreparedListener { mediaPlayer ->
                 mediaPlayer.start()
             }
+
+
+            val video = listOf<File>(File(uri))
+            choosenFiles.addAll(video)
             return
         }
     }

@@ -8,12 +8,11 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.mzcommunity.R
-import com.orhanobut.logger.Logger
-import model.Images
+import model.File
 
 class ImageAdapter(private val isRadius : Boolean) : RecyclerView.Adapter<ImageAdapter.ViewHolder>() {
     //private val imagesData = mutableListOf<Images>()
-    private val imagesData = ArrayList<Images>()
+    private val fileData = ArrayList<File>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         LayoutInflater.from(parent.context)
@@ -28,28 +27,28 @@ class ImageAdapter(private val isRadius : Boolean) : RecyclerView.Adapter<ImageA
     }
 
     override fun getItemCount(): Int {
-        return imagesData.size
+        return fileData.size
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(imagesData[position])
+        holder.bind(fileData[position])
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val choosenImage : ImageView = itemView.findViewById(R.id.userChoosenImage)
 
-        fun bind(item : Images){
+        fun bind(item : File){
             choosenImage.setImageURI(Uri.parse(item.uri))
             Glide.with(itemView.context).load(item.uri).into(choosenImage)
         }
 
     }
 
-    fun setImages(data : List<Images>){
-        imagesData.clear()
-        imagesData.addAll(data)
+    fun setImages(data : List<File>){
+        fileData.clear()
+        fileData.addAll(data)
         notifyDataSetChanged()
     }
 
-    fun getImages() = imagesData
+    fun getImages() = fileData
 }
