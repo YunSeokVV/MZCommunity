@@ -1,4 +1,4 @@
-package view
+package view.fragment
 
 import android.net.Uri
 import android.os.Bundle
@@ -12,11 +12,7 @@ import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
 import com.example.mzcommunity.R
 import com.example.mzcommunity.databinding.FragmentMyPageBinding
-import com.google.firebase.Firebase
-import com.google.firebase.storage.storage
-import com.orhanobut.logger.Logger
 import dagger.hilt.android.AndroidEntryPoint
-import util.FirebaseAuth
 import viewmodel.MyPageFragmentViewModel
 
 @AndroidEntryPoint

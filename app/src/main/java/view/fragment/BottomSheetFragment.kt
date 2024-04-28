@@ -1,4 +1,4 @@
-package view
+package view.fragment
 
 
 import adapter.DailyBoardCommentAdapter
@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
-import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -23,11 +22,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.mzcommunity.R
 import com.example.mzcommunity.databinding.FragmentBottomSheetBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.orhanobut.logger.Logger
 import dagger.hilt.android.AndroidEntryPoint
 import model.Comment
 import model.User
 import util.Util
+import view.ProgressDialog
 import viewmodel.BottomSheetFragmentViewModel
 
 

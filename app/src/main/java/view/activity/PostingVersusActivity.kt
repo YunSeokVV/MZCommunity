@@ -1,4 +1,4 @@
-package view
+package view.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -8,6 +8,7 @@ import com.example.mzcommunity.databinding.ActivityPostingVersusBinding
 import dagger.hilt.android.AndroidEntryPoint
 import util.FirebaseAuth
 import util.Util
+import view.ProgressDialog
 import viewmodel.VersusActivityViewModel
 @AndroidEntryPoint
 class PostingVersusActivity : AppCompatActivity() {

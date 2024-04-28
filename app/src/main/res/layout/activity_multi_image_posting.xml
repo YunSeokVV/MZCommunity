@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="view.ChooseMediaActivity">
+    tools:context="view.activity.ChooseMediaActivity">
 
     <ImageView
         android:id="@+id/arrowBack"
@@ -57,6 +57,16 @@
         app:layout_constraintBottom_toTopOf="@+id/guideline2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline" />
+
+    <VideoView
+        android:id="@+id/choosenVideo"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/guideline2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline"
+        />
 
     <ImageView
         android:id="@+id/sotrageImages"

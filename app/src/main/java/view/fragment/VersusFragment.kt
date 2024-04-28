@@ -1,4 +1,4 @@
-package view
+package view.fragment
 
 import android.app.AlertDialog
 import android.content.Intent
@@ -14,6 +14,7 @@ import com.example.mzcommunity.databinding.FragmentVersusBinding
 import com.orhanobut.logger.Logger
 import dagger.hilt.android.AndroidEntryPoint
 import model.User
+import view.activity.PostingVersusActivity
 import viewmodel.VersusFragmnetViewModel
 
 @AndroidEntryPoint

@@ -9,7 +9,7 @@ import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.orhanobut.logger.Logger
-import view.MainActivity
+import view.activity.MainActivity
 
 class FirebaseAuth {
     companion object{

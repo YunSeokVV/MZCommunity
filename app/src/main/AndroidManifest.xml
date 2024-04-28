@@ -18,13 +18,13 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name="view.PostingVersusActivity"
+            android:name="view.activity.PostingVersusActivity"
             android:exported="false" />
         <activity
-            android:name="view.PostingMediaActivity"
+            android:name="view.activity.PostingMediaActivity"
             android:exported="false" />
         <activity
-            android:name="view.ChooseMediaActivity"
+            android:name="view.activity.ChooseMediaActivity"
             android:exported="false" /> <!-- Trigger Google Play services to install the backported photo picker module. -->
         <service
             android:name="com.google.android.gms.metadata.ModuleDependencies"
@@ -45,10 +45,10 @@
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name="view.SignUpActivity"
+            android:name="view.activity.SignUpActivity"
             android:exported="false" />
         <activity
-            android:name="view.LoginActivity"
+            android:name="view.activity.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -57,7 +57,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="view.MainActivity"
+            android:name="view.activity.MainActivity"
             android:windowSoftInputMode="adjustResize|adjustPan"
             android:exported="true" />
     </application>
