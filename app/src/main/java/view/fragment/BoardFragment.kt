@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.mzcommunity.databinding.FragmentBoardBinding
 import dagger.hilt.android.AndroidEntryPoint
 import model.DailyBoard

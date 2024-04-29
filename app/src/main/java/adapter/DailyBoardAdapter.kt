@@ -226,7 +226,7 @@ class DailyBoardAdapter(
     fun getUserUploadFilesUri(): List<List<Uri>> {
         var uris = mutableListOf<List<Uri>>()
         currentList.forEach {
-            uris.add(it.images)
+            uris.add(it.files)
         }
         return uris
     }

@@ -20,7 +20,7 @@ class BoardFramgnetViewModel @Inject constructor(private val dailyBoardUseCase: 
     private val _documents = MutableLiveData<List<DailyBoard>>()
 
     init {
-        //getDailyBoards()
+        getDailyBoards()
     }
 
     fun increaseDailyBoardLike(dailyBoard: DailyBoard, documentId : String, adapterPosition : Int) = viewModelScope.launch {

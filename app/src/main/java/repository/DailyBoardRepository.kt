@@ -59,7 +59,7 @@ class DailyBoardRepositoryImpl @Inject constructor(
             }
 
             fireStoreRef.collection("dailyBoard").document(documentReference.id)
-                .update("imagesURL", urls).await()
+                .update("fileURL", urls).await()
 
             Response.Success(true)
         } catch (e: Exception) {
@@ -78,43 +78,32 @@ class DailyBoardRepositoryImpl @Inject constructor(
                     Util.parsingFireStoreDocument(document, "like").toInt(),
                     Util.parsingFireStoreDocument(document, "writerUID"),
                     Util.parsingFireStoreDocument(document, "userFavourability"),
+                    Util.parsingDailyBoardFiles(document, "fileURL")
                 )
 
                 try {
                     runBlocking {
-                        val userNicknameSnapshot = async {
+                        val userInfoSnapshot =
                             fireStoreRef.collection("MZUsers")
                                 .document(dailyBoardCollection.writerUID).get().await()
-                        }.await()
 
-                        val writerProfileUri = async {
-                            storage.reference.child("user_profile_image/" + dailyBoardCollection.writerUID + ".jpg").downloadUrl.await()
-                        }.await()
-
-                        val boardImagesSnapshot = async {
-                            storage.reference.child("board/${document.id}").listAll().await()
-                        }.await()
-
-                        val boardImages = boardImagesSnapshot.items.map {
-                            it.downloadUrl.await()
+                        val files = dailyBoardCollection.files.map {
+                            Uri.parse(it)
                         }
 
-                        val boardUID = async {
-                            document.id
-                        }.await()
-
-                        val userNickName = userNicknameSnapshot.get("nickName").toString()
+                        val boardUID = document.id
+                        val userProfile = Uri.parse(userInfoSnapshot.get("profileURL").toString())
+                        val userNickName = userInfoSnapshot.get("nickName").toString()
                         val boardContents = dailyBoardCollection.boardContents
                         val like = dailyBoardCollection.like
                         val disLike = dailyBoardCollection.disLike
                         val userFavourability = dailyBoardCollection.favourability
 
-
                         val dailyBoard = DailyBoard(
-                            writerProfileUri,
+                            userProfile,
                             userNickName,
                             boardContents,
-                            boardImages,
+                            files,
                             disLike,
                             like,
                             boardUID,
@@ -127,8 +116,6 @@ class DailyBoardRepositoryImpl @Inject constructor(
                 } catch (e: Exception) {
                     Logger.v(e.message.toString())
                 }
-
-
             }
         }.await()
 
@@ -147,6 +134,7 @@ class DailyBoardRepositoryImpl @Inject constructor(
                     Util.parsingFireStoreDocument(document, "like").toInt(),
                     Util.parsingFireStoreDocument(document, "writerUID"),
                     Util.parsingFireStoreDocument(document, "userFavourability"),
+                    Util.parsingDailyBoardFiles(document, "fileURL")
                 )
 
                 val userNicknameSnapshot =

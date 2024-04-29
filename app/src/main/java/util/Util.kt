@@ -34,6 +34,8 @@ class Util {
             return result
         }
 
+        fun parsingDailyBoardFiles(documentSnapshot: DocumentSnapshot, key: String): List<String> = documentSnapshot.get(key) as? List<String> ?: listOf()
+
         fun removeStr(original: String, deleteStr: String): String {
             var result = original
             result = result.substring(deleteStr.length)
