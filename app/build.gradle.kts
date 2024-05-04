@@ -53,6 +53,12 @@ android {
 }
 
 dependencies {
+
+    //exoPlayer
+    implementation("com.google.android.exoplayer:exoplayer-core:2.18.2")
+    implementation("com.google.android.exoplayer:exoplayer-dash:2.18.2")
+    implementation("com.google.android.exoplayer:exoplayer-ui:2.18.2")
+
     // Import the Firebase BoM
     implementation(platform("com.google.firebase:firebase-bom:32.7.2"))
 

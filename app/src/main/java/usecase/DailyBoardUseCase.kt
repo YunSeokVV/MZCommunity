@@ -3,16 +3,13 @@ package usecase
 import kotlinx.coroutines.flow.flow
 import model.DailyBoard
 import model.File
+import model.Response
 import repository.DailyBoardRepository
 import javax.inject.Inject
 
 class DailyBoardUseCase @Inject constructor(private val dailyBoardRepository: DailyBoardRepository){
-    suspend fun increaseDailyBoardLikeUseCase(dailyBoard: DailyBoard) = flow{
-        emit(dailyBoardRepository.increaseDailyBoardLike(dailyBoard))
-    }
-
-    suspend fun increaseDailyBoardDisLike(dailyBoard: DailyBoard) = flow{
-        emit(dailyBoardRepository.increaseDailyBoardDisLike(dailyBoard))
+    suspend fun increaseFavourability(dailyBoard: DailyBoard, isLike : Boolean) = flow{
+        emit(dailyBoardRepository.increaseFavourability(dailyBoard, isLike))
     }
 
     suspend fun getDailyBoards() = flow {
@@ -23,7 +20,7 @@ class DailyBoardUseCase @Inject constructor(private val dailyBoardRepository: Da
         emit(dailyBoardRepository.getDailyBoard(documentId))
     }
 
-    suspend fun postDailyBoardRepository(contents: String, uploadFileUri: List<File>) = flow {
-        emit(dailyBoardRepository.postBoard(contents, uploadFileUri))
+    suspend fun postDailyBoardRepository(contents: String, uploadFileUri: List<File>, viewType : Int) = flow {
+        emit(dailyBoardRepository.postBoard(contents, uploadFileUri, viewType))
     }
 }

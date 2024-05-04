@@ -23,8 +23,8 @@ class PostingMediaActivityViewModel @Inject constructor(private val dailyBoardUs
             return _isPostingComplete
         }
 
-    fun createPost(contetns: String, uploadFileUri: List<File>) = viewModelScope.launch {
-        dailyBoardUseCase.postDailyBoardRepository(contetns, uploadFileUri).collect {
+    fun createPost(contetns: String, uploadFileUri: List<File>, viewType : Int) = viewModelScope.launch {
+        dailyBoardUseCase.postDailyBoardRepository(contetns, uploadFileUri, viewType).collect {
             when (it) {
                 is Response.Success -> {
                     _isPostingComplete.value = it.data?:false

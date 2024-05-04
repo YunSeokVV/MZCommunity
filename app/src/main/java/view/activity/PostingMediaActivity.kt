@@ -21,6 +21,9 @@ class PostingMediaActivity : AppCompatActivity() {
     private val imageAdapter = ImageAdapter(false)
     private val viewModel: PostingMediaActivityViewModel by viewModels()
     private var choosenFiles = mutableListOf<File>()
+
+    // 업로드할 내용의 타입을 지정. 0 텍스트, 1 사진, 2 동영상
+    private var viewType = 0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_posting_media)
@@ -49,7 +52,7 @@ class PostingMediaActivity : AppCompatActivity() {
             } else {
                 binding.boardContentes.text.toString()
             }
-            viewModel.createPost(contents, choosenFiles)
+            viewModel.createPost(contents, choosenFiles, viewType)
         }
 
     }
@@ -59,6 +62,7 @@ class PostingMediaActivity : AppCompatActivity() {
             binding.boardContentesFull.visibility = View.VISIBLE
             binding.choosenPictureList.visibility = View.GONE
             binding.boardContentes.visibility = View.GONE
+            viewType = 0
             return
         }
 
@@ -70,6 +74,7 @@ class PostingMediaActivity : AppCompatActivity() {
                 LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
             imageAdapter.setImages(uploadFileUri)
             choosenFiles.addAll(uploadFileUri)
+            viewType = 1
             return
         }
 
@@ -81,8 +86,7 @@ class PostingMediaActivity : AppCompatActivity() {
             binding.choosenVideo.setOnPreparedListener { mediaPlayer ->
                 mediaPlayer.start()
             }
-
-
+            viewType = 2
             val video = listOf<File>(File(uri))
             choosenFiles.addAll(video)
             return
