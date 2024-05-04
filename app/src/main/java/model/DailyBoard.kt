@@ -12,5 +12,6 @@ data class DailyBoard(
     val disLike: Int,
     val like: Int,
     val boardUID: String,
-    val favourability: String
+    val favourability: String,
+    val viewType : Int
 )

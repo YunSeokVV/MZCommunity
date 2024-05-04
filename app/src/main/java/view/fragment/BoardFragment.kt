@@ -21,7 +21,6 @@ class BoardFragment(private val userProfile : User) : Fragment() {
     private val viewModel by viewModels<BoardFramgnetViewModel>()
     private lateinit var binding: FragmentBoardBinding
     private lateinit var dailyBoardAdapter : DailyBoardAdapter
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -31,17 +30,16 @@ class BoardFragment(private val userProfile : User) : Fragment() {
         binding.dailyBoards.layoutManager =
             LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false)
 
-
         dailyBoardAdapter = DailyBoardAdapter(
             object : DailyBoardAdapter.IncreaseLike {
                 override fun increaseLike(dailyBoard: DailyBoard, adapterPosition : Int) {
-                    viewModel.increaseDailyBoardLike(dailyBoard, dailyBoard.boardUID, adapterPosition)
+                    viewModel.increaseFavourability(dailyBoard, dailyBoard.boardUID, adapterPosition, true)
                 }
 
             },
             object : DailyBoardAdapter.IncreaseDisLike {
                 override fun increaseDisLike(dailyBoard: DailyBoard, adapterPosition : Int) {
-                    viewModel.increaseDailyBoardDisLike(dailyBoard, dailyBoard.boardUID, adapterPosition)
+                    viewModel.increaseFavourability(dailyBoard, dailyBoard.boardUID, adapterPosition, false)
                 }
 
             },
@@ -52,7 +50,6 @@ class BoardFragment(private val userProfile : User) : Fragment() {
                 }
 
             })
-
 
 
         binding.dailyBoards.adapter = dailyBoardAdapter

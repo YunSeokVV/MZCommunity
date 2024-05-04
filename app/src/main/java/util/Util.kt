@@ -17,18 +17,21 @@ class Util {
 
         fun parsingFireStoreDocument(documentSnapshot: DocumentSnapshot, key: String): String {
             var result: String
-            if (key.equals("disLike")) {
+            if (key == "disLike") {
                 result = (documentSnapshot.get(key) as? Long ?: 0).toString()
-            } else if (key.equals("like")) {
+            } else if (key == "like") {
                 result = (documentSnapshot.get(key) as? Long ?: 0).toString()
-            } else if (key.equals("writerUID")) {
+            } else if (key == "writerUID") {
                 result = documentSnapshot.get(key) as? String ?: "noWriterUID"
-            } else if (key.equals("boardContents")) {
+            } else if (key == "boardContents") {
                 result = documentSnapshot.get(key) as? String ?: "noBoardContents"
-            } else if (key.equals("userFavourability")) {
+            } else if (key == "userFavourability") {
                 val userFavour = documentSnapshot.get(key) as? Map<String, Any>
                 result = (userFavour?.get(FirebaseAuth.auth.uid.toString()) ?: "usual").toString()
-            } else {
+            } else if(key == "viewType"){
+                result = (documentSnapshot.get(key) as? Long ?: 0).toString()
+            }
+            else {
                 result = documentSnapshot.get(key) as? String ?: "nothing"
             }
             return result
