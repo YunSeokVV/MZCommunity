@@ -9,9 +9,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.mzcommunity.databinding.DailyBoardCommentItemBinding
 import com.example.mzcommunity.databinding.ItemLoadingBinding
-import com.orhanobut.logger.Logger
 import model.Comment
-import model.User
+import model.LoginedUser
 import view.LoadingViewHolder
 
 
@@ -35,7 +34,7 @@ class DailyBoardCommentAdapter(
         fun showNestedComment(comment: Comment, recyclerView: RecyclerView)
     }
 
-    fun addComment(loginedUser: User, contents: String, parentUID: String) {
+    fun addComment(loginedUser: LoginedUser, contents: String, parentUID: String) {
         val comment =
             Comment(loginedUser.profileUri, loginedUser.nickName, contents, parentUID, false)
         comments.add(0, comment)
@@ -118,7 +117,7 @@ class DailyBoardCommentAdapter(
         nestedCommentList = comments.toMutableList()
     }
 
-    fun addNestedCommentItem(loginedUser: User, contents: String, parentUID: String){
+    fun addNestedCommentItem(loginedUser: LoginedUser, contents: String, parentUID: String){
         val comment =
             Comment(loginedUser.profileUri, loginedUser.nickName, contents, parentUID, false)
 

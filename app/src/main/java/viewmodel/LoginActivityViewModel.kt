@@ -7,12 +7,12 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import dagger.hilt.android.lifecycle.HiltViewModel
+import usecase.SignInUsecase
 import javax.inject.Inject
-import usecase.GoogleLoginActivityUseCase
-import usecase.SetUserNicknameUseCase
+import usecase.SignUpUsecase
 
 @HiltViewModel
-class LoginActivityViewModel @Inject constructor(private val googleLoginActivityUseCase: GoogleLoginActivityUseCase, private val setUserNicknameUseCase : SetUserNicknameUseCase) :
+class LoginActivityViewModel @Inject constructor(private val signInUsecase: SignInUsecase, private val signUpUsecase: SignUpUsecase) :
     ViewModel() {
 
     private val _isGoogleSignIn = MutableLiveData<Boolean>(false)
@@ -21,15 +21,20 @@ class LoginActivityViewModel @Inject constructor(private val googleLoginActivity
         get() = _isGoogleSignIn
 
     suspend fun signInWithGoogle(completedTask: Task<GoogleSignInAccount>) {
-        googleLoginActivityUseCase.signInWithGoogle(completedTask).collect {
+        signInUsecase.signInWithGoogle(completedTask).collect {
             _isGoogleSignIn.value = it
             val account = completedTask.getResult(ApiException::class.java)
             setUserNickName(account.email.toString())
         }
     }
 
-    suspend fun setUserNickName(nickName : String){
-        setUserNicknameUseCase(nickName)
+    private suspend fun setUserNickName(nickName : String){
+        signUpUsecase.setUserNickname(nickName)
+    }
+
+    // 이메일로 로그인한 사용자의 정보를 불러오는 메소드
+    private suspend fun getSavedUserLoginInfo(){
+
     }
 
 }

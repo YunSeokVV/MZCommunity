@@ -9,15 +9,14 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.mzcommunity.databinding.FragmentBoardBinding
 import dagger.hilt.android.AndroidEntryPoint
 import model.DailyBoard
-import model.User
+import model.LoginedUser
 import viewmodel.BoardFramgnetViewModel
 
 @AndroidEntryPoint
-class BoardFragment(private val userProfile : User) : Fragment() {
+class BoardFragment(private val loginedUserProfile : LoginedUser) : Fragment() {
     private val viewModel by viewModels<BoardFramgnetViewModel>()
     private lateinit var binding: FragmentBoardBinding
     private lateinit var dailyBoardAdapter : DailyBoardAdapter
@@ -45,7 +44,7 @@ class BoardFragment(private val userProfile : User) : Fragment() {
             },
             object : DailyBoardAdapter.ShowComment{
                 override fun showComment(dailyBoard : DailyBoard) {
-                    val bottomSheetFragment = BottomSheetFragment(dailyBoard.boardUID,"dailyBoardComment", "dailyBoardNestedComment", "dailyBoardComment", userProfile)
+                    val bottomSheetFragment = BottomSheetFragment(dailyBoard.boardUID,"dailyBoardComment", "dailyBoardNestedComment", "dailyBoardComment", loginedUserProfile)
                     bottomSheetFragment.show(childFragmentManager, bottomSheetFragment.tag)
                 }
 

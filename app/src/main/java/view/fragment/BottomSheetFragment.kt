@@ -24,7 +24,7 @@ import com.example.mzcommunity.databinding.FragmentBottomSheetBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
 import model.Comment
-import model.User
+import model.LoginedUser
 import util.Util
 import view.ProgressDialog
 import viewmodel.BottomSheetFragmentViewModel
@@ -36,7 +36,7 @@ class BottomSheetFragment(
     private val collectionName: String,
     private val nestedCommentCollection: String,
     private val commentName: String,
-    private val loginedUser: User
+    private val loginedUser: LoginedUser
 ) : BottomSheetDialogFragment() {
     private lateinit var binding: FragmentBottomSheetBinding
     private val viewModel by viewModels<BottomSheetFragmentViewModel>()

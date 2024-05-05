@@ -7,7 +7,7 @@ import androidx.lifecycle.Observer
 import com.example.mzcommunity.R
 import com.example.mzcommunity.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
-import model.User
+import model.LoginedUser
 import view.fragment.BoardFragment
 import view.fragment.MyPageFragment
 import view.fragment.PostingFragment
@@ -18,30 +18,30 @@ import viewmodel.MainActivityViewModel
 class MainActivity : AppCompatActivity() {
     private val viewModel : MainActivityViewModel by viewModels()
     private lateinit var binding: ActivityMainBinding
-    private lateinit var userProfile : User
+    private lateinit var loginedUserProfile : LoginedUser
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        viewModel.userInfo.observe(this, Observer {user ->
-            userProfile = user
+        viewModel.loginedUserInfo.observe(this, Observer { user ->
+            loginedUserProfile = user
 
             supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, BoardFragment(userProfile)).commit()
+                .replace(R.id.fragment_container, BoardFragment(loginedUserProfile)).commit()
 
 
             binding.bottomNavigationView.setOnItemSelectedListener { item ->
                 when (item.itemId) {
                     R.id.fragment_board -> {
                         supportFragmentManager.beginTransaction()
-                            .replace(R.id.fragment_container, BoardFragment(userProfile)).commit()
+                            .replace(R.id.fragment_container, BoardFragment(loginedUserProfile)).commit()
                         true
                     }
 
                     R.id.fragment_versus -> {
                         supportFragmentManager.beginTransaction()
-                            .replace(R.id.fragment_container, VersusFragment(userProfile)).commit()
+                            .replace(R.id.fragment_container, VersusFragment(loginedUserProfile)).commit()
                         true
                     }
 
@@ -68,7 +68,7 @@ class MainActivity : AppCompatActivity() {
 
     fun showBoardFragmnet() {
         binding.bottomNavigationView.setSelectedItemId(R.id.fragment_board)
-        supportFragmentManager.beginTransaction().replace(R.id.fragment_container, BoardFragment(userProfile))
+        supportFragmentManager.beginTransaction().replace(R.id.fragment_container, BoardFragment(loginedUserProfile))
             .commit()
     }
 }

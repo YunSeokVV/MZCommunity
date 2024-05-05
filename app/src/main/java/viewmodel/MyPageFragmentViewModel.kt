@@ -1,22 +1,22 @@
 package viewmodel
 
+import android.app.Application
 import android.net.Uri
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.orhanobut.logger.Logger
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import model.Response
-import model.User
+import model.LoginedUser
 import usecase.UserUsecase
 import javax.inject.Inject
 
 @HiltViewModel
-class MyPageFragmentViewModel @Inject constructor(private val mypageUsecasae: UserUsecase) :
-    ViewModel() {
+class MyPageFragmentViewModel @Inject constructor(private val application : Application, private val mypageUsecasae: UserUsecase) :
+    AndroidViewModel(application) {
     init {
         getUserProfile()
     }
@@ -27,10 +27,10 @@ class MyPageFragmentViewModel @Inject constructor(private val mypageUsecasae: Us
             return _isUpdateComplte
         }
 
-    private val _user = MutableLiveData<User>()
-    val user: LiveData<User>
+    private val _logined_user = MutableLiveData<LoginedUser>()
+    val loginedUser: LiveData<LoginedUser>
         get() {
-            return _user
+            return _logined_user
         }
 
     private val _isEditMode = MutableLiveData<Boolean>(false)
@@ -46,9 +46,9 @@ class MyPageFragmentViewModel @Inject constructor(private val mypageUsecasae: Us
     }
 
     fun getUserProfile() = viewModelScope.launch {
-        mypageUsecasae.getUserProfile().collect {
+        mypageUsecasae.getUserProfile(application.applicationContext).collect {
             Logger.v(it.toString())
-            _user.value = it
+            _logined_user.value = it
         }
     }
 

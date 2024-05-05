@@ -10,12 +10,15 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.launch
+import repository.SignInActivityRepository
 import util.FirebaseAuth
+import javax.inject.Inject
 
-class GoogleLoginActivityUseCase() {
+class SignInUsecase @Inject constructor(private val signInActivityRepository : SignInActivityRepository){
+
+
     fun signInWithGoogle(completedTask: Task<GoogleSignInAccount>) = callbackFlow {
         try {
-
             val account = completedTask.getResult(ApiException::class.java)
             val mAuth = FirebaseAuth.auth
 
@@ -27,8 +30,6 @@ class GoogleLoginActivityUseCase() {
                         GlobalScope.launch {
                             trySend(it.isSuccessful)
                         }
-
-                        // here
                     }
                 }
 
