@@ -54,6 +54,10 @@ android {
 
 dependencies {
 
+    // roomDB
+    implementation ("androidx.room:room-runtime:2.5.2")
+    kapt ("androidx.room:room-compiler:2.5.2")
+
     //exoPlayer
     implementation("com.google.android.exoplayer:exoplayer-core:2.18.2")
     implementation("com.google.android.exoplayer:exoplayer-dash:2.18.2")
