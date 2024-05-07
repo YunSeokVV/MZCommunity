@@ -45,5 +45,5 @@ interface LoginInfoDao {
     fun insertUserInfo(loginInfo: LoginInfo)
 
     @Query("SELECT * FROM LoginInfo")
-    fun getAllUsers(): LiveData<List<LoginInfo>>
+    fun getUserInfo(): LoginInfo
 }

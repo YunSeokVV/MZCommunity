@@ -40,7 +40,7 @@ class SignUpActivityRepositoryImpl @Inject constructor(private val firestore: Fi
 
     override suspend fun saveUserLoginInfo(nickName: String, passwd: String, context : Context): Response<Boolean> = withContext(Dispatchers.IO){
         try {
-            val loginInfo = LoginInfo(0, nickName, passwd)
+            val loginInfo = LoginInfo(0, nickName, passwd, "email")
             LoginUserDB.getInstance(context)?.getEventsDao()?.insertUserInfo(loginInfo)
             Response.Success(true)
         } catch (e : Exception){
