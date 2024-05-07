@@ -13,8 +13,8 @@ import repository.DailyBoardRepository
 import repository.DailyBoardRepositoryImpl
 import repository.CommentRepostiroy
 import repository.CommentRepostiroyImpl
-import repository.LoginActivityRepository
-import repository.LoginActivityRepositoryImpl
+import repository.SignUpActivityRepository
+import repository.SignUpActivityRepositoryImpl
 import repository.UserRepository
 import repository.UserRepositoryImpl
 import repository.VersusRepostiroy
@@ -31,7 +31,7 @@ object FirebaseModule {
     fun provideStroageRef() = Firebase.storage
 
     @Provides
-    fun provideLoginActivityRepository(fireStore : FirebaseFirestore) : LoginActivityRepository = LoginActivityRepositoryImpl(
+    fun provideLoginActivityRepository(fireStore : FirebaseFirestore) : SignUpActivityRepository = SignUpActivityRepositoryImpl(
         fireStore
     )
 

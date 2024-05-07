@@ -1,6 +1,7 @@
 package view.activity
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
@@ -14,6 +15,7 @@ import com.example.mzcommunity.R
 import com.example.mzcommunity.databinding.ActivityLoginBinding
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.tasks.Task
 import com.orhanobut.logger.AndroidLogAdapter
@@ -27,7 +29,6 @@ import viewmodel.LoginActivityViewModel
 @AndroidEntryPoint
 class LoginActivity : AppCompatActivity() {
     private val loginActivityViewModel: LoginActivityViewModel by viewModels()
-
 
     private var resultLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -52,6 +53,12 @@ class LoginActivity : AppCompatActivity() {
         if (textView is TextView)
             textView.setText(getString(R.string.start_with_google));
 
+        // 이미 구글로그인을 했던 경우 자동로그인 기능 실행
+        siginInSilently()
+        loginActivityViewModel.emailAutoLogin.observe(this, Observer { logined ->
+            if (logined)
+                launchMainActivity()
+        })
 
         binding.logInBtn.setOnClickListener {
             // 이메일 주소, 비밀번호 editText중 입력하지 않은게 있는 경우
@@ -68,9 +75,7 @@ class LoginActivity : AppCompatActivity() {
                     binding.passWordInput.text.toString()
                 ).addOnCompleteListener(this) { task ->
                     if (task.isSuccessful) {
-                        val intent = Intent(this, MainActivity::class.java)
-                        startActivity(intent)
-
+                        launchMainActivity()
                     } else {
                         Util.makeToastMessage("사용자 정보를 확인해주세요 :)", this)
                         try {
@@ -94,10 +99,10 @@ class LoginActivity : AppCompatActivity() {
 
         }
 
+        // 구글로 로그인시 메인화면으로 이동
         loginActivityViewModel.isGoogleLogin.observe(this, Observer { data ->
             if (data) {
-                val intent = Intent(this, MainActivity::class.java)
-                startActivity(intent)
+                launchMainActivity()
             }
         })
 
@@ -113,6 +118,22 @@ class LoginActivity : AppCompatActivity() {
         val mGoogleSignInClient = let { GoogleSignIn.getClient(it, gso) }
         val signInIntent = mGoogleSignInClient.signInIntent
         resultLauncher.launch(signInIntent)
+    }
+
+    private fun siginInSilently() {
+        val signInClient: GoogleSignInClient =
+            GoogleSignIn.getClient(this, GoogleSignInOptions.DEFAULT_SIGN_IN)
+        signInClient.silentSignIn().addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                launchMainActivity()
+            }
+
+        }
+    }
+
+    private fun launchMainActivity() {
+        val intent = Intent(this, MainActivity::class.java)
+        startActivity(intent)
     }
 
 }

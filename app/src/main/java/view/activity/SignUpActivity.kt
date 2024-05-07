@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.text.TextUtils
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import com.example.mzcommunity.R
 import com.example.mzcommunity.databinding.ActivitySignUpBinding
@@ -40,6 +41,7 @@ class SignUpActivity : AppCompatActivity() {
                     if (task.isSuccessful) {
                         lifecycleScope.launch {
                             viewModel.setUserNickName(binding.emailInput.text.toString())
+                            viewModel.saveUserLoginInfo(binding.emailInput.text.toString(), binding.passWordInput.text.toString())
                         }
                         Util.makeToastMessage("회원가입을 축하합니다! 저희앱을 사용해주셔서 감사합니다 :)", this)
                         val intent = Intent(this, MainActivity::class.java)
@@ -62,6 +64,12 @@ class SignUpActivity : AppCompatActivity() {
                 Util.makeToastMessage("비밀번호를 다시한번 확인해주세요 :)", this)
             }
         }
+
+        viewModel.saveUserInfo.observe(this, Observer { saved ->
+            if(saved){
+
+            }
+        })
 
     }
 

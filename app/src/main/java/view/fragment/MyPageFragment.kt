@@ -66,7 +66,7 @@ class MyPageFragment : Fragment() {
             }
         })
 
-        viewModel.user.observe(requireActivity(), Observer {
+        viewModel.loginedUser.observe(requireActivity(), Observer {
             profileUri = it.profileUri
             Glide.with(requireContext()).load(it.profileUri).into(binding.userProfileImg)
             it.nickName
