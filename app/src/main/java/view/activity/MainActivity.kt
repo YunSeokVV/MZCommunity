@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.example.mzcommunity.R
 import com.example.mzcommunity.databinding.ActivityMainBinding
+import com.orhanobut.logger.Logger
 import dagger.hilt.android.AndroidEntryPoint
 import model.LoginedUser
 import view.fragment.BoardFragment
@@ -23,6 +24,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        Logger.v("gd")
 
         viewModel.loginedUserInfo.observe(this, Observer { user ->
             loginedUserProfile = user

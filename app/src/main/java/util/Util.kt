@@ -1,6 +1,7 @@
 package util
 
 import android.content.Context
+import android.net.Uri
 import android.widget.Toast
 import com.google.firebase.firestore.DocumentSnapshot
 import view.ProgressDialog
@@ -10,6 +11,8 @@ class Util {
 
     companion object {
         private var progressDialog: ProgressDialog? = null
+
+        fun uriToString(uri: Uri): String = uri.toString()
 
         fun makeToastMessage(contents: String, context: Context) {
             Toast.makeText(context, contents, Toast.LENGTH_SHORT).show()
@@ -28,16 +31,16 @@ class Util {
             } else if (key == "userFavourability") {
                 val userFavour = documentSnapshot.get(key) as? Map<String, Any>
                 result = (userFavour?.get(FirebaseAuth.auth.uid.toString()) ?: "usual").toString()
-            } else if(key == "viewType"){
+            } else if (key == "viewType") {
                 result = (documentSnapshot.get(key) as? Long ?: 0).toString()
-            }
-            else {
+            } else {
                 result = documentSnapshot.get(key) as? String ?: "nothing"
             }
             return result
         }
 
-        fun parsingDailyBoardFiles(documentSnapshot: DocumentSnapshot, key: String): List<String> = documentSnapshot.get(key) as? List<String> ?: listOf()
+        fun parsingDailyBoardFiles(documentSnapshot: DocumentSnapshot, key: String): List<String> =
+            documentSnapshot.get(key) as? List<String> ?: listOf()
 
         fun removeStr(original: String, deleteStr: String): String {
             var result = original

@@ -18,7 +18,7 @@ class SignInActivityRepositoryImpl @Inject constructor() : SignInActivityReposit
     override suspend fun getSavedUserLoginInfo(context: Context): Response<LoginInfo> {
         return try{
             val response = LoginUserDB.getInstance(context)!!.getEventsDao().getUserInfo()
-            Response.Success(response)
+            Response.success(response)
         } catch (e : Exception){
             Logger.v(e.message.toString())
             Response.Failure(e)
