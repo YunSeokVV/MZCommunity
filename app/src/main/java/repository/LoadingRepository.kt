@@ -43,7 +43,7 @@ class LoadingRepositoryImpl @Inject constructor(
 
         val snapShot = fireStoreRef.collection("MZUsers").document(FirebaseAuth.auth.uid.toString()).get().await()
         val nickName = snapShot.get("nickName") as? String ?: "알 수 없는 사용자"
-        val loginedUser = LoginedUser(profile, nickName)
+        val loginedUser = LoginedUser(profile.toString(), nickName)
         return loginedUser
     }
 
@@ -59,13 +59,7 @@ class LoadingRepositoryImpl @Inject constructor(
                         val userInfoSnapshot =
                             fireStoreRef.collection("MZUsers")
                                 .document(dailyBoardCollection.writerUID).get().await()
-
-                        val files = dailyBoardCollection.files.map {
-                            Uri.parse(it)
-                        }
-
                         val boardUID = document.id
-                        val userProfile = Uri.parse(userInfoSnapshot.get("profileURL").toString())
                         val userNickName = userInfoSnapshot.get("nickName").toString()
                         val boardContents = dailyBoardCollection.boardContents
                         val like = dailyBoardCollection.like
@@ -74,10 +68,10 @@ class LoadingRepositoryImpl @Inject constructor(
                         val viewType = dailyBoardCollection.viewType
 
                         val dailyBoard = DailyBoard(
-                            userProfile,
                             userNickName,
+                            userInfoSnapshot.get("profileURL").toString(),
                             boardContents,
-                            files,
+                            dailyBoardCollection.files,
                             disLike,
                             like,
                             boardUID,

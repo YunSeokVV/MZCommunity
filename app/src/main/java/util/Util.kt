@@ -12,8 +12,6 @@ class Util {
     companion object {
         private var progressDialog: ProgressDialog? = null
 
-        fun uriToString(uri: Uri): String = uri.toString()
-
         fun makeToastMessage(contents: String, context: Context) {
             Toast.makeText(context, contents, Toast.LENGTH_SHORT).show()
         }

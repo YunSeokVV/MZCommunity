@@ -57,7 +57,7 @@ class UserRepositoryImpl @Inject constructor(
 
         val snapShot = fireStoreRef.collection("MZUsers").document(FirebaseAuth.auth.uid.toString()).get().await()
         val nickName = snapShot.get("nickName") as? String ?: "알 수 없는 사용자"
-        val loginedUser = LoginedUser(profile, nickName)
+        val loginedUser = LoginedUser(profile.toString(), nickName)
         return loginedUser
     }
 }

@@ -1,6 +1,5 @@
 package model
 
-import android.net.Uri
 import java.io.Serializable
 
-data class LoginedUser(val profileUri : Uri, val nickName : String) : Serializable
+data class LoginedUser(val profileUri : String, val nickName : String) : Serializable

@@ -29,19 +29,10 @@ class LoadingActivity : AppCompatActivity() {
         viewModel.loadComplete.observe(this, Observer {loadComplete ->
             if(loadComplete){
                 val intent = Intent(this, MainActivity::class.java)
-
-                // 로그인한 사용자의 프로필사진 uri 정보다
-                val loginedUserUri = Util.uriToString(viewModel.logined_userInfo.value?.profileUri ?: Uri.parse("android.resource://" + this.packageName + "/" + R.drawable.user_profile2))
-                intent.putExtra("loginedUserUri",loginedUserUri)
-                intent.putExtra("loginedUserNickname", viewModel.logined_userInfo.value?.nickName ?: "알 수 없는 사용자")
-
-
-                intent.putExtra("writerNickname",viewModel.getWriterNicknames())
-                intent.putExtra("writerProfileUri",viewModel.writerProfileUriStrs())
-
-
+                val userProfile = viewModel.logined_userInfo.value
                 val dailyBoards = ArrayList(viewModel.dailyBoards.value)
 
+                intent.putExtra("userProfile", userProfile)
                 intent.putExtra("dailyBoards", dailyBoards)
                 startActivity(intent)
             }

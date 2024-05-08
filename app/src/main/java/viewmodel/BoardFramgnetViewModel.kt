@@ -18,11 +18,7 @@ import usecase.DailyBoardUseCase
 @HiltViewModel
 class BoardFramgnetViewModel @Inject constructor(private val dailyBoardUseCase: DailyBoardUseCase) : ViewModel(){
 
-    private val _documents = MutableLiveData<List<DailyBoard>>()
-
-    init {
-        getDailyBoards()
-    }
+    private val _dailyBoards = MutableLiveData<List<DailyBoard>>()
 
     // isLike : true인 경우 좋아요 버튼을 눌렀을때를 의미한다. false 인 경우에는 disLike 버튼을 눌렀다는 것을 의미
     fun increaseFavourability(dailyBoard: DailyBoard, documentId : String, adapterPosition : Int, isLike : Boolean) = viewModelScope.launch {
@@ -39,26 +35,23 @@ class BoardFramgnetViewModel @Inject constructor(private val dailyBoardUseCase: 
         }
     }
 
-    val document: LiveData<List<DailyBoard>>
+    val dailyBoards: LiveData<List<DailyBoard>>
         get() {
-            return _documents
+            return _dailyBoards
 
         }
-
-    fun getDailyBoards() = viewModelScope.launch {
-        dailyBoardUseCase.getDailyBoards().collect{
-            Logger.v(it.toString())
-            _documents.value = it
-        }
-    }
 
     fun getDailyBoard(documentId : String, adapterPosition : Int) = viewModelScope.launch {
         dailyBoardUseCase.getDailyBoard(documentId).collect{
             Logger.v(it.toString())
-            val updateList = _documents.value?.toMutableList() ?: mutableListOf()
+            val updateList = _dailyBoards.value?.toMutableList() ?: mutableListOf()
             updateList.set(adapterPosition, it)
-            _documents.value = updateList
+            _dailyBoards.value = updateList
         }
+    }
+
+    fun initDailyBoards(dailyBoards : List<DailyBoard>){
+        _dailyBoards.value = dailyBoards
     }
 
 }

@@ -8,6 +8,7 @@ import com.example.mzcommunity.R
 import com.example.mzcommunity.databinding.ActivityMainBinding
 import com.orhanobut.logger.Logger
 import dagger.hilt.android.AndroidEntryPoint
+import model.DailyBoard
 import model.LoginedUser
 import view.fragment.BoardFragment
 import view.fragment.MyPageFragment
@@ -17,60 +18,70 @@ import viewmodel.MainActivityViewModel
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-    private val viewModel : MainActivityViewModel by viewModels()
+    private val viewModel: MainActivityViewModel by viewModels()
     private lateinit var binding: ActivityMainBinding
-    private lateinit var loginedUserProfile : LoginedUser
+    private lateinit var loginedUserProfile: LoginedUser
+    private lateinit var dailyBoards: ArrayList<DailyBoard>
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        Logger.v("gd")
 
-        viewModel.loginedUserInfo.observe(this, Observer { user ->
-            loginedUserProfile = user
-
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, BoardFragment(loginedUserProfile)).commit()
+        val intent = intent
+        val userProfile: LoginedUser = intent.getSerializableExtra("userProfile") as LoginedUser
+        dailyBoards = intent.getSerializableExtra("dailyBoards") as ArrayList<DailyBoard>
+        loginedUserProfile = userProfile
 
 
-            binding.bottomNavigationView.setOnItemSelectedListener { item ->
-                when (item.itemId) {
-                    R.id.fragment_board -> {
-                        supportFragmentManager.beginTransaction()
-                            .replace(R.id.fragment_container, BoardFragment(loginedUserProfile)).commit()
-                        true
-                    }
+        supportFragmentManager.beginTransaction()
+            .replace(
+                R.id.fragment_container,
+                BoardFragment(loginedUserProfile, dailyBoards.toList())
+            ).commit()
 
-                    R.id.fragment_versus -> {
-                        supportFragmentManager.beginTransaction()
-                            .replace(R.id.fragment_container, VersusFragment(loginedUserProfile)).commit()
-                        true
-                    }
 
-                    R.id.fragment_write_board -> {
-                        supportFragmentManager.beginTransaction()
-                            .replace(R.id.fragment_container, PostingFragment()).commit()
-                        true
-                    }
-
-                    R.id.fragment_my_page -> {
-                        supportFragmentManager.beginTransaction()
-                            .replace(R.id.fragment_container, MyPageFragment()).commit()
-                        true
-                    }
-
-                    else -> false
+        binding.bottomNavigationView.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.fragment_board -> {
+                    supportFragmentManager.beginTransaction()
+                        .replace(
+                            R.id.fragment_container,
+                            BoardFragment(loginedUserProfile, dailyBoards.toList())
+                        )
+                        .commit()
+                    true
                 }
-            }
-        })
 
+                R.id.fragment_versus -> {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container, VersusFragment(loginedUserProfile))
+                        .commit()
+                    true
+                }
+
+                R.id.fragment_write_board -> {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container, PostingFragment()).commit()
+                    true
+                }
+
+                R.id.fragment_my_page -> {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container, MyPageFragment()).commit()
+                    true
+                }
+
+                else -> false
+            }
+        }
 
 
     }
 
     fun showBoardFragmnet() {
         binding.bottomNavigationView.setSelectedItemId(R.id.fragment_board)
-        supportFragmentManager.beginTransaction().replace(R.id.fragment_container, BoardFragment(loginedUserProfile))
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, BoardFragment(loginedUserProfile, dailyBoards))
             .commit()
     }
 }

@@ -37,34 +37,6 @@ class LoadingActivityViewModel @Inject constructor(
     }
 
     val loadComplete : LiveData<Boolean> get() = _loadComplete
-
-
-    fun getWriterNicknames() : ArrayList<String> {
-        val result =  _dailyBoards.value?.map{ dailyBoards ->
-            dailyBoards.writerNickname
-        }
-        return ArrayList(result)
-    }
-
-    // 인텐트로 uri 값을 넘길 수 없기 때문에 list안의 모든 uri 값을 String으로 만든뒤 넘겨주는 메소드
-    fun writerProfileUriStrs() : ArrayList<String> {
-        val result = _dailyBoards.value?.map{ dailyBoards ->
-            dailyBoards.writerProfileUri.toString()
-        }
-
-
-        return ArrayList(result)!!
-    }
-
-    fun getStrFileLists() : List<List<String>>{
-        val result = _dailyBoards.value?.map {dailyBoards ->
-            dailyBoards.files.map {uri ->
-                uri.toString()
-            }
-        }
-
-        return result!!
-    }
     fun getUserProfile() = viewModelScope.launch {
         loadingUsecase.getUserProfile(application.applicationContext).collect { user ->
             _logined_userInfo.value = user

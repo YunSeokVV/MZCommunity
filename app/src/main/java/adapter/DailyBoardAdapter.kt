@@ -93,7 +93,7 @@ class DailyBoardAdapter(
     }
 
     inner class DailyBoardImageItemViewHolder(
-        private val imagesUri: List<List<Uri>>,
+        private val imagesUri: List<List<String>>,
         private val binding: DailyBoardImageItemListBinding
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: DailyBoard) {
@@ -400,8 +400,7 @@ class DailyBoardAdapter(
 
 
     inner class DailyBoardVideoItemViewHolder(
-        //private val videoUri: String,
-        private val imagesUri: List<List<Uri>>,
+        private val imagesUri: List<List<String>>,
         private val binding: DailyBoardVideoItemListBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
@@ -641,8 +640,8 @@ class DailyBoardAdapter(
 
     }
 
-    fun getUserUploadFilesUri(): List<List<Uri>> {
-        var uris = mutableListOf<List<Uri>>()
+    fun getUserUploadFilesUri(): List<List<String>> {
+        var uris = mutableListOf<List<String>>()
         currentList.forEach {
             uris.add(it.files)
         }

@@ -10,13 +10,14 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mzcommunity.databinding.FragmentBoardBinding
+import com.orhanobut.logger.Logger
 import dagger.hilt.android.AndroidEntryPoint
 import model.DailyBoard
 import model.LoginedUser
 import viewmodel.BoardFramgnetViewModel
 
 @AndroidEntryPoint
-class BoardFragment(private val loginedUserProfile : LoginedUser) : Fragment() {
+class BoardFragment(private val loginedUserProfile : LoginedUser, private val dailyBoard: List<DailyBoard>) : Fragment() {
     private val viewModel by viewModels<BoardFramgnetViewModel>()
     private lateinit var binding: FragmentBoardBinding
     private lateinit var dailyBoardAdapter : DailyBoardAdapter
@@ -52,8 +53,10 @@ class BoardFragment(private val loginedUserProfile : LoginedUser) : Fragment() {
 
 
         binding.dailyBoards.adapter = dailyBoardAdapter
+        viewModel.initDailyBoards(dailyBoard)
+        dailyBoardAdapter.submitList(dailyBoard)
 
-        viewModel.document.observe(requireActivity(), Observer {
+        viewModel.dailyBoards.observe(requireActivity(), Observer {
             dailyBoardAdapter.submitList(it)
         })
 
