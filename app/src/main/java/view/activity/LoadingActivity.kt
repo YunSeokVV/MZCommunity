@@ -35,6 +35,7 @@ class LoadingActivity : AppCompatActivity() {
                 intent.putExtra("userProfile", userProfile)
                 intent.putExtra("dailyBoards", dailyBoards)
                 startActivity(intent)
+                finish()
             }
         })
 
