@@ -3,7 +3,9 @@ package util
 import android.content.Context
 import android.net.Uri
 import android.widget.Toast
+import com.example.mzcommunity.R
 import com.google.firebase.firestore.DocumentSnapshot
+import com.orhanobut.logger.Logger
 import view.ProgressDialog
 import java.util.Random
 
@@ -12,8 +14,22 @@ class Util {
     companion object {
         private var progressDialog: ProgressDialog? = null
 
+        // drawable 자원에 접근하기 위한 context
+        private var context : Context? = null
+
         fun makeToastMessage(contents: String, context: Context) {
             Toast.makeText(context, contents, Toast.LENGTH_SHORT).show()
+        }
+
+        fun setResourceContext(context: Context){
+            if(this.context == null)
+                this.context = context
+        }
+
+        fun getResourceImage(resourceId: Int) : String{
+            val result = "android.resource://" + this.context?.applicationContext?.packageName + "/" + resourceId
+            Logger.v(result)
+            return result
         }
 
         fun parsingFireStoreDocument(documentSnapshot: DocumentSnapshot, key: String): String {

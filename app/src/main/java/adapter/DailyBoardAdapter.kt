@@ -127,7 +127,7 @@ class DailyBoardAdapter(
                 binding.intoTabLayout.visibility = View.GONE
             }
 
-            Glide.with(binding.root.context).load(item.writerProfileUri)
+            Glide.with(binding.root.context).load(Uri.parse(item.writerProfileUri))
                 .into(binding.userProfileImg)
         }
 
@@ -273,7 +273,7 @@ class DailyBoardAdapter(
             binding.likeCount.text = item.like.toString()
             binding.disLikeCount.text = item.disLike.toString()
 
-            Glide.with(binding.root.context).load(item.writerProfileUri)
+            Glide.with(binding.root.context).load(Uri.parse(item.writerProfileUri))
                 .into(binding.userProfileImg)
         }
 
@@ -415,8 +415,6 @@ class DailyBoardAdapter(
                 setParameters(buildUponParameters().setMaxVideoSizeSd())
             }
 
-            Logger.v(binding.playerView.player?.isPlaying.toString())
-
             // 현재 동영상이 재생중인지 확인
             val resume = binding.playerView.player?.isPlaying ?: false
             if (resume) {
@@ -462,7 +460,7 @@ class DailyBoardAdapter(
             binding.likeCount.text = item.like.toString()
             binding.disLikeCount.text = item.disLike.toString()
 
-            Glide.with(binding.root.context).load(item.writerProfileUri)
+            Glide.with(binding.root.context).load(Uri.parse(item.writerProfileUri))
                 .into(binding.userProfileImg)
 
             //processVideo()

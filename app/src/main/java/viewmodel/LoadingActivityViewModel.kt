@@ -1,13 +1,10 @@
 package viewmodel
 
 import android.app.Application
-import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.example.mzcommunity.R
-import com.orhanobut.logger.Logger
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import model.DailyBoard
@@ -37,21 +34,21 @@ class LoadingActivityViewModel @Inject constructor(
     }
 
     val loadComplete : LiveData<Boolean> get() = _loadComplete
-    fun getUserProfile() = viewModelScope.launch {
+    private fun getUserProfile() = viewModelScope.launch {
         loadingUsecase.getUserProfile(application.applicationContext).collect { user ->
             _logined_userInfo.value = user
             checkLoadedDataComplete()
         }
     }
 
-    fun getDailyBoards() = viewModelScope.launch {
+    private fun getDailyBoards() = viewModelScope.launch {
         loadingUsecase.getDailyBoards().collect {
             _dailyBoards.value = it
             checkLoadedDataComplete()
         }
     }
 
-    fun checkLoadedDataComplete(){
+    private fun checkLoadedDataComplete(){
         if(_dailyBoards.value != null && _logined_userInfo.value != null){
             _loadComplete.value = true
         }
