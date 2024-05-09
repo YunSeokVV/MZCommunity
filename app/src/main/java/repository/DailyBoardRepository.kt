@@ -110,7 +110,7 @@ class DailyBoardRepositoryImpl @Inject constructor(
                 } catch (e: Exception) {
                     Logger.v(e.message.toString())
                     if(continuation.isActive)
-                    continuation.resumeWithException(Exception())
+                        continuation.resumeWithException(Exception())
                 }
             }
         }
@@ -128,7 +128,7 @@ class DailyBoardRepositoryImpl @Inject constructor(
                                 .document(dailyBoardCollection.writerUID).get().await()
 
                         val boardUID = result.id
-                        val userNickName = userInfoSnapshot.get("nickName").toString()
+                        val userNickName = userInfoSnapshot.getString("nickName") ?: "알 수 없는 사용자"
                         val boardContents = dailyBoardCollection.boardContents
                         val like = dailyBoardCollection.like
                         val disLike = dailyBoardCollection.disLike
