@@ -18,6 +18,9 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name="view.activity.LoadingActivity"
+            android:exported="false" />
+        <activity
             android:name="view.activity.PostingVersusActivity"
             android:exported="false" />
         <activity
@@ -58,8 +61,8 @@
         </activity>
         <activity
             android:name="view.activity.MainActivity"
-            android:windowSoftInputMode="adjustResize|adjustPan"
-            android:exported="true" />
+            android:exported="true"
+            android:windowSoftInputMode="adjustResize|adjustPan" />
     </application>
 
 </manifest>

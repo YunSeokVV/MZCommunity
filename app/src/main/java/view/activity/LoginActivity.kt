@@ -46,6 +46,7 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
         Logger.addLogAdapter(AndroidLogAdapter())
+        Util.setResourceContext(applicationContext)
         val binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -57,7 +58,7 @@ class LoginActivity : AppCompatActivity() {
         siginInSilently()
         loginActivityViewModel.emailAutoLogin.observe(this, Observer { logined ->
             if (logined)
-                launchMainActivity()
+                launchLoadingActivity()
         })
 
         binding.logInBtn.setOnClickListener {
@@ -75,7 +76,7 @@ class LoginActivity : AppCompatActivity() {
                     binding.passWordInput.text.toString()
                 ).addOnCompleteListener(this) { task ->
                     if (task.isSuccessful) {
-                        launchMainActivity()
+                        launchLoadingActivity()
                     } else {
                         Util.makeToastMessage("사용자 정보를 확인해주세요 :)", this)
                         try {
@@ -102,7 +103,7 @@ class LoginActivity : AppCompatActivity() {
         // 구글로 로그인시 메인화면으로 이동
         loginActivityViewModel.isGoogleLogin.observe(this, Observer { data ->
             if (data) {
-                launchMainActivity()
+                launchLoadingActivity()
             }
         })
 
@@ -125,14 +126,15 @@ class LoginActivity : AppCompatActivity() {
             GoogleSignIn.getClient(this, GoogleSignInOptions.DEFAULT_SIGN_IN)
         signInClient.silentSignIn().addOnCompleteListener { task ->
             if (task.isSuccessful) {
-                launchMainActivity()
+                launchLoadingActivity()
             }
 
         }
     }
 
-    private fun launchMainActivity() {
-        val intent = Intent(this, MainActivity::class.java)
+    private fun launchLoadingActivity() {
+        finish()
+        val intent = Intent(this, LoadingActivity::class.java)
         startActivity(intent)
     }
 

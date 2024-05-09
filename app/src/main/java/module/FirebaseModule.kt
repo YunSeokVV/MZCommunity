@@ -13,6 +13,8 @@ import repository.DailyBoardRepository
 import repository.DailyBoardRepositoryImpl
 import repository.CommentRepostiroy
 import repository.CommentRepostiroyImpl
+import repository.LoadingRepository
+import repository.LoadingRepositoryImpl
 import repository.SignUpActivityRepository
 import repository.SignUpActivityRepositoryImpl
 import repository.UserRepository
@@ -37,6 +39,11 @@ object FirebaseModule {
 
     @Provides
     fun provideDailyBoardRepository(storageReference: FirebaseStorage, fireStore : FirebaseFirestore) : DailyBoardRepository = DailyBoardRepositoryImpl(
+        storageReference, fireStore
+    )
+
+    @Provides
+    fun provideLoadingRepository(storageReference: FirebaseStorage, fireStore : FirebaseFirestore) : LoadingRepository = LoadingRepositoryImpl(
         storageReference, fireStore
     )
 

@@ -1,5 +1,6 @@
 package adapter
 
+import android.net.Uri
 import android.support.annotation.NonNull
 import android.view.LayoutInflater
 import android.view.View
@@ -36,7 +37,7 @@ class DailyBoardCommentAdapter(
 
     fun addComment(loginedUser: LoginedUser, contents: String, parentUID: String) {
         val comment =
-            Comment(loginedUser.profileUri, loginedUser.nickName, contents, parentUID, false)
+            Comment(Uri.parse(loginedUser.profileUri), loginedUser.nickName, contents, parentUID, false)
         comments.add(0, comment)
         notifyItemInserted(0)
     }
@@ -119,7 +120,7 @@ class DailyBoardCommentAdapter(
 
     fun addNestedCommentItem(loginedUser: LoginedUser, contents: String, parentUID: String){
         val comment =
-            Comment(loginedUser.profileUri, loginedUser.nickName, contents, parentUID, false)
+            Comment(Uri.parse(loginedUser.profileUri), loginedUser.nickName, contents, parentUID, false)
 
         nestedCommentList.add(comment)
     }

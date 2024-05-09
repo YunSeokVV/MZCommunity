@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.mzcommunity.databinding.DailyBoardRowItemBinding
 
-class DailyViewPagerAdapter(private val imagesUri: List<Uri>, private val itemCounts: Int) :
+class DailyViewPagerAdapter(private val imagesUri: List<String>, private val itemCounts: Int) :
     RecyclerView.Adapter<DailyViewPagerAdapter.ViewHolder>() {
 
     class ViewHolder(val binding: DailyBoardRowItemBinding) :

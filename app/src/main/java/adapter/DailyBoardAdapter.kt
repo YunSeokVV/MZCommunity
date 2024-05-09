@@ -93,7 +93,7 @@ class DailyBoardAdapter(
     }
 
     inner class DailyBoardImageItemViewHolder(
-        private val imagesUri: List<List<Uri>>,
+        private val imagesUri: List<List<String>>,
         private val binding: DailyBoardImageItemListBinding
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: DailyBoard) {
@@ -127,7 +127,7 @@ class DailyBoardAdapter(
                 binding.intoTabLayout.visibility = View.GONE
             }
 
-            Glide.with(binding.root.context).load(item.writerProfileUri)
+            Glide.with(binding.root.context).load(Uri.parse(item.writerProfileUri))
                 .into(binding.userProfileImg)
         }
 
@@ -273,7 +273,7 @@ class DailyBoardAdapter(
             binding.likeCount.text = item.like.toString()
             binding.disLikeCount.text = item.disLike.toString()
 
-            Glide.with(binding.root.context).load(item.writerProfileUri)
+            Glide.with(binding.root.context).load(Uri.parse(item.writerProfileUri))
                 .into(binding.userProfileImg)
         }
 
@@ -400,8 +400,7 @@ class DailyBoardAdapter(
 
 
     inner class DailyBoardVideoItemViewHolder(
-        //private val videoUri: String,
-        private val imagesUri: List<List<Uri>>,
+        private val imagesUri: List<List<String>>,
         private val binding: DailyBoardVideoItemListBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
@@ -415,8 +414,6 @@ class DailyBoardAdapter(
             val trackSelector = DefaultTrackSelector(context).apply {
                 setParameters(buildUponParameters().setMaxVideoSizeSd())
             }
-
-            Logger.v(binding.playerView.player?.isPlaying.toString())
 
             // 현재 동영상이 재생중인지 확인
             val resume = binding.playerView.player?.isPlaying ?: false
@@ -463,7 +460,7 @@ class DailyBoardAdapter(
             binding.likeCount.text = item.like.toString()
             binding.disLikeCount.text = item.disLike.toString()
 
-            Glide.with(binding.root.context).load(item.writerProfileUri)
+            Glide.with(binding.root.context).load(Uri.parse(item.writerProfileUri))
                 .into(binding.userProfileImg)
 
             //processVideo()
@@ -641,8 +638,8 @@ class DailyBoardAdapter(
 
     }
 
-    fun getUserUploadFilesUri(): List<List<Uri>> {
-        var uris = mutableListOf<List<Uri>>()
+    fun getUserUploadFilesUri(): List<List<String>> {
+        var uris = mutableListOf<List<String>>()
         currentList.forEach {
             uris.add(it.files)
         }

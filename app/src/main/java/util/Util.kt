@@ -1,8 +1,11 @@
 package util
 
 import android.content.Context
+import android.net.Uri
 import android.widget.Toast
+import com.example.mzcommunity.R
 import com.google.firebase.firestore.DocumentSnapshot
+import com.orhanobut.logger.Logger
 import view.ProgressDialog
 import java.util.Random
 
@@ -11,8 +14,22 @@ class Util {
     companion object {
         private var progressDialog: ProgressDialog? = null
 
+        // drawable 자원에 접근하기 위한 context
+        private var context : Context? = null
+
         fun makeToastMessage(contents: String, context: Context) {
             Toast.makeText(context, contents, Toast.LENGTH_SHORT).show()
+        }
+
+        fun setResourceContext(context: Context){
+            if(this.context == null)
+                this.context = context
+        }
+
+        fun getResourceImage(resourceId: Int) : String{
+            val result = "android.resource://" + this.context?.applicationContext?.packageName + "/" + resourceId
+            Logger.v(result)
+            return result
         }
 
         fun parsingFireStoreDocument(documentSnapshot: DocumentSnapshot, key: String): String {
@@ -28,16 +45,16 @@ class Util {
             } else if (key == "userFavourability") {
                 val userFavour = documentSnapshot.get(key) as? Map<String, Any>
                 result = (userFavour?.get(FirebaseAuth.auth.uid.toString()) ?: "usual").toString()
-            } else if(key == "viewType"){
+            } else if (key == "viewType") {
                 result = (documentSnapshot.get(key) as? Long ?: 0).toString()
-            }
-            else {
+            } else {
                 result = documentSnapshot.get(key) as? String ?: "nothing"
             }
             return result
         }
 
-        fun parsingDailyBoardFiles(documentSnapshot: DocumentSnapshot, key: String): List<String> = documentSnapshot.get(key) as? List<String> ?: listOf()
+        fun parsingDailyBoardFiles(documentSnapshot: DocumentSnapshot, key: String): List<String> =
+            documentSnapshot.get(key) as? List<String> ?: listOf()
 
         fun removeStr(original: String, deleteStr: String): String {
             var result = original

@@ -84,12 +84,7 @@ class DailyBoardRepositoryImpl @Inject constructor(
                             fireStoreRef.collection("MZUsers")
                                 .document(dailyBoardCollection.writerUID).get().await()
 
-                        val files = dailyBoardCollection.files.map {
-                            Uri.parse(it)
-                        }
-
                         val boardUID = document.id
-                        val userProfile = Uri.parse(userInfoSnapshot.get("profileURL").toString())
                         val userNickName = userInfoSnapshot.get("nickName").toString()
                         val boardContents = dailyBoardCollection.boardContents
                         val like = dailyBoardCollection.like
@@ -98,10 +93,10 @@ class DailyBoardRepositoryImpl @Inject constructor(
                         val viewType = dailyBoardCollection.viewType
 
                         val dailyBoard = DailyBoard(
-                            userProfile,
                             userNickName,
+                            userInfoSnapshot.get("profileURL").toString(),
                             boardContents,
-                            files,
+                            dailyBoardCollection.files,
                             disLike,
                             like,
                             boardUID,
@@ -115,7 +110,7 @@ class DailyBoardRepositoryImpl @Inject constructor(
                 } catch (e: Exception) {
                     Logger.v(e.message.toString())
                     if(continuation.isActive)
-                    continuation.resumeWithException(Exception())
+                        continuation.resumeWithException(Exception())
                 }
             }
         }
@@ -132,13 +127,8 @@ class DailyBoardRepositoryImpl @Inject constructor(
                             fireStoreRef.collection("MZUsers")
                                 .document(dailyBoardCollection.writerUID).get().await()
 
-                        val files = dailyBoardCollection.files.map {
-                            Uri.parse(it)
-                        }
-
                         val boardUID = result.id
-                        val userProfile = Uri.parse(userInfoSnapshot.get("profileURL").toString())
-                        val userNickName = userInfoSnapshot.get("nickName").toString()
+                        val userNickName = userInfoSnapshot.getString("nickName") ?: "알 수 없는 사용자"
                         val boardContents = dailyBoardCollection.boardContents
                         val like = dailyBoardCollection.like
                         val disLike = dailyBoardCollection.disLike
@@ -146,10 +136,10 @@ class DailyBoardRepositoryImpl @Inject constructor(
                         val viewType = dailyBoardCollection.viewType
 
                         val dailyBoard = DailyBoard(
-                            userProfile,
                             userNickName,
+                            userInfoSnapshot.get("profileURL").toString(),
                             boardContents,
-                            files,
+                            dailyBoardCollection.files,
                             disLike,
                             like,
                             boardUID,
