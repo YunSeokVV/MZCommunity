@@ -55,7 +55,7 @@ class LoadingRepositoryImpl @Inject constructor(
             var dailyBoards = ArrayList<DailyBoard>()
 
             try {
-                fireStoreRef.collection("dailyBoard").get().addOnSuccessListener { result ->
+                fireStoreRef.collection("dailyBoard").limit(6).get().addOnSuccessListener { result ->
                     for (document in result) {
                         val dailyBoardCollection = getDailyBoardCollection(document)
 
@@ -86,7 +86,6 @@ class LoadingRepositoryImpl @Inject constructor(
                                 userFavourability,
                                 viewType
                             )
-                            Logger.v(dailyBoard.toString())
                             dailyBoards.add(dailyBoard)
                         }
 

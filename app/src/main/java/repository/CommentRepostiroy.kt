@@ -1,6 +1,7 @@
 package repository
 
 import android.net.Uri
+import com.example.mzcommunity.R
 import com.google.android.gms.tasks.Task
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldValue
@@ -16,6 +17,7 @@ import kotlinx.coroutines.withContext
 import model.Comment
 import model.Response
 import util.FirebaseAuth
+import util.Util
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -135,8 +137,10 @@ class CommentRepostiroyImpl @Inject constructor(
                     .whereEqualTo("parentUID", parentUID).get().addOnSuccessListener { documents ->
                         documents.forEach {
                             runBlocking {
+                                val resourceId = R.drawable.user_profile2
+                                val defaultProfile: String = Util.getResourceImage(resourceId)
                                 val profile: Uri =
-                                    storage.reference.child("user_profile_image/" + it.get("writerUID") + ".jpg").downloadUrl.await()
+                                    storage.reference.child("user_profile_image/" + it.get("writerUID") + ".jpg").downloadUrl.await() ?: Uri.parse(defaultProfile)
                                 val userDoc = fireStore.collection("MZUsers")
                                     .document(it.get("writerUID").toString()).get().await()
                                 val nickName = userDoc.get("nickName").toString()
