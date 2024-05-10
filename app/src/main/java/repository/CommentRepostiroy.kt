@@ -139,13 +139,13 @@ class CommentRepostiroyImpl @Inject constructor(
                             runBlocking {
                                 val resourceId = R.drawable.user_profile2
                                 val defaultProfile: String = Util.getResourceImage(resourceId)
-                                val profile: Uri =
-                                    storage.reference.child("user_profile_image/" + it.get("writerUID") + ".jpg").downloadUrl.await() ?: Uri.parse(defaultProfile)
                                 val userDoc = fireStore.collection("MZUsers")
                                     .document(it.get("writerUID").toString()).get().await()
-                                val nickName = userDoc.get("nickName").toString()
+                                val nickName = userDoc.getString("nickName") ?: "알 수 없는 사용자"
+
+                                val profileURL = userDoc.getString("profileURL") ?: defaultProfile
                                 val comment = Comment(
-                                    profile,
+                                    Uri.parse(profileURL),
                                     nickName,
                                     it.get("commentContents").toString(),
                                     it.id,
@@ -171,7 +171,6 @@ class CommentRepostiroyImpl @Inject constructor(
             var comments = mutableListOf<Comment>()
             val fireStore = fireStoreRef
             try {
-
                 val documentSnapshot = recentTask.get().await()
                 val lastVisible = documentSnapshot.documents[documentSnapshot.size() - 1]
                 val next = fireStore.collection(collectionName)
@@ -183,20 +182,20 @@ class CommentRepostiroyImpl @Inject constructor(
                 recentTask = next
                 val documents = next.get().await()
                 documents.forEach {
-
-                        val profile: Uri =
-                            storage.reference.child("user_profile_image/" + it.get("writerUID") + ".jpg").downloadUrl.await()
-                        val userDoc = fireStore.collection("MZUsers")
-                            .document(it.get("writerUID").toString()).get().await()
-                        val nickName = userDoc.get("nickName").toString()
-                        val comment = Comment(
-                            profile,
-                            nickName,
-                            it.get("commentContents").toString(),
-                            it.id,
-                            it.getBoolean("hasNestedComment") ?: false
-                        )
-                        comments.add(comment)
+                    val userDoc = fireStore.collection("MZUsers")
+                        .document(it.get("writerUID").toString()).get().await()
+                    val resourceId = R.drawable.user_profile2
+                    val defaultProfile: String = Util.getResourceImage(resourceId)
+                    val profileURL = userDoc.getString("profileURL") ?: defaultProfile
+                    val nickName = userDoc.getString("nickName") ?: "알 수 없는 사용자"
+                    val comment = Comment(
+                        Uri.parse(profileURL),
+                        nickName,
+                        it.get("commentContents").toString(),
+                        it.id,
+                        it.getBoolean("hasNestedComment") ?: false
+                    )
+                    comments.add(comment)
 
                 }
 
@@ -219,13 +218,14 @@ class CommentRepostiroyImpl @Inject constructor(
                     .whereEqualTo("parentUID", parentUID).get().addOnSuccessListener { documents ->
                         documents.forEach {
                             runBlocking {
-                                val profile: Uri =
-                                    storage.reference.child("user_profile_image/" + it.get("writerUID") + ".jpg").downloadUrl.await()
                                 val userDoc = fireStore.collection("MZUsers")
                                     .document(it.get("writerUID").toString()).get().await()
+                                val resourceId = R.drawable.user_profile2
+                                val defaultProfile: String = Util.getResourceImage(resourceId)
+                                val profileURL = userDoc.getString("profileURL") ?: defaultProfile
                                 val nickName = userDoc.get("nickName").toString()
                                 val comment = Comment(
-                                    profile,
+                                    Uri.parse(profileURL),
                                     nickName,
                                     it.get("commentContents").toString(),
                                     it.id,
@@ -235,8 +235,6 @@ class CommentRepostiroyImpl @Inject constructor(
                             }
                         }
                     }.await()
-
-
             } catch (e: Exception) {
                 Logger.v(e.message.toString())
             }
