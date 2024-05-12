@@ -60,28 +60,27 @@ class DailyBoardAdapter(
         fun showComment(dailyBoard: DailyBoard)
     }
 
+    // 백그라운드에 갔을때 재생중인 동영상을 멈추기 위해 존재하는 변수
+    private lateinit var recentVideoItemViewHolder: DailyBoardVideoItemViewHolder
+
+    // todo : 앱이 처음 실행됐을때 recentVideoItemViewHolder 객체의 null 검사를 방지하기 위해 임의로 만든 플래그값이다. 가급적이면 다른 해결책을 찾아서 이 변수를 사용하지 말자.
+    private var isRecentVideoInitalized: Boolean = false
+
     private val onScrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
             super.onScrollStateChanged(recyclerView, newState)
 
             if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                 val layoutManager = recyclerView.layoutManager as LinearLayoutManager
-                currentList.forEachIndexed { position, it ->
-                    if (position != layoutManager.findLastVisibleItemPosition()) {
-                        var lastViewHolder = recyclerView.findViewHolderForAdapterPosition(position)
-                        if (lastViewHolder != null && lastViewHolder.itemViewType != DailyBoardViewType.IMAGE && lastViewHolder.itemViewType != DailyBoardViewType.TEXT) {
-                            lastViewHolder = lastViewHolder as DailyBoardVideoItemViewHolder
-                            lastViewHolder.stopVideo()
-
-                        }
-                    }
-                }
+                if(isRecentVideoInitalized)
+                    recentVideoItemViewHolder.releaseVideo()
 
                 var currentViewHolder =
                     recyclerView.findViewHolderForAdapterPosition(layoutManager.findLastVisibleItemPosition())
-                if (currentViewHolder != null && currentViewHolder.itemViewType != DailyBoardViewType.IMAGE && currentViewHolder.itemViewType != DailyBoardViewType.TEXT) {
+                // 스크롤해서 ui에 보여진 마지막 아이템이 동영상 타입이라면 재생시킨다.
+                if (currentViewHolder != null && currentViewHolder.itemViewType == DailyBoardViewType.VIDEO) {
                     currentViewHolder = currentViewHolder as DailyBoardVideoItemViewHolder
-                    currentViewHolder.processVideo()
+                    currentViewHolder.processVideo(currentViewHolder)
                 }
             }
         }
@@ -404,45 +403,42 @@ class DailyBoardAdapter(
         private val binding: DailyBoardVideoItemListBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun stopVideo() {
-            binding.playerView.player?.stop()
-            binding.playerView.player = null
+        fun pauseVideo() {
+            binding.playerView.player?.pause()
+            //binding.playerView.player?.stop()
+            //binding.playerView.player = null
         }
 
-        fun processVideo() {
+        fun releaseVideo() {
+            binding.playerView.player?.release()
+        }
+
+        fun playVideo() {
+            binding.playerView.player?.play()
+        }
+
+        fun processVideo(dailyBoardVideoItemViewHolder: DailyBoardVideoItemViewHolder) {
             val context = binding.root.context
-            val trackSelector = DefaultTrackSelector(context).apply {
-                setParameters(buildUponParameters().setMaxVideoSizeSd())
-            }
 
             // 현재 동영상이 재생중인지 확인
             val resume = binding.playerView.player?.isPlaying ?: false
-            if (resume) {
-                Logger.v("playing")
-            } else {
-                Logger.v("not playing")
+            if (!resume) {
                 ExoPlayer.Builder(context)
                     //.setTrackSelector(trackSelector)
                     .build()
                     .also { exoPlayer ->
-                        //setProgress(true)
-
                         binding.playerView.player = exoPlayer
                         val mediaItem = MediaItem.fromUri(imagesUri.get(adapterPosition).get(0))
-
-                        //exoPlayer.setMediaItem(mediaItem)
-
                         exoPlayer.setMediaItems(listOf(mediaItem), 0, 0)
                         exoPlayer.playWhenReady = true
                         exoPlayer.prepare()
                     }
+                recentVideoItemViewHolder = dailyBoardVideoItemViewHolder
+                isRecentVideoInitalized = true
             }
-
-
         }
 
-
-        fun bind(item: DailyBoard) {
+        fun bind(item: DailyBoard, position: Int, holder : DailyBoardVideoItemViewHolder) {
             binding.writeName.text = item.writerNickname
             binding.postingContents.text = item.boardContents
 
@@ -463,7 +459,10 @@ class DailyBoardAdapter(
             Glide.with(binding.root.context).load(Uri.parse(item.writerProfileUri))
                 .into(binding.userProfileImg)
 
-            //processVideo()
+
+            if(position == 0){
+                processVideo(holder)
+            }
         }
 
         init {
@@ -632,7 +631,7 @@ class DailyBoardAdapter(
             }
 
             DailyBoardViewType.VIDEO -> {
-                (holder as DailyBoardVideoItemViewHolder).bind(currentList[position])
+                (holder as DailyBoardVideoItemViewHolder).bind(currentList[position], position, holder)
             }
         }
 
@@ -646,4 +645,17 @@ class DailyBoardAdapter(
         return uris
     }
 
+    fun pauseVideoOnstop() {
+        if (recentVideoItemViewHolder != null) {
+            recentVideoItemViewHolder.pauseVideo()
+        }
+    }
+
+    fun resumeVideoOnResume() {
+        if (isRecentVideoInitalized) {
+            recentVideoItemViewHolder?.let { viewHolder ->
+                viewHolder.playVideo()
+            }
+        }
+    }
 }
