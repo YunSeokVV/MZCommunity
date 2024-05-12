@@ -1,6 +1,8 @@
 package usecase
 
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.withContext
 import model.DailyBoard
 import model.File
 import model.Response
@@ -12,8 +14,8 @@ class DailyBoardUseCase @Inject constructor(private val dailyBoardRepository: Da
         emit(dailyBoardRepository.increaseFavourability(dailyBoard, isLike))
     }
 
-    suspend fun getDailyBoards() = flow {
-        emit(dailyBoardRepository.getDailyBoards())
+    suspend fun getRandomDailyBoards() = flow {
+        emit(dailyBoardRepository.getRandomDailyBoards())
     }
 
     suspend fun getDailyBoard(documentId : String) = flow {

@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import com.orhanobut.logger.Logger
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 import kotlinx.coroutines.launch
@@ -40,7 +41,6 @@ class BoardFramgnetViewModel @Inject constructor(private val dailyBoardUseCase: 
             return _dailyBoards
 
         }
-
     fun getDailyBoard(documentId : String, adapterPosition : Int) = viewModelScope.launch {
         dailyBoardUseCase.getDailyBoard(documentId).collect{
             Logger.v(it.toString())
@@ -53,5 +53,12 @@ class BoardFramgnetViewModel @Inject constructor(private val dailyBoardUseCase: 
     fun initDailyBoards(dailyBoards : List<DailyBoard>){
         _dailyBoards.value = dailyBoards
     }
+
+    fun getRandomDailyBoards() = viewModelScope.launch {
+        dailyBoardUseCase.getRandomDailyBoards().collect{
+            _dailyBoards.postValue(it)
+        }
+    }
+
 
 }
