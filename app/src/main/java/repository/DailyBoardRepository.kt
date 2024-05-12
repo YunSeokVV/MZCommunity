@@ -1,6 +1,7 @@
 package repository
 
 import android.net.Uri
+import com.example.mzcommunity.R
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
@@ -21,14 +22,20 @@ import util.Util
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.coroutines.resumeWithException
+import kotlin.random.Random
 
 interface DailyBoardRepository {
-    suspend fun postBoard(contents: String, uploadFileUri: List<File>, viewType : Int): Response<Boolean>
-    suspend fun getDailyBoards(): List<DailyBoard>
+    suspend fun postBoard(
+        contents: String,
+        uploadFileUri: List<File>,
+        viewType: Int
+    ): Response<Boolean>
+
+    suspend fun getRandomDailyBoards(): List<DailyBoard>
 
     suspend fun getDailyBoard(documentId: String): DailyBoard
 
-    suspend fun increaseFavourability(dailyBoard: DailyBoard, isLike : Boolean): Response<Boolean>
+    suspend fun increaseFavourability(dailyBoard: DailyBoard, isLike: Boolean): Response<Boolean>
 }
 
 @Singleton
@@ -40,7 +47,7 @@ class DailyBoardRepositoryImpl @Inject constructor(
     override suspend fun postBoard(
         contents: String,
         uploadFileUri: List<File>,
-        viewType : Int
+        viewType: Int
     ): Response<Boolean> = withContext(Dispatchers.IO) {
         try {
             val fireStore = fireStoreRef
@@ -71,30 +78,33 @@ class DailyBoardRepositoryImpl @Inject constructor(
     }
 
 
-    override suspend fun getDailyBoards(): List<DailyBoard> = suspendCancellableCoroutine { continuation ->
-        var dailyBoards = ArrayList<DailyBoard>()
-
-        fireStoreRef.collection("dailyBoard").get().addOnSuccessListener { result ->
-            for (document in result) {
-                val dailyBoardCollection = getDailyBoardCollection(document)
-
-                try {
-                    runBlocking {
+    override suspend fun getRandomDailyBoards(): List<DailyBoard> = withContext(Dispatchers.IO) {
+        var randomedDailyBoards = ArrayList<DailyBoard>()
+        val result = fireStoreRef.collection("dailyBoard").get().await()
+        result.documents.forEach {document->
+            val dailyBoardCollection = getDailyBoardCollection(document)
+            try {
+                runBlocking {
+                    withContext(Dispatchers.IO){
                         val userInfoSnapshot =
                             fireStoreRef.collection("MZUsers")
                                 .document(dailyBoardCollection.writerUID).get().await()
 
                         val boardUID = document.id
-                        val userNickName = userInfoSnapshot.get("nickName").toString()
+                        val userNickName =
+                            userInfoSnapshot.getString("nickName") ?: "알 수 없는 사용자"
                         val boardContents = dailyBoardCollection.boardContents
                         val like = dailyBoardCollection.like
                         val disLike = dailyBoardCollection.disLike
                         val userFavourability = dailyBoardCollection.favourability
                         val viewType = dailyBoardCollection.viewType
 
+                        val resourceId = R.drawable.user_profile2
+                        val defaultProfile: String = Util.getResourceImage(resourceId)
+
                         val dailyBoard = DailyBoard(
                             userNickName,
-                            userInfoSnapshot.get("profileURL").toString(),
+                            userInfoSnapshot.getString("profileURL") ?: defaultProfile,
                             boardContents,
                             dailyBoardCollection.files,
                             disLike,
@@ -104,60 +114,72 @@ class DailyBoardRepositoryImpl @Inject constructor(
                             viewType
                         )
 
-                        dailyBoards.add(dailyBoard)
-                        continuation.resume(dailyBoards, null)
+                        randomedDailyBoards.add(dailyBoard)
                     }
-                } catch (e: Exception) {
-                    Logger.v(e.message.toString())
-                    if(continuation.isActive)
-                        continuation.resumeWithException(Exception())
+
                 }
+            } catch (e: Exception) {
+                Logger.v(e.message.toString())
             }
         }
+
+        randomedDailyBoards.shuffle()
+        // 랜덤으로 6개의 일상 게시글을 추출한다
+        randomedDailyBoards = ArrayList(randomedDailyBoards.subList(0, 6))
+        Logger.v(randomedDailyBoards.toString())
+        return@withContext randomedDailyBoards
     }
 
+    override suspend fun getDailyBoard(documentId: String): DailyBoard =
+        suspendCancellableCoroutine { continuation ->
+            fireStoreRef.collection("dailyBoard").document(documentId).get()
+                .addOnSuccessListener { result ->
+                    val dailyBoardCollection = getDailyBoardCollection(result)
 
-    override suspend fun getDailyBoard(documentId: String): DailyBoard = suspendCancellableCoroutine { continuation ->
-        fireStoreRef.collection("dailyBoard").document(documentId).get().addOnSuccessListener { result ->
-                val dailyBoardCollection = getDailyBoardCollection(result)
+                    try {
+                        runBlocking {
+                            val userInfoSnapshot =
+                                fireStoreRef.collection("MZUsers")
+                                    .document(dailyBoardCollection.writerUID).get().await()
 
-                try {
-                    runBlocking {
-                        val userInfoSnapshot =
-                            fireStoreRef.collection("MZUsers")
-                                .document(dailyBoardCollection.writerUID).get().await()
+                            val boardUID = result.id
+                            val userNickName =
+                                userInfoSnapshot.getString("nickName") ?: "알 수 없는 사용자"
+                            val boardContents = dailyBoardCollection.boardContents
+                            val like = dailyBoardCollection.like
+                            val disLike = dailyBoardCollection.disLike
+                            val userFavourability = dailyBoardCollection.favourability
+                            val viewType = dailyBoardCollection.viewType
 
-                        val boardUID = result.id
-                        val userNickName = userInfoSnapshot.getString("nickName") ?: "알 수 없는 사용자"
-                        val boardContents = dailyBoardCollection.boardContents
-                        val like = dailyBoardCollection.like
-                        val disLike = dailyBoardCollection.disLike
-                        val userFavourability = dailyBoardCollection.favourability
-                        val viewType = dailyBoardCollection.viewType
+                            val resourceId = R.drawable.user_profile2
+                            val defaultProfile: String = Util.getResourceImage(resourceId)
 
-                        val dailyBoard = DailyBoard(
-                            userNickName,
-                            userInfoSnapshot.get("profileURL").toString(),
-                            boardContents,
-                            dailyBoardCollection.files,
-                            disLike,
-                            like,
-                            boardUID,
-                            userFavourability,
-                            viewType
-                        )
+                            val dailyBoard = DailyBoard(
+                                userNickName,
+                                userInfoSnapshot.getString("profileURL") ?: defaultProfile,
+                                boardContents,
+                                dailyBoardCollection.files,
+                                disLike,
+                                like,
+                                boardUID,
+                                userFavourability,
+                                viewType
+                            )
 
-                        continuation.resume(dailyBoard, null)
+                            continuation.resume(dailyBoard, null)
+                        }
+                    } catch (e: Exception) {
+                        Logger.v(e.message.toString())
+                        continuation.resumeWithException(Exception())
                     }
-                } catch (e: Exception) {
-                    Logger.v(e.message.toString())
-                    continuation.resumeWithException(Exception())
+
                 }
-
         }
-    }
 
-    override suspend fun increaseFavourability(dailyBoard: DailyBoard, isLike : Boolean): Response<Boolean> =
+    override suspend fun increaseFavourability(
+        dailyBoard: DailyBoard,
+        isLike: Boolean
+    ): Response<Boolean> =
         withContext(Dispatchers.IO) {
             try {
                 val fireStore = fireStoreRef
@@ -166,10 +188,10 @@ class DailyBoardRepositoryImpl @Inject constructor(
 
                 // 사용자의 게시글에 대한 호감도가 보통이였던 경우
                 if (dailyBoard.favourability.equals("usual")) {
-                    if(isLike){
+                    if (isLike) {
                         documentReference.update("like", FieldValue.increment(1)).await()
                         documentReference.set(setUserFavour("like"), SetOptions.merge()).await()
-                    } else{
+                    } else {
                         documentReference.update("disLike", FieldValue.increment(1)).await()
                         documentReference.set(setUserFavour("disLike"), SetOptions.merge()).await()
                     }
@@ -180,23 +202,23 @@ class DailyBoardRepositoryImpl @Inject constructor(
                     if (dailyBoard.like != 0)
                         documentReference.update("like", FieldValue.increment(-1)).await()
 
-                    if(isLike){
+                    if (isLike) {
                         documentReference.set(setUserFavour("usual"), SetOptions.merge()).await()
-                    } else{
+                    } else {
                         documentReference.update("disLike", FieldValue.increment(1)).await()
                         documentReference.set(setUserFavour("disLike"), SetOptions.merge()).await()
                     }
 
                     // 사용자의 게시글에 대한 호감도가 싫어요였던 경우
                 } else if (dailyBoard.favourability.equals("disLike")) {
-                    if(isLike)
-                    documentReference.update("like", FieldValue.increment(1)).await()
+                    if (isLike)
+                        documentReference.update("like", FieldValue.increment(1)).await()
                     if (dailyBoard.disLike != 0)
                         documentReference.update("disLike", FieldValue.increment(-1)).await()
-                    if(isLike)
-                    documentReference.set(setUserFavour("like"), SetOptions.merge()).await()
+                    if (isLike)
+                        documentReference.set(setUserFavour("like"), SetOptions.merge()).await()
                     else
-                    documentReference.set(setUserFavour("usual"), SetOptions.merge()).await()
+                        documentReference.set(setUserFavour("usual"), SetOptions.merge()).await()
                 }
 
                 Response.Success(true)
