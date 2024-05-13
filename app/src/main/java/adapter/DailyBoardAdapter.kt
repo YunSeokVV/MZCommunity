@@ -64,7 +64,9 @@ class DailyBoardAdapter(
     private lateinit var recentVideoItemViewHolder: DailyBoardVideoItemViewHolder
 
     // todo : 앱이 처음 실행됐을때 recentVideoItemViewHolder 객체의 null 검사를 방지하기 위해 임의로 만든 플래그값이다. 가급적이면 다른 해결책을 찾아서 이 변수를 사용하지 말자.
-    private var isRecentVideoInitalized: Boolean = false
+    private var _isRecentVideoInitalized: Boolean = false
+
+    fun isRecentVideoInitalized() :Boolean = _isRecentVideoInitalized
 
     private val onScrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -72,7 +74,7 @@ class DailyBoardAdapter(
 
             if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                 val layoutManager = recyclerView.layoutManager as LinearLayoutManager
-                if (isRecentVideoInitalized)
+                if (_isRecentVideoInitalized)
                     recentVideoItemViewHolder.releaseVideo()
 
                 var currentViewHolder =
@@ -431,7 +433,7 @@ class DailyBoardAdapter(
                         exoPlayer.prepare()
                     }
                 recentVideoItemViewHolder = dailyBoardVideoItemViewHolder
-                isRecentVideoInitalized = true
+                _isRecentVideoInitalized = true
             }
         }
 
@@ -637,15 +639,6 @@ class DailyBoardAdapter(
         }
 
     }
-
-    fun getUserUploadFilesUri(): List<List<String>> {
-        var uris = mutableListOf<List<String>>()
-        currentList.forEach {
-            uris.add(it.files)
-        }
-        return uris
-    }
-
     fun pauseVideoOnstop() {
         if (recentVideoItemViewHolder != null) {
             recentVideoItemViewHolder.pauseVideo()
@@ -659,7 +652,7 @@ class DailyBoardAdapter(
     }
 
     fun resumeVideoOnResume() {
-        if (isRecentVideoInitalized) {
+        if (_isRecentVideoInitalized) {
             recentVideoItemViewHolder?.let { viewHolder ->
                 viewHolder.playVideo()
             }

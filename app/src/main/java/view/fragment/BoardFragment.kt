@@ -102,12 +102,13 @@ class BoardFragment(
 
     override fun onStop() {
         super.onStop()
-
+        if (dailyBoardAdapter.isRecentVideoInitalized())
         dailyBoardAdapter.pauseVideoOnstop()
     }
 
     override fun onResume() {
         super.onResume()
+        if (dailyBoardAdapter.isRecentVideoInitalized())
         dailyBoardAdapter.resumeVideoOnResume()
     }
 }

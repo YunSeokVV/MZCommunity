@@ -28,7 +28,6 @@ class Util {
 
         fun getResourceImage(resourceId: Int) : String{
             val result = "android.resource://" + this.context?.applicationContext?.packageName + "/" + resourceId
-            Logger.v(result)
             return result
         }
 
