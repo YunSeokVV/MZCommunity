@@ -72,7 +72,7 @@ class DailyBoardAdapter(
 
             if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                 val layoutManager = recyclerView.layoutManager as LinearLayoutManager
-                if(isRecentVideoInitalized)
+                if (isRecentVideoInitalized)
                     recentVideoItemViewHolder.releaseVideo()
 
                 var currentViewHolder =
@@ -92,7 +92,6 @@ class DailyBoardAdapter(
     }
 
     inner class DailyBoardImageItemViewHolder(
-        private val imagesUri: List<List<String>>,
         private val binding: DailyBoardImageItemListBinding
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: DailyBoard) {
@@ -114,16 +113,18 @@ class DailyBoardAdapter(
             binding.disLikeCount.text = item.disLike.toString()
             binding.dailyImgViewPager.adapter =
                 DailyViewPagerAdapter(
-                    imagesUri.get(adapterPosition),
-                    imagesUri.get(adapterPosition).size
+                    currentList[adapterPosition].files,
+                    currentList[adapterPosition].files.size,
                 )
             TabLayoutMediator(
                 binding.intoTabLayout,
                 binding.dailyImgViewPager
             ) { tab, position -> }.attach()
 
-            if (imagesUri.get(adapterPosition).size == 1) {
+            if (currentList[adapterPosition].files.size == 1) {
                 binding.intoTabLayout.visibility = View.GONE
+            } else{
+                binding.intoTabLayout.visibility = View.VISIBLE
             }
 
             Glide.with(binding.root.context).load(Uri.parse(item.writerProfileUri))
@@ -399,14 +400,11 @@ class DailyBoardAdapter(
 
 
     inner class DailyBoardVideoItemViewHolder(
-        private val imagesUri: List<List<String>>,
         private val binding: DailyBoardVideoItemListBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun pauseVideo() {
             binding.playerView.player?.pause()
-            //binding.playerView.player?.stop()
-            //binding.playerView.player = null
         }
 
         fun releaseVideo() {
@@ -424,11 +422,10 @@ class DailyBoardAdapter(
             val resume = binding.playerView.player?.isPlaying ?: false
             if (!resume) {
                 ExoPlayer.Builder(context)
-                    //.setTrackSelector(trackSelector)
                     .build()
                     .also { exoPlayer ->
                         binding.playerView.player = exoPlayer
-                        val mediaItem = MediaItem.fromUri(imagesUri.get(adapterPosition).get(0))
+                        val mediaItem = MediaItem.fromUri(currentList[adapterPosition].files[0])
                         exoPlayer.setMediaItems(listOf(mediaItem), 0, 0)
                         exoPlayer.playWhenReady = true
                         exoPlayer.prepare()
@@ -438,7 +435,7 @@ class DailyBoardAdapter(
             }
         }
 
-        fun bind(item: DailyBoard, position: Int, holder : DailyBoardVideoItemViewHolder) {
+        fun bind(item: DailyBoard, position: Int, holder: DailyBoardVideoItemViewHolder) {
             binding.writeName.text = item.writerNickname
             binding.postingContents.text = item.boardContents
 
@@ -460,7 +457,7 @@ class DailyBoardAdapter(
                 .into(binding.userProfileImg)
 
 
-            if(position == 0){
+            if (position == 0) {
                 processVideo(holder)
             }
         }
@@ -606,7 +603,7 @@ class DailyBoardAdapter(
                     parent,
                     false
                 )
-            return DailyBoardImageItemViewHolder(getUserUploadFilesUri(), binding)
+            return DailyBoardImageItemViewHolder(binding)
 
             // DailyBoardViewType.VIDEO
         } else {
@@ -616,7 +613,7 @@ class DailyBoardAdapter(
                     parent,
                     false
                 )
-            return DailyBoardVideoItemViewHolder(getUserUploadFilesUri(), binding)
+            return DailyBoardVideoItemViewHolder(binding)
         }
     }
 
@@ -631,7 +628,11 @@ class DailyBoardAdapter(
             }
 
             DailyBoardViewType.VIDEO -> {
-                (holder as DailyBoardVideoItemViewHolder).bind(currentList[position], position, holder)
+                (holder as DailyBoardVideoItemViewHolder).bind(
+                    currentList[position],
+                    position,
+                    holder
+                )
             }
         }
 
@@ -648,6 +649,12 @@ class DailyBoardAdapter(
     fun pauseVideoOnstop() {
         if (recentVideoItemViewHolder != null) {
             recentVideoItemViewHolder.pauseVideo()
+        }
+    }
+
+    fun releaseVideo() {
+        if (recentVideoItemViewHolder != null) {
+            recentVideoItemViewHolder.releaseVideo()
         }
     }
 

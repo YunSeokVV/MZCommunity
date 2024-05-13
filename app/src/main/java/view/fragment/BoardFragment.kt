@@ -78,17 +78,17 @@ class BoardFragment(
 
 
         binding.swipeRefreshLayout.setOnRefreshListener {
+            dailyBoardAdapter.releaseVideo()
             viewModel.getRandomDailyBoards()
         }
 
         viewModel.dailyBoards.observe(requireActivity(), Observer {
-            dailyBoardAdapter.submitList(it.toMutableList())
-
+            dailyBoardAdapter.submitList(it.toMutableList()) {
+                binding.dailyBoards.scrollToPosition(0)
+            }
 
             binding.dailyBoards.post {
                 if (binding.swipeRefreshLayout.isRefreshing) {
-                    dailyBoardAdapter.notifyItemChanged(0)
-                    binding.dailyBoards.smoothScrollToPosition(0)
                     binding.swipeRefreshLayout.isRefreshing = false
                 }
             }
