@@ -84,7 +84,8 @@ class BoardFragment(
 
         viewModel.dailyBoards.observe(requireActivity(), Observer {
             dailyBoardAdapter.submitList(it.toMutableList()) {
-                binding.dailyBoards.scrollToPosition(0)
+                if (binding.swipeRefreshLayout.isRefreshing)
+                    binding.dailyBoards.scrollToPosition(0)
             }
 
             binding.dailyBoards.post {
