@@ -43,7 +43,6 @@ class BoardFramgnetViewModel @Inject constructor(private val dailyBoardUseCase: 
         }
     fun getDailyBoard(documentId : String, adapterPosition : Int) = viewModelScope.launch {
         dailyBoardUseCase.getDailyBoard(documentId).collect{
-            Logger.v(it.toString())
             val updateList = _dailyBoards.value?.toMutableList() ?: mutableListOf()
             updateList.set(adapterPosition, it)
             _dailyBoards.value = updateList

@@ -38,6 +38,7 @@ class BoardFragment(
         dailyBoardAdapter = DailyBoardAdapter(
             object : DailyBoardAdapter.IncreaseLike {
                 override fun increaseLike(dailyBoard: DailyBoard, adapterPosition: Int) {
+                    dailyBoardAdapter.releaseVideo()
                     viewModel.increaseFavourability(
                         dailyBoard,
                         dailyBoard.boardUID,
@@ -49,6 +50,7 @@ class BoardFragment(
             },
             object : DailyBoardAdapter.IncreaseDisLike {
                 override fun increaseDisLike(dailyBoard: DailyBoard, adapterPosition: Int) {
+                    dailyBoardAdapter.releaseVideo()
                     viewModel.increaseFavourability(
                         dailyBoard,
                         dailyBoard.boardUID,
