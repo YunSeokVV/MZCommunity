@@ -1,7 +1,6 @@
 package repository
 
 import android.content.Context
-import android.net.Uri
 import com.example.mzcommunity.R
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
@@ -35,19 +34,15 @@ class LoadingRepositoryImpl @Inject constructor(
 
     override suspend fun getUserProfile(context: Context): LoginedUser {
 
-        val profile: Uri = try {
-            storage.reference.child("user_profile_image/" + FirebaseAuth.auth.uid.toString() + ".jpg").downloadUrl.await()
-        } catch (e: Exception) {
-            Logger.v(e.message.toString())
-            Uri.parse("android.resource://" + context.packageName + "/" + R.drawable.user_profile2)
-        }
-
         val snapShot =
             fireStoreRef.collection("MZUsers").document(FirebaseAuth.auth.uid.toString()).get()
                 .await()
+
+        val resourceId = R.drawable.user_profile2
+        val defaultProfile: String = Util.getResourceImage(resourceId)
+        val profile = snapShot.getString("profileURL") ?: defaultProfile
         val nickName = snapShot.get("nickName") as? String ?: "알 수 없는 사용자"
-        val loginedUser = LoginedUser(profile.toString(), nickName)
-        return loginedUser
+        return LoginedUser(profile, nickName)
     }
 
     override suspend fun getDailyBoards(): List<DailyBoard> =
@@ -55,43 +50,44 @@ class LoadingRepositoryImpl @Inject constructor(
             var dailyBoards = ArrayList<DailyBoard>()
 
             try {
-                fireStoreRef.collection("dailyBoard").limit(6).get().addOnSuccessListener { result ->
-                    for (document in result) {
-                        val dailyBoardCollection = getDailyBoardCollection(document)
+                fireStoreRef.collection("dailyBoard").limit(6).get()
+                    .addOnSuccessListener { result ->
+                        for (document in result) {
+                            val dailyBoardCollection = getDailyBoardCollection(document)
 
-                        runBlocking {
-                            val userInfoSnapshot =
-                                fireStoreRef.collection("MZUsers")
-                                    .document(dailyBoardCollection.writerUID).get().await()
-                            val userNickName =
-                                userInfoSnapshot.getString("nickName") ?: "알 수 없는 사용자"
-                            val boardUID = document.id
+                            runBlocking {
+                                val userInfoSnapshot =
+                                    fireStoreRef.collection("MZUsers")
+                                        .document(dailyBoardCollection.writerUID).get().await()
+                                val userNickName =
+                                    userInfoSnapshot.getString("nickName") ?: "알 수 없는 사용자"
+                                val boardUID = document.id
 
-                            val boardContents = dailyBoardCollection.boardContents
-                            val like = dailyBoardCollection.like
-                            val disLike = dailyBoardCollection.disLike
-                            val userFavourability = dailyBoardCollection.favourability
-                            val viewType = dailyBoardCollection.viewType
+                                val boardContents = dailyBoardCollection.boardContents
+                                val like = dailyBoardCollection.like
+                                val disLike = dailyBoardCollection.disLike
+                                val userFavourability = dailyBoardCollection.favourability
+                                val viewType = dailyBoardCollection.viewType
 
-                            val resourceId = R.drawable.user_profile2
-                            val defaultProfile: String = getResourceImage(resourceId)
-                            val dailyBoard = DailyBoard(
-                                userNickName,
-                                userInfoSnapshot.getString("profileURL") ?: defaultProfile,
-                                boardContents,
-                                dailyBoardCollection.files,
-                                disLike,
-                                like,
-                                boardUID,
-                                userFavourability,
-                                viewType
-                            )
-                            dailyBoards.add(dailyBoard)
+                                val resourceId = R.drawable.user_profile2
+                                val defaultProfile: String = getResourceImage(resourceId)
+                                val dailyBoard = DailyBoard(
+                                    userNickName,
+                                    userInfoSnapshot.getString("profileURL") ?: defaultProfile,
+                                    boardContents,
+                                    dailyBoardCollection.files,
+                                    disLike,
+                                    like,
+                                    boardUID,
+                                    userFavourability,
+                                    viewType
+                                )
+                                dailyBoards.add(dailyBoard)
+                            }
+
                         }
-
+                        continuation.resume(dailyBoards, null)
                     }
-                    continuation.resume(dailyBoards, null)
-                }
             } catch (e: Exception) {
                 Logger.v(e.message.toString())
             }

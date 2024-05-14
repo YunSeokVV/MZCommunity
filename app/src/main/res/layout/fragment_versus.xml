@@ -12,10 +12,18 @@
         android:layout_height="80dp"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp"
-        android:src="@mipmap/ic_launcher"
+        android:src="@color/light_gray"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <LinearLayout
+        android:id="@+id/writeNameLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/light_gray"
+        android:layout_marginTop="10dp"
+        app:layout_constraintStart_toEndOf="@+id/userProfileImg"
+        app:layout_constraintTop_toTopOf="parent">
     <TextView
         android:id="@+id/writeName"
         android:layout_width="wrap_content"
@@ -23,29 +31,45 @@
         android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp"
         android:text="윤석"
+        android:visibility="invisible"
         android:textSize="15sp"
+        android:src="@color/light_gray"
         android:textStyle="bold"
         app:layout_constraintStart_toEndOf="@+id/userProfileImg"
         app:layout_constraintTop_toTopOf="parent" />
+    </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/titleLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:background="@color/light_gray"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/black"
+        app:layout_constraintStart_toEndOf="@+id/userProfileImg"
+        app:layout_constraintTop_toBottomOf="@+id/writeNameLayout"
+        >
     <TextView
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:layout_marginTop="10dp"
-        android:text="뭐가 더 맛있을 것 같나요?"
+        android:text="뭐가 더 맛있나"
+        android:visibility="invisible"
         android:textSize="25sp"
         android:textColor="@color/black"
         app:layout_constraintStart_toEndOf="@+id/userProfileImg"
         app:layout_constraintTop_toBottomOf="@+id/writeName" />
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/choice1"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="@color/pink"
+        android:background="@color/light_gray"
         app:layout_constraintBottom_toTopOf="@+id/guideline2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -58,6 +82,7 @@
         android:text="@string/choice1"
         android:textSize="40sp"
         android:textColor="@color/black"
+        android:visibility="gone"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/choice1"
         app:layout_constraintEnd_toEndOf="@+id/choice1"
@@ -121,7 +146,7 @@
         android:id="@+id/choice2"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="@color/sky_blue"
+        android:background="@color/light_gray"
         app:layout_constraintBottom_toTopOf="@+id/guideline3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -136,6 +161,7 @@
         android:textSize="40sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/choice1" />
@@ -198,6 +224,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:visibility="gone"
         android:layout_marginLeft="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -224,6 +251,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginRight="10dp"
         app:layout_constraintEnd_toEndOf="parent">
@@ -259,6 +287,7 @@
         android:layout_height="wrap_content"
         app:srcCompat="@drawable/baseline_add_24"
         app:backgroundTint="@color/theme"
+        android:visibility="gone"
         android:layout_marginBottom="10dp"
         android:layout_marginRight="10dp"
         app:layout_constraintBottom_toBottomOf="parent"

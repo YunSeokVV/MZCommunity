@@ -15,6 +15,7 @@ import kotlinx.coroutines.withContext
 import model.Response
 import model.LoginedUser
 import util.FirebaseAuth
+import util.Util
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -54,18 +55,14 @@ class UserRepositoryImpl @Inject constructor(
 
     override suspend fun getUserProfile(context: Context): LoginedUser {
 
-        val profile: Uri = try {
-            storage.reference.child("user_profile_image/" + FirebaseAuth.auth.uid.toString() + ".jpg").downloadUrl.await()
-        } catch (e: Exception) {
-            Logger.v(e.message.toString())
-            Uri.parse("android.resource://" + context.packageName + "/" + R.drawable.user_profile2)
-        }
-
         val snapShot =
             fireStoreRef.collection("MZUsers").document(FirebaseAuth.auth.uid.toString()).get()
                 .await()
+
+        val resourceId = R.drawable.user_profile2
+        val defaultProfile: String = Util.getResourceImage(resourceId)
+        val profile = snapShot.getString("profileURL") ?: defaultProfile
         val nickName = snapShot.get("nickName") as? String ?: "알 수 없는 사용자"
-        val loginedUser = LoginedUser(profile.toString(), nickName)
-        return loginedUser
+        return LoginedUser(profile, nickName)
     }
 }

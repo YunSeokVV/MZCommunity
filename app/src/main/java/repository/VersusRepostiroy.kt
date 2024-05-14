@@ -66,9 +66,8 @@ class VersusRepostiroyImpl @Inject constructor(
             val snapshot = firestore.collection("versusBoard").get().await()
 
             val notVotedList = snapshot.documents.mapNotNull{item ->
-                val uid : String = item.getString("writerUID") ?: "nothing"
                 val userVoted = item.get("votedUser") as? Map<String, Any>
-                val voted = userVoted?.get(uid) as? Boolean ?: false
+                val voted = userVoted?.get(FirebaseAuth.auth.uid) as? Boolean ?: false
                 // 사용자가 이전에 투표하지 않은 질문만 보여준다.
                 if(!voted){
                     item

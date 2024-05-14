@@ -1,5 +1,6 @@
 package view.fragment
 
+import android.content.Context
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,11 +13,22 @@ import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
 import com.example.mzcommunity.R
 import com.example.mzcommunity.databinding.FragmentMyPageBinding
+import com.orhanobut.logger.Logger
 import dagger.hilt.android.AndroidEntryPoint
+import model.LoginedUser
+import util.Util
 import viewmodel.MyPageFragmentViewModel
 
 @AndroidEntryPoint
-class MyPageFragment : Fragment() {
+class MyPageFragment(private val loginedUserProfile: LoginedUser) : Fragment() {
+
+
+    interface loginUserListener {
+        fun loginUserListner(loginedUser: LoginedUser)
+    }
+
+    private lateinit var loginedUser : loginUserListener
+
     private val viewModel: MyPageFragmentViewModel by viewModels()
     private lateinit var binding: FragmentMyPageBinding
     private lateinit var profileUri : Uri
@@ -26,6 +38,15 @@ class MyPageFragment : Fragment() {
             profileUri = (it ?: R.drawable.user_profile2) as Uri
         }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        try {
+            loginedUser = activity as loginUserListener
+        }catch (e : Exception){
+            Logger.v(e.message.toString())
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -34,7 +55,6 @@ class MyPageFragment : Fragment() {
         binding.editProfile.setOnClickListener {
             viewModel.setEditMode()
         }
-
         binding.userProfileImg.setOnClickListener {
             startForResult.launch("image/*")
         }
@@ -50,6 +70,7 @@ class MyPageFragment : Fragment() {
                 binding.userName.isEnabled = true
 
                 binding.editProfile.setOnClickListener {
+                    Util.showProgressDialog(requireContext(), true)
                     viewModel.updateProfile(binding.userName.text.toString(), profileUri)
                     viewModel.setEditMode()
                 }
@@ -67,12 +88,12 @@ class MyPageFragment : Fragment() {
         })
 
         viewModel.loginedUser.observe(requireActivity(), Observer {
-            profileUri = Uri.parse(it.profileUri)
-            Glide.with(requireContext()).load(it.profileUri).into(binding.userProfileImg)
-            it.nickName
-            binding.userName.setText(it.nickName)
+            loginedUser.loginUserListner(it)
+            Util.showProgressDialog(requireContext(), false)
         })
 
+        Glide.with(requireContext()).load(loginedUserProfile.profileUri).into(binding.userProfileImg)
+        binding.userName.setText(loginedUserProfile.nickName)
 
         return binding.root
     }
