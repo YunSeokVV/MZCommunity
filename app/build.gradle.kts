@@ -54,6 +54,8 @@ android {
 
 dependencies {
 
+    implementation("com.google.android.material:material:1.3.0-alpha02")
+
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
 
     // roomDB

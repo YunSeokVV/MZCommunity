@@ -1,11 +1,9 @@
 package util
 
 import android.content.Context
-import android.net.Uri
 import android.widget.Toast
-import com.example.mzcommunity.R
+import androidx.core.content.ContextCompat
 import com.google.firebase.firestore.DocumentSnapshot
-import com.orhanobut.logger.Logger
 import view.ProgressDialog
 import java.util.Random
 
@@ -29,6 +27,10 @@ class Util {
         fun getResourceImage(resourceId: Int) : String{
             val result = "android.resource://" + this.context?.applicationContext?.packageName + "/" + resourceId
             return result
+        }
+
+        fun getResourceColor(context: Context, resourceId: Int): Int {
+            return ContextCompat.getColor(context, resourceId)
         }
 
         fun parsingFireStoreDocument(documentSnapshot: DocumentSnapshot, key: String): String {

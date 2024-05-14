@@ -226,8 +226,7 @@
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginRight="10dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/choice2">
+        app:layout_constraintEnd_toEndOf="parent">
 
         <ImageView
             android:layout_width="25dp"
@@ -244,6 +243,26 @@
             android:text="새로운 게시글" />
 
     </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/nothing"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <include layout="@layout/no_posting" />
+    </LinearLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/addPost"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/baseline_add_24"
+        app:backgroundTint="@color/theme"
+        android:layout_marginBottom="10dp"
+        android:layout_marginRight="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline1"
@@ -265,5 +284,4 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.95" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>
