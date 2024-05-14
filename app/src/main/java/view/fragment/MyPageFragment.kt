@@ -27,22 +27,24 @@ class MyPageFragment(private val loginedUserProfile: LoginedUser) : Fragment() {
         fun loginUserListner(loginedUser: LoginedUser)
     }
 
-    private lateinit var loginedUser : loginUserListener
+    private lateinit var loginedUser: loginUserListener
 
     private val viewModel: MyPageFragmentViewModel by viewModels()
     private lateinit var binding: FragmentMyPageBinding
-    private lateinit var profileUri : Uri
+    private lateinit var profileUri: Uri
     private val startForResult =
         registerForActivityResult(ActivityResultContracts.GetContent()) {
-            it?.let { Glide.with(this).load(it).into(binding.userProfileImg) }
-            profileUri = (it ?: R.drawable.user_profile2) as Uri
+            it?.let {
+                Glide.with(this).load(it).into(binding.userProfileImg)
+                profileUri = (it ?: R.drawable.user_profile2) as Uri
+            }
         }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         try {
             loginedUser = activity as loginUserListener
-        }catch (e : Exception){
+        } catch (e: Exception) {
             Logger.v(e.message.toString())
         }
     }
@@ -92,7 +94,8 @@ class MyPageFragment(private val loginedUserProfile: LoginedUser) : Fragment() {
             Util.showProgressDialog(requireContext(), false)
         })
 
-        Glide.with(requireContext()).load(loginedUserProfile.profileUri).into(binding.userProfileImg)
+        Glide.with(requireContext()).load(Uri.parse(loginedUserProfile.profileUri))
+            .into(binding.userProfileImg)
         binding.userName.setText(loginedUserProfile.nickName)
 
         return binding.root
