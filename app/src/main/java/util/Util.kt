@@ -6,6 +6,7 @@ import androidx.core.content.ContextCompat
 import com.google.firebase.firestore.DocumentSnapshot
 import view.ProgressDialog
 import java.util.Random
+import kotlin.math.round
 
 class Util {
 
@@ -31,6 +32,10 @@ class Util {
 
         fun getResourceColor(context: Context, resourceId: Int): Int {
             return ContextCompat.getColor(context, resourceId)
+        }
+
+        fun cacluatePercent(firstOpinionNumber: Int, secondOpinionNumber: Int): Int {
+            return round((firstOpinionNumber.toDouble() / (firstOpinionNumber + secondOpinionNumber) * 100)).toInt()
         }
 
         fun parsingFireStoreDocument(documentSnapshot: DocumentSnapshot, key: String): String {

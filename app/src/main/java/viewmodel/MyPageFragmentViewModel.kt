@@ -17,16 +17,8 @@ import javax.inject.Inject
 @HiltViewModel
 class MyPageFragmentViewModel @Inject constructor(private val application : Application, private val mypageUsecasae: UserUsecase) :
     AndroidViewModel(application) {
-    init {
-        getUserProfile()
-    }
 
     private val _isUpdateComplte = MutableLiveData<Boolean>()
-    val isUpdateComplte : LiveData<Boolean>
-        get() {
-            return _isUpdateComplte
-        }
-
     private val _logined_user = MutableLiveData<LoginedUser>()
     val loginedUser: LiveData<LoginedUser>
         get() {
@@ -47,7 +39,6 @@ class MyPageFragmentViewModel @Inject constructor(private val application : Appl
 
     fun getUserProfile() = viewModelScope.launch {
         mypageUsecasae.getUserProfile(application.applicationContext).collect {
-            Logger.v(it.toString())
             _logined_user.value = it
         }
     }
@@ -57,6 +48,7 @@ class MyPageFragmentViewModel @Inject constructor(private val application : Appl
             when (it) {
                 is Response.Success -> {
                     _isUpdateComplte.value = it.data ?: false
+                    getUserProfile()
                 }
 
                 is Response.Failure -> {

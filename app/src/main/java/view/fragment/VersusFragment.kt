@@ -3,6 +3,7 @@ package view.fragment
 import android.app.AlertDialog
 import android.content.Intent
 import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -58,8 +59,9 @@ class VersusFragment(private val loginedUserProfile: LoginedUser) : Fragment() {
                     }
                     // 손을 뗀 시점
                     MotionEvent.ACTION_UP -> {
-                        vote(true)
                         binding.choice1.setBackgroundColor(Util.getResourceColor(requireActivity(), R.color.pink))
+                        vote(true)
+                        setPercent()
                     }
                 }
                 return true
@@ -72,12 +74,13 @@ class VersusFragment(private val loginedUserProfile: LoginedUser) : Fragment() {
                 when (event?.action) {
                     // 손을 누른 시점
                     MotionEvent.ACTION_DOWN -> {
-                        binding.choice1.setBackgroundColor(Util.getResourceColor(requireActivity(), R.color.complementary_sky_blue))
+                        binding.choice2.setBackgroundColor(Util.getResourceColor(requireActivity(), R.color.complementary_sky_blue))
                     }
                     // 손을 뗀 시점
                     MotionEvent.ACTION_UP -> {
-                        vote(true)
-                        binding.choice1.setBackgroundColor(Util.getResourceColor(requireActivity(), R.color.sky_blue))
+                        binding.choice2.setBackgroundColor(Util.getResourceColor(requireActivity(), R.color.sky_blue))
+                        vote(false)
+                        setPercent()
                     }
                 }
                 return true
@@ -89,19 +92,15 @@ class VersusFragment(private val loginedUserProfile: LoginedUser) : Fragment() {
             binding.choice1Text.text = it.opinion1
             binding.choice2Text.text = it.opinion2
 
-            Glide.with(this).load(it.writerUri)
+            Glide.with(this).load(Uri.parse(it.writerUri))
                 .into(binding.userProfileImg)
 
             binding.writeName.text = it.writerName
             binding.title.text = it.boardTitle
             binding.choosenChoice1.text = it.opinion1
-            binding.choosenChoice1Percent.text = viewModel.opinion1Percent.toString() + "%"
             binding.choosenChoice1Count.text = it.opinion1Count.toString()
-
-            binding.choosenChoice2.text = it.opinion2
-            binding.choosenChoice2Percent.text = viewModel.opinion2Percent.toString() + "%"
             binding.choosenChoice2Count.text = it.opinion2Count.toString()
-
+            binding.choosenChoice2.text = it.opinion2
         })
 
         viewModel.errorValue.observe(requireActivity(), Observer {
@@ -126,12 +125,12 @@ class VersusFragment(private val loginedUserProfile: LoginedUser) : Fragment() {
         return binding.root
     }
 
-    fun vote(opinionOne: Boolean) {
-        viewModel.voteOpinion(opinionOne)
-        val visibleView = if (opinionOne) binding.choice1Checked else binding.choice2Checked
+    fun vote(isFirstOpinion: Boolean) {
+        viewModel.voteOpinion(isFirstOpinion)
+        val visibleView = if (isFirstOpinion) binding.choice1Checked else binding.choice2Checked
         visibleView.visibility = View.VISIBLE
 
-        if (opinionOne)
+        if (isFirstOpinion)
             binding.choosenChoice1Count.text =
                 viewModel.addVoteCount(binding.choosenChoice1Count.text.toString().toInt())
                     .toString()
@@ -156,6 +155,16 @@ class VersusFragment(private val loginedUserProfile: LoginedUser) : Fragment() {
 
     private fun showAgenda(isShowAgenda: Boolean) {
         if (isShowAgenda) {
+            binding.choice1.setBackgroundColor(Util.getResourceColor(requireActivity(), R.color.pink))
+            binding.choice2.setBackgroundColor(Util.getResourceColor(requireActivity(), R.color.sky_blue))
+            binding.writeNameLayout.setBackgroundColor(Util.getResourceColor(requireActivity(), R.color.white))
+            binding.titleLayout.setBackgroundColor(Util.getResourceColor(requireActivity(), R.color.white))
+            binding.writeName.setTextColor(Util.getResourceColor(requireActivity(), R.color.black))
+            binding.title.setTextColor(Util.getResourceColor(requireActivity(), R.color.black))
+            binding.choice1Text.visibility = View.VISIBLE
+            binding.comment.visibility = View.VISIBLE
+            binding.posting.visibility = View.VISIBLE
+            binding.choice2Text.visibility = View.VISIBLE
             binding.choice1Text.visibility = View.VISIBLE
             binding.choice2Text.visibility = View.VISIBLE
             binding.userProfileImg.visibility = View.VISIBLE
@@ -215,8 +224,18 @@ class VersusFragment(private val loginedUserProfile: LoginedUser) : Fragment() {
             binding.choosenChoice2Count.visibility = View.GONE
             binding.choice1Text.visibility = View.VISIBLE
             binding.choice2Text.visibility = View.VISIBLE
+            binding.choice1Checked.visibility = View.GONE
+            binding.choice2Checked.visibility = View.GONE
         }
 
     }
 
+    private fun setPercent(){
+        val firstPercent : Int = viewModel.calculatePercent(binding.choosenChoice1Count.text.toString().toInt(), binding.choosenChoice2Count.text.toString().toInt())
+        Logger.v(binding.choosenChoice1Count.text.toString())
+        Logger.v(binding.choosenChoice2Count.text.toString())
+        val secondPercent : Int = viewModel.calculatePercent(binding.choosenChoice2Count.text.toString().toInt(), binding.choosenChoice1Count.text.toString().toInt())
+        binding.choosenChoice1Percent.text = "$firstPercent%"
+        binding.choosenChoice2Percent.text = "$secondPercent%"
+    }
 }

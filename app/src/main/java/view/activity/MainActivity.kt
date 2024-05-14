@@ -15,9 +15,10 @@ import view.fragment.MyPageFragment
 import view.fragment.PostingFragment
 import view.fragment.VersusFragment
 import viewmodel.MainActivityViewModel
+import view.fragment.MyPageFragment.loginUserListener
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), loginUserListener {
     private val viewModel: MainActivityViewModel by viewModels()
     private lateinit var binding: ActivityMainBinding
     private lateinit var loginedUserProfile: LoginedUser
@@ -31,7 +32,6 @@ class MainActivity : AppCompatActivity() {
         val userProfile: LoginedUser = intent.getSerializableExtra("userProfile") as LoginedUser
         dailyBoards = intent.getSerializableExtra("dailyBoards") as ArrayList<DailyBoard>
         loginedUserProfile = userProfile
-
 
         supportFragmentManager.beginTransaction()
             .replace(
@@ -67,7 +67,7 @@ class MainActivity : AppCompatActivity() {
 
                 R.id.fragment_my_page -> {
                     supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragment_container, MyPageFragment()).commit()
+                        .replace(R.id.fragment_container, MyPageFragment(loginedUserProfile)).commit()
                     true
                 }
 
@@ -83,5 +83,9 @@ class MainActivity : AppCompatActivity() {
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, BoardFragment(loginedUserProfile, dailyBoards))
             .commit()
+    }
+
+    override fun loginUserListner(loginedUser: LoginedUser) {
+        loginedUserProfile = loginedUser
     }
 }
