@@ -14,6 +14,7 @@
     <string name="comment_hint">댓글을 입력하세요 ...</string>
     <string name="loading">로딩중입니다 ...</string>
     <string name="choice1">짜장면</string>
+    <string name="no_posting">게시글이 존재하지 않습니다</string>
     <string name="inputTitle">문제의 제목을 입력해주세요</string>
     <string name="opinion1Hint">의견1 의 내용을 입력해주세요</string>
     <string name="opinion2Hint">의견2 의 내용을 입력해주세요</string>

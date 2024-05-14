@@ -27,7 +27,7 @@ interface VersusRepostiroy {
         writerUID: String
     ): Response<Boolean>
 
-    suspend fun getRandomVersusBoard() : VersusBoard
+    suspend fun getRandomVersusBoard() : Response<VersusBoard>
     suspend fun voteOpinion(opinion1Vote : Boolean, versusBoardUID : String) : Response<Boolean>
 }
 
@@ -59,13 +59,14 @@ class VersusRepostiroyImpl @Inject constructor(
         }
     }
 
-    override suspend fun getRandomVersusBoard() : VersusBoard = withContext(Dispatchers.IO){
-        var versusBoard : VersusBoard
-        try {
+
+    override suspend fun getRandomVersusBoard() : Response<VersusBoard>{
+
+        return try {
             val snapshot = firestore.collection("versusBoard").get().await()
 
             val notVotedList = snapshot.documents.mapNotNull{item ->
-                val uid : String = item.get("writerUID") as? String ?: "noUID"
+                val uid : String = item.getString("writerUID") ?: "nothing"
                 val userVoted = item.get("votedUser") as? Map<String, Any>
                 val voted = userVoted?.get(uid) as? Boolean ?: false
                 // 사용자가 이전에 투표하지 않은 질문만 보여준다.
@@ -76,12 +77,15 @@ class VersusRepostiroyImpl @Inject constructor(
                 }
             }
 
-            val document = notVotedList.get(Util.getRanNum(notVotedList.size))
-            val writerUID : String = document.get("writerUID") as String
+            val document = notVotedList[Util.getRanNum(notVotedList.size)]
+            val writerUID : String = document.getString("writerUID") ?: "nothing"
             val writerDocu = firestore.collection("MZUsers").document(writerUID).get().await()
 
-            val writerProfileUri = storage.reference.child("user_profile_image/$writerUID.jpg").downloadUrl.await()
-            val writerName = writerDocu.get("nickName") as? String ?: "알 수 없는 사용자"
+            val resourceId = R.drawable.user_profile2
+            val defaultProfile: String = Util.getResourceImage(resourceId)
+
+            val nickName = writerDocu.getString("nickName") ?: "알 수 없는 사용자"
+            val profileURL = writerDocu.getString("profileURL") ?: defaultProfile
             val boardTitle = document.get("boardTitle") as? String ?: "주제"
             val opinion1 = document.get("opinion1") as? String ?: "의견1"
             val opinion1VoteCount = document.get("opinion1VoteCount") as? Long ?: 0
@@ -89,12 +93,12 @@ class VersusRepostiroyImpl @Inject constructor(
             val opinion2VoteCount = document.get("opinion2VoteCount") as? Long ?: 0
 
             val userVoted = document.get(writerUID) as? Boolean ?: false
-            versusBoard = VersusBoard(writerProfileUri,writerName,boardTitle,opinion1,opinion1VoteCount, opinion2,opinion2VoteCount,document.id,userVoted)
+            val versusBoard = VersusBoard(profileURL,nickName,boardTitle,opinion1,opinion1VoteCount, opinion2,opinion2VoteCount,document.id,userVoted)
+            Response.Success(versusBoard)
         } catch (e : Exception){
             Logger.v(e.message.toString())
-            versusBoard = VersusBoard(Uri.parse("nothing"),"알 수 없는 사용자","주제","의견1",0, "의견2",0,"unKnown",false)
+            Response.Failure(e)
         }
-        return@withContext versusBoard
     }
 
     override suspend fun voteOpinion(opinion1Vote: Boolean, versusBoardUID : String): Response<Boolean> = withContext(Dispatchers.IO) {

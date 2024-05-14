@@ -38,6 +38,7 @@ class BoardFragment(
         dailyBoardAdapter = DailyBoardAdapter(
             object : DailyBoardAdapter.IncreaseLike {
                 override fun increaseLike(dailyBoard: DailyBoard, adapterPosition: Int) {
+                    dailyBoardAdapter.releaseVideo()
                     viewModel.increaseFavourability(
                         dailyBoard,
                         dailyBoard.boardUID,
@@ -49,6 +50,7 @@ class BoardFragment(
             },
             object : DailyBoardAdapter.IncreaseDisLike {
                 override fun increaseDisLike(dailyBoard: DailyBoard, adapterPosition: Int) {
+                    dailyBoardAdapter.releaseVideo()
                     viewModel.increaseFavourability(
                         dailyBoard,
                         dailyBoard.boardUID,
@@ -78,17 +80,18 @@ class BoardFragment(
 
 
         binding.swipeRefreshLayout.setOnRefreshListener {
+            dailyBoardAdapter.releaseVideo()
             viewModel.getRandomDailyBoards()
         }
 
         viewModel.dailyBoards.observe(requireActivity(), Observer {
-            dailyBoardAdapter.submitList(it.toMutableList())
-
+            dailyBoardAdapter.submitList(it.toMutableList()) {
+                if (binding.swipeRefreshLayout.isRefreshing)
+                    binding.dailyBoards.scrollToPosition(0)
+            }
 
             binding.dailyBoards.post {
                 if (binding.swipeRefreshLayout.isRefreshing) {
-                    dailyBoardAdapter.notifyItemChanged(0)
-                    binding.dailyBoards.smoothScrollToPosition(0)
                     binding.swipeRefreshLayout.isRefreshing = false
                 }
             }
@@ -99,12 +102,13 @@ class BoardFragment(
 
     override fun onStop() {
         super.onStop()
-
+        if (dailyBoardAdapter.isRecentVideoInitalized())
         dailyBoardAdapter.pauseVideoOnstop()
     }
 
     override fun onResume() {
         super.onResume()
+        if (dailyBoardAdapter.isRecentVideoInitalized())
         dailyBoardAdapter.resumeVideoOnResume()
     }
 }

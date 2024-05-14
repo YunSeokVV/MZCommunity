@@ -1,9 +1,7 @@
 package model
 
-import android.net.Uri
-
 data class VersusBoard(
-    val writerUri : Uri,
+    val writerUri : String,
     val writerName : String,
     val boardTitle: String,
     val opinion1: String,
