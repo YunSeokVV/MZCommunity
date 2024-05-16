@@ -9,8 +9,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
 import com.example.mzcommunity.databinding.FragmentBoardBinding
 import dagger.hilt.android.AndroidEntryPoint
 import model.DailyBoard
@@ -82,15 +80,19 @@ class BoardFragment(
         binding.swipeRefreshLayout.setOnRefreshListener {
             dailyBoardAdapter.releaseVideo()
             viewModel.getRandomDailyBoards()
+            viewModel.isRfreshing = true
         }
 
         viewModel.dailyBoards.observe(requireActivity(), Observer {
             dailyBoardAdapter.submitList(it.toMutableList()) {
-                if (binding.swipeRefreshLayout.isRefreshing)
+                if (viewModel.isRfreshing){
                     binding.dailyBoards.scrollToPosition(0)
+                    viewModel.isRfreshing = false
+                }
             }
 
             binding.dailyBoards.post {
+                binding.swipeRefreshLayout.isRefreshing = false
                 if (binding.swipeRefreshLayout.isRefreshing) {
                     binding.swipeRefreshLayout.isRefreshing = false
                 }
