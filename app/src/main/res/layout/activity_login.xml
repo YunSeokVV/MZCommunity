@@ -10,7 +10,7 @@
         android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="이게 MZ다"
+        android:text="@string/app_name"
         android:textColor="@color/black"
         android:textAlignment="center"
         android:textSize="40sp"
