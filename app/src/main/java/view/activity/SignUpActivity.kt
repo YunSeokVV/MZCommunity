@@ -41,11 +41,11 @@ class SignUpActivity : AppCompatActivity() {
                     if (task.isSuccessful) {
                         lifecycleScope.launch {
                             viewModel.setUserNickName(binding.emailInput.text.toString())
-                            viewModel.saveUserLoginInfo(binding.emailInput.text.toString(), binding.passWordInput.text.toString())
+                            viewModel.saveUserLoginInfo(
+                                binding.emailInput.text.toString(),
+                                binding.passWordInput.text.toString()
+                            )
                         }
-                        Util.makeToastMessage("회원가입을 축하합니다! 저희앱을 사용해주셔서 감사합니다 :)", this)
-                        val intent = Intent(this, MainActivity::class.java)
-                        startActivity(intent)
                     } else {
                         try {
                             throw task.exception!!
@@ -66,8 +66,10 @@ class SignUpActivity : AppCompatActivity() {
         }
 
         viewModel.saveUserInfo.observe(this, Observer { saved ->
-            if(saved){
-
+            if (saved) {
+                Util.makeToastMessage("회원가입을 축하합니다! 저희앱을 사용해주셔서 감사합니다 :)", this)
+                val intent = Intent(this, LoadingActivity::class.java)
+                startActivity(intent)
             }
         })
 
