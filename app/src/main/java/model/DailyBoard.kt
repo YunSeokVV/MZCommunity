@@ -1,7 +1,5 @@
 package model
 
-import android.net.Uri
-import com.google.firebase.storage.ListResult
 import java.io.Serializable
 
 

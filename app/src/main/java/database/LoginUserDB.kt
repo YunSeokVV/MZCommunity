@@ -17,25 +17,17 @@ abstract class LoginUserDB : RoomDatabase() {
     abstract fun getEventsDao(): LoginInfoDao
 
     companion object {
-        private var instance: LoginUserDB? = null
 
         @Synchronized
-        fun getInstance(context: Context): LoginUserDB? {
-            if (instance == null) {
-                synchronized(LoginUserDB::class.java) {
-                    instance = Room.databaseBuilder(
-                        context.applicationContext,
-                        LoginUserDB::class.java, "login_user_db"
-                    ).build()
-                }
+        fun getInstance(context: Context): LoginUserDB {
+            synchronized(LoginUserDB::class.java){
+                return Room.databaseBuilder(
+                    context,
+                    LoginUserDB::class.java, "login_user_db"
+                ).build()
             }
-            return instance
         }
-
-
     }
-
-
 }
 
 

@@ -79,11 +79,6 @@ class LoginActivity : AppCompatActivity() {
                         launchLoadingActivity()
                     } else {
                         Util.makeToastMessage("사용자 정보를 확인해주세요 :)", this)
-                        try {
-                            throw task.exception!!
-                        } catch (e: Exception) {
-                            Logger.v(e.message.toString())
-                        }
                     }
                 }
             }
