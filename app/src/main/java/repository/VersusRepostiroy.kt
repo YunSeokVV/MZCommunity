@@ -80,8 +80,7 @@ class VersusRepostiroyImpl @Inject constructor(
             val writerUID : String = document.getString("writerUID") ?: "nothing"
             val writerDocu = firestore.collection("MZUsers").document(writerUID).get().await()
 
-            val resourceId = R.drawable.user_profile2
-            val defaultProfile: String = Util.getResourceImage(resourceId)
+            val defaultProfile: String = Util.getUnknownProfileImage()
 
             val nickName = writerDocu.getString("nickName") ?: "알 수 없는 사용자"
             val profileURL = writerDocu.getString("profileURL") ?: defaultProfile

@@ -24,17 +24,10 @@ class BottomSheetFragmentViewModel @Inject constructor(private val commentUseCas
     var isReplyMode = false
 
     // 부모 댓글의 UID값이 담긴다. 대댓글을 쓰기위해 필요.
-    lateinit var choosenReplyUID: String
+    var choosenReplyUID = String()
 
     // 대댓글을 쓰기 위해 태그한 사용자
-    lateinit var tagedUser: String
-
-    private val _parentUID = MutableLiveData<String>()
-
-    val parentUID: LiveData<String>
-        get() {
-            return _parentUID
-        }
+    var tagedUser = String()
 
     private val _isPostingComplte = MutableLiveData<Boolean>()
     val isPostingComplete: LiveData<Boolean>
@@ -43,17 +36,11 @@ class BottomSheetFragmentViewModel @Inject constructor(private val commentUseCas
         }
     val dailyBoardComments = MutableLiveData<MutableList<Comment>>()
 
-
-
     private val _nestedComments = MutableLiveData<List<Comment>>()
     val nestedComment: LiveData<List<Comment>>
         get() {
             return _nestedComments
         }
-
-    fun setParentUID(uid: String) {
-        _parentUID.value = uid
-    }
 
     fun getMoreComments(parentUID: String, collectionName: String) = viewModelScope.launch {
         commentUseCase.getMoreComments(parentUID, collectionName).collect {

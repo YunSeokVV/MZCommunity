@@ -3,6 +3,7 @@ package util
 import android.content.Context
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import com.example.mzcommunity.R
 import com.google.firebase.firestore.DocumentSnapshot
 import view.ProgressDialog
 import java.util.Random
@@ -27,6 +28,11 @@ class Util {
 
         fun getResourceImage(resourceId: Int) : String{
             val result = "android.resource://" + this.context?.applicationContext?.packageName + "/" + resourceId
+            return result
+        }
+
+        fun getUnknownProfileImage() : String{
+            val result = "android.resource://" + this.context?.applicationContext?.packageName + "/" + R.drawable.user_profile2
             return result
         }
 

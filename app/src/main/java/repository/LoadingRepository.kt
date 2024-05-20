@@ -16,6 +16,7 @@ import model.LoginedUser
 import util.FirebaseAuth
 import util.Util
 import util.Util.Companion.getResourceImage
+import util.Util.Companion.getUnknownProfileImage
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -38,8 +39,7 @@ class LoadingRepositoryImpl @Inject constructor(
             fireStoreRef.collection("MZUsers").document(FirebaseAuth.auth.uid.toString()).get()
                 .await()
 
-        val resourceId = R.drawable.user_profile2
-        val defaultProfile: String = Util.getResourceImage(resourceId)
+        val defaultProfile: String = Util.getUnknownProfileImage()
         val profile = snapShot.getString("profileURL") ?: defaultProfile
         val nickName = snapShot.get("nickName") as? String ?: "알 수 없는 사용자"
         return LoginedUser(profile, nickName)
@@ -69,8 +69,7 @@ class LoadingRepositoryImpl @Inject constructor(
                                 val userFavourability = dailyBoardCollection.favourability
                                 val viewType = dailyBoardCollection.viewType
 
-                                val resourceId = R.drawable.user_profile2
-                                val defaultProfile: String = getResourceImage(resourceId)
+                                val defaultProfile: String = getUnknownProfileImage()
                                 val dailyBoard = DailyBoard(
                                     userNickName,
                                     userInfoSnapshot.getString("profileURL") ?: defaultProfile,

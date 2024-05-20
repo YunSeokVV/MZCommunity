@@ -20,7 +20,7 @@ private const val LOADING = 1
 
 class DailyBoardCommentAdapter(
     private val popstReplyListener: PostReplyOnClickListener,
-    private val showCommentListener: ShowCommentListener
+    private val showCommentListener: ShowCommentListener,
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     var nestedCommentList = mutableListOf<Comment>()

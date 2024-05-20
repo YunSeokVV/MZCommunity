@@ -28,16 +28,17 @@ class MyPageFragment(private val loginedUserProfile: LoginedUser) : Fragment() {
     }
 
     private lateinit var loginedUser: loginUserListener
-
     private val viewModel: MyPageFragmentViewModel by viewModels()
     private lateinit var binding: FragmentMyPageBinding
-    private lateinit var profileUri: Uri
+    private var profileUri: String = Util.getUnknownProfileImage()
+
     private val startForResult =
         registerForActivityResult(ActivityResultContracts.GetContent()) {
             it?.let {
                 Glide.with(this).load(it).into(binding.userProfileImg)
-                profileUri = (it ?: R.drawable.user_profile2) as Uri
+                profileUri = it.toString()
             }
+
         }
 
     override fun onAttach(context: Context) {
@@ -73,7 +74,7 @@ class MyPageFragment(private val loginedUserProfile: LoginedUser) : Fragment() {
 
                 binding.editProfile.setOnClickListener {
                     Util.showProgressDialog(requireContext(), true)
-                    viewModel.updateProfile(binding.userName.text.toString(), profileUri)
+                    viewModel.updateProfile(binding.userName.text.toString(), Uri.parse(profileUri))
                     viewModel.setEditMode()
                 }
 

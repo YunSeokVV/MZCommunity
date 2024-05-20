@@ -99,8 +99,7 @@ class DailyBoardRepositoryImpl @Inject constructor(
                         val userFavourability = dailyBoardCollection.favourability
                         val viewType = dailyBoardCollection.viewType
 
-                        val resourceId = R.drawable.user_profile2
-                        val defaultProfile: String = Util.getResourceImage(resourceId)
+                        val defaultProfile: String = Util.getUnknownProfileImage()
 
                         val dailyBoard = DailyBoard(
                             userNickName,
@@ -151,8 +150,7 @@ class DailyBoardRepositoryImpl @Inject constructor(
                             val userFavourability = dailyBoardCollection.favourability
                             val viewType = dailyBoardCollection.viewType
 
-                            val resourceId = R.drawable.user_profile2
-                            val defaultProfile: String = Util.getResourceImage(resourceId)
+                            val defaultProfile: String = Util.getUnknownProfileImage()
 
                             val dailyBoard = DailyBoard(
                                 userNickName,

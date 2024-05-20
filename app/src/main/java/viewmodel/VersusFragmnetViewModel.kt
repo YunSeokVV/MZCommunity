@@ -17,14 +17,14 @@ import javax.inject.Inject
 @HiltViewModel
 class VersusFragmnetViewModel @Inject constructor(private val versusUseCase: VersusUsecase) :
     ViewModel() {
-    private lateinit var _boardUID: String
+    private var _boardUID = String()
     val boardUID: String
         get() {
             return _boardUID
         }
 
     private val _errorValue = MutableLiveData<Exception?>()
-    val errorValue : LiveData<Exception?>
+    val errorValue: LiveData<Exception?>
         get() {
             return _errorValue
         }
@@ -48,23 +48,23 @@ class VersusFragmnetViewModel @Inject constructor(private val versusUseCase: Ver
 
 
     fun getRandomVersusBoard() =
-        viewModelScope.launch{
-        versusUseCase.getRandomVersusBoard().collect {
-            when (it) {
-                is Response.Success -> {
-                    val value = it.data
-                    _versusBoard.value = value
-                    _boardUID =value.boardUID
-                }
+        viewModelScope.launch {
+            versusUseCase.getRandomVersusBoard().collect {
+                when (it) {
+                    is Response.Success -> {
+                        val value = it.data
+                        _versusBoard.value = value
+                        _boardUID = value.boardUID
+                    }
 
-                is Response.Failure -> {
-                    Logger.v(it.e?.message.toString())
-                    val value = it.e
-                    _errorValue.value = value
+                    is Response.Failure -> {
+                        Logger.v(it.e?.message.toString())
+                        val value = it.e
+                        _errorValue.value = value
+                    }
                 }
             }
         }
-    }
 
     fun addVoteCount(original: Int): Int {
         return original + 1
@@ -85,7 +85,7 @@ class VersusFragmnetViewModel @Inject constructor(private val versusUseCase: Ver
         }
     }
 
-    fun calculatePercent(firstOpinion : Int, secondOpinion : Int) : Int{
+    fun calculatePercent(firstOpinion: Int, secondOpinion: Int): Int {
         return Util.cacluatePercent(firstOpinion, secondOpinion)
     }
 

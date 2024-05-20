@@ -56,12 +56,7 @@ class BottomSheetFragment(
         requireActivity().getWindow()
             .setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_UNSPECIFIED);
 
-
-        viewModel.setParentUID(parentUID)
-        viewModel.parentUID.observe(this, Observer {
-
-            viewModel.getComments(it, collectionName)
-        })
+        viewModel.getComments(parentUID, collectionName)
 
         viewModel.isPostingComplete.observe(this, Observer { data ->
             if (data) {
@@ -154,7 +149,7 @@ class BottomSheetFragment(
                         if (linearLayoutManager != null && linearLayoutManager.findLastCompletelyVisibleItemPosition() == adapter.itemCount - 1) {
                             adapter.showProgress()
                             viewModel.getMoreComments(
-                                viewModel.parentUID.value ?: "nothing",
+                                parentUID,
                                 collectionName
                             )
                         }

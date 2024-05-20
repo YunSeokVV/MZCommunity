@@ -66,7 +66,7 @@ class DailyBoardAdapter(
     // todo : 앱이 처음 실행됐을때 recentVideoItemViewHolder 객체의 null 검사를 방지하기 위해 임의로 만든 플래그값이다. 가급적이면 다른 해결책을 찾아서 이 변수를 사용하지 말자.
     private var _isRecentVideoInitalized: Boolean = false
 
-    fun isRecentVideoInitalized() :Boolean = _isRecentVideoInitalized
+    fun isRecentVideoInitalized(): Boolean = _isRecentVideoInitalized
 
     private val onScrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -125,7 +125,7 @@ class DailyBoardAdapter(
 
             if (currentList[adapterPosition].files.size == 1) {
                 binding.intoTabLayout.visibility = View.GONE
-            } else{
+            } else {
                 binding.intoTabLayout.visibility = View.VISIBLE
             }
 
@@ -473,6 +473,7 @@ class DailyBoardAdapter(
             binding.likeImg.setOnClickListener {
                 val dailyBoard = currentList.get(adapterPosition)
                 increaseLike.increaseLike(dailyBoard, adapterPosition)
+                releaseVideo()
 
                 // 좋아요 버튼의 색깔을 파란색으로 변경
                 if (dailyBoard.favourability.equals("usual")) {
@@ -513,6 +514,7 @@ class DailyBoardAdapter(
             binding.disLikeImg.setOnClickListener {
                 val dailyBoard = currentList.get(adapterPosition)
                 increaseDisLike.increaseDisLike(dailyBoard, adapterPosition)
+                releaseVideo()
 
                 // 싫어요 버튼의 색깔을 파란색으로 변경
                 if (dailyBoard.favourability.equals("usual")) {
@@ -639,15 +641,16 @@ class DailyBoardAdapter(
         }
 
     }
+
     fun pauseVideoOnstop() {
-        if (recentVideoItemViewHolder != null) {
-            recentVideoItemViewHolder.pauseVideo()
-        }
+        recentVideoItemViewHolder.pauseVideo()
     }
 
     fun releaseVideo() {
-        if (recentVideoItemViewHolder != null) {
-            recentVideoItemViewHolder.releaseVideo()
+        currentList.forEach {dailyBoard ->
+            if(dailyBoard.viewType == 2){
+                recentVideoItemViewHolder.releaseVideo()
+            }
         }
     }
 
