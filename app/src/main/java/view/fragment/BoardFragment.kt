@@ -23,7 +23,42 @@ class BoardFragment(
 ) : Fragment() {
     private val viewModel by viewModels<BoardFramgnetViewModel>()
     private lateinit var binding: FragmentBoardBinding
-    private lateinit var dailyBoardAdapter: DailyBoardAdapter
+    private var dailyBoardAdapter: DailyBoardAdapter = DailyBoardAdapter(
+        object : DailyBoardAdapter.IncreaseLike {
+            override fun increaseLike(dailyBoard: DailyBoard, adapterPosition: Int) {
+                viewModel.increaseFavourability(
+                    dailyBoard,
+                    dailyBoard.boardUID,
+                    adapterPosition,
+                    true
+                )
+            }
+
+        },
+        object : DailyBoardAdapter.IncreaseDisLike {
+            override fun increaseDisLike(dailyBoard: DailyBoard, adapterPosition: Int) {
+                viewModel.increaseFavourability(
+                    dailyBoard,
+                    dailyBoard.boardUID,
+                    adapterPosition,
+                    false
+                )
+            }
+
+        },
+        object : DailyBoardAdapter.ShowComment {
+            override fun showComment(dailyBoard: DailyBoard) {
+                val bottomSheetFragment = BottomSheetFragment(
+                    dailyBoard.boardUID,
+                    "dailyBoardComment",
+                    "dailyBoardNestedComment",
+                    "dailyBoardComment",
+                    loginedUserProfile
+                )
+                bottomSheetFragment.show(childFragmentManager, bottomSheetFragment.tag)
+            }
+
+        })
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -32,46 +67,6 @@ class BoardFragment(
 
         binding.dailyBoards.layoutManager =
             LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false)
-
-        dailyBoardAdapter = DailyBoardAdapter(
-            object : DailyBoardAdapter.IncreaseLike {
-                override fun increaseLike(dailyBoard: DailyBoard, adapterPosition: Int) {
-                    dailyBoardAdapter.releaseVideo()
-                    viewModel.increaseFavourability(
-                        dailyBoard,
-                        dailyBoard.boardUID,
-                        adapterPosition,
-                        true
-                    )
-                }
-
-            },
-            object : DailyBoardAdapter.IncreaseDisLike {
-                override fun increaseDisLike(dailyBoard: DailyBoard, adapterPosition: Int) {
-                    dailyBoardAdapter.releaseVideo()
-                    viewModel.increaseFavourability(
-                        dailyBoard,
-                        dailyBoard.boardUID,
-                        adapterPosition,
-                        false
-                    )
-                }
-
-            },
-            object : DailyBoardAdapter.ShowComment {
-                override fun showComment(dailyBoard: DailyBoard) {
-                    val bottomSheetFragment = BottomSheetFragment(
-                        dailyBoard.boardUID,
-                        "dailyBoardComment",
-                        "dailyBoardNestedComment",
-                        "dailyBoardComment",
-                        loginedUserProfile
-                    )
-                    bottomSheetFragment.show(childFragmentManager, bottomSheetFragment.tag)
-                }
-
-            })
-
 
         binding.dailyBoards.adapter = dailyBoardAdapter
         viewModel.initDailyBoards(dailyBoard)

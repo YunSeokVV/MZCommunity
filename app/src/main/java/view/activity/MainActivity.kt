@@ -22,7 +22,11 @@ class MainActivity : AppCompatActivity(), loginUserListener {
     private val viewModel: MainActivityViewModel by viewModels()
     private lateinit var binding: ActivityMainBinding
     private lateinit var loginedUserProfile: LoginedUser
-    private lateinit var dailyBoards: ArrayList<DailyBoard>
+
+    private val dailyBoards : ArrayList<DailyBoard> by lazy {
+        intent.getSerializableExtra("dailyBoards") as ArrayList<DailyBoard>
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -30,7 +34,6 @@ class MainActivity : AppCompatActivity(), loginUserListener {
 
         val intent = intent
         val userProfile: LoginedUser = intent.getSerializableExtra("userProfile") as LoginedUser
-        dailyBoards = intent.getSerializableExtra("dailyBoards") as ArrayList<DailyBoard>
         loginedUserProfile = userProfile
 
         supportFragmentManager.beginTransaction()

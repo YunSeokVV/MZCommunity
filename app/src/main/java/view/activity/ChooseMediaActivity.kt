@@ -29,9 +29,8 @@ class ChooseMediaActivity : AppCompatActivity() {
         var chooseMediaActivity = ChooseMediaActivity()
     }
 
-    private val chooseMediaActivityViewModel: ChooseMediaActivityViewModel by viewModels()
     private val imageAdapter = ImageAdapter(true)
-    lateinit var cam_uri: Uri
+    private var cam_uri: Uri =Uri.parse("")
     private lateinit var binding: ActivityMultiImagePostingBinding
 
     private val photo = registerForActivityResult(

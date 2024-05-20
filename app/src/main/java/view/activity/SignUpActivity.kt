@@ -48,7 +48,6 @@ class SignUpActivity : AppCompatActivity() {
                         }
                     } else {
                         try {
-                            throw task.exception!!
                         } catch (e: FirebaseAuthWeakPasswordException) {
                             Util.makeToastMessage("6자 이상의 문자 형태로 비밀번호를 입력해주세요 :)", this)
                         } catch (e: FirebaseAuthInvalidCredentialsException) {

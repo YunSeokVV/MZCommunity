@@ -55,7 +55,7 @@ class CommentRepostiroyImpl @Inject constructor(
     private val storage: FirebaseStorage,
 ) :
     CommentRepostiroy {
-    lateinit var recentTask: Query
+    private lateinit var recentTask: Query
     override suspend fun postComment(
         contents: String,
         parentUID: String,
@@ -137,8 +137,7 @@ class CommentRepostiroyImpl @Inject constructor(
                     .whereEqualTo("parentUID", parentUID).get().addOnSuccessListener { documents ->
                         documents.forEach {
                             runBlocking {
-                                val resourceId = R.drawable.user_profile2
-                                val defaultProfile: String = Util.getResourceImage(resourceId)
+                                val defaultProfile: String = Util.getUnknownProfileImage()
                                 val userDoc = fireStore.collection("MZUsers")
                                     .document(it.get("writerUID").toString()).get().await()
                                 val nickName = userDoc.getString("nickName") ?: "알 수 없는 사용자"
@@ -184,8 +183,7 @@ class CommentRepostiroyImpl @Inject constructor(
                 documents.forEach {
                     val userDoc = fireStore.collection("MZUsers")
                         .document(it.get("writerUID").toString()).get().await()
-                    val resourceId = R.drawable.user_profile2
-                    val defaultProfile: String = Util.getResourceImage(resourceId)
+                    val defaultProfile: String = Util.getUnknownProfileImage()
                     val profileURL = userDoc.getString("profileURL") ?: defaultProfile
                     val nickName = userDoc.getString("nickName") ?: "알 수 없는 사용자"
                     val comment = Comment(
@@ -220,8 +218,7 @@ class CommentRepostiroyImpl @Inject constructor(
                             runBlocking {
                                 val userDoc = fireStore.collection("MZUsers")
                                     .document(it.get("writerUID").toString()).get().await()
-                                val resourceId = R.drawable.user_profile2
-                                val defaultProfile: String = Util.getResourceImage(resourceId)
+                                val defaultProfile: String = Util.getUnknownProfileImage()
                                 val profileURL = userDoc.getString("profileURL") ?: defaultProfile
                                 val nickName = userDoc.get("nickName").toString()
                                 val comment = Comment(
