@@ -4,8 +4,8 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import repository.SignInActivityRepository
-import repository.SignInActivityRepositoryImpl
+import data.repository.login.SignInActivityRepository
+import data.repository.login.SignInActivityRepositoryImpl
 
 @Module
 @InstallIn(SingletonComponent::class)

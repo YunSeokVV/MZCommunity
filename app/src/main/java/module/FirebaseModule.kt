@@ -9,18 +9,18 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import repository.DailyBoardRepository
-import repository.DailyBoardRepositoryImpl
-import repository.CommentRepostiroy
-import repository.CommentRepostiroyImpl
-import repository.LoadingRepository
-import repository.LoadingRepositoryImpl
-import repository.SignUpActivityRepository
-import repository.SignUpActivityRepositoryImpl
-import repository.UserRepository
-import repository.UserRepositoryImpl
-import repository.VersusRepostiroy
-import repository.VersusRepostiroyImpl
+import data.repository.dailyboard.DailyBoardRepository
+import data.repository.dailyboard.DailyBoardRepositoryImpl
+import data.repository.comment.CommentRepostiroy
+import data.repository.comment.CommentRepostiroyImpl
+import data.repository.loading.LoadingRepository
+import data.repository.loading.LoadingRepositoryImpl
+import data.repository.signup.SignUpActivityRepository
+import data.repository.signup.SignUpActivityRepositoryImpl
+import data.repository.user.UserRepository
+import data.repository.user.UserRepositoryImpl
+import data.repository.versus.VersusRepostiroy
+import data.repository.versus.VersusRepostiroyImpl
 
 @Module
 @InstallIn(SingletonComponent::class)
