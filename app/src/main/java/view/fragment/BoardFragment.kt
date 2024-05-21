@@ -18,8 +18,6 @@ import viewmodel.BoardFramgnetViewModel
 
 @AndroidEntryPoint
 class BoardFragment(
-    private val loginedUserProfile: LoginedUser,
-    private val dailyBoard: List<DailyBoard>
 ) : Fragment() {
     private val viewModel by viewModels<BoardFramgnetViewModel>()
     private lateinit var binding: FragmentBoardBinding
@@ -48,17 +46,19 @@ class BoardFragment(
         },
         object : DailyBoardAdapter.ShowComment {
             override fun showComment(dailyBoard: DailyBoard) {
-                val bottomSheetFragment = BottomSheetFragment(
-                    dailyBoard.boardUID,
-                    "dailyBoardComment",
-                    "dailyBoardNestedComment",
-                    "dailyBoardComment",
-                    loginedUserProfile
-                )
+                var bundle = Bundle()
+                bundle.putString("boardUID", dailyBoard.boardUID)
+                bundle.putString("collectionName", "dailyBoardComment")
+                bundle.putString("nestedCommentName", "dailyBoardNestedComment")
+                bundle.putString("commentName", "dailyBoardComment")
+                bundle.putSerializable("loginedUserProfile", getUserBundle())
+                val bottomSheetFragment = BottomSheetFragment()
+                bottomSheetFragment.arguments = bundle
                 bottomSheetFragment.show(childFragmentManager, bottomSheetFragment.tag)
             }
 
         })
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -69,7 +69,7 @@ class BoardFragment(
             LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false)
 
         binding.dailyBoards.adapter = dailyBoardAdapter
-        viewModel.initDailyBoards(dailyBoard)
+        viewModel.initDailyBoards(getDailyBoard())
 
 
         binding.swipeRefreshLayout.setOnRefreshListener {
@@ -80,7 +80,7 @@ class BoardFragment(
 
         viewModel.dailyBoards.observe(requireActivity(), Observer {
             dailyBoardAdapter.submitList(it.toMutableList()) {
-                if (viewModel.isRfreshing){
+                if (viewModel.isRfreshing) {
                     binding.dailyBoards.scrollToPosition(0)
                     viewModel.isRfreshing = false
                 }
@@ -100,12 +100,20 @@ class BoardFragment(
     override fun onStop() {
         super.onStop()
         if (dailyBoardAdapter.isRecentVideoInitalized())
-        dailyBoardAdapter.pauseVideoOnstop()
+            dailyBoardAdapter.pauseVideoOnstop()
     }
 
     override fun onResume() {
         super.onResume()
         if (dailyBoardAdapter.isRecentVideoInitalized())
-        dailyBoardAdapter.resumeVideoOnResume()
+            dailyBoardAdapter.resumeVideoOnResume()
+    }
+
+    private fun getUserBundle(): LoginedUser =
+        arguments?.getSerializable("loginedUserProfile") as LoginedUser
+
+    private fun getDailyBoard(): List<DailyBoard> {
+
+        return (arguments?.getParcelableArrayList<DailyBoard>("dailyBoards"))?.toList() as List<DailyBoard>
     }
 }

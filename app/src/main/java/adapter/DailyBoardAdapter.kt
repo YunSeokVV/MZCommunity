@@ -61,7 +61,7 @@ class DailyBoardAdapter(
     }
 
     // 백그라운드에 갔을때 재생중인 동영상을 멈추기 위해 존재하는 변수
-    private lateinit var recentVideoItemViewHolder: DailyBoardVideoItemViewHolder
+    private var recentVideoItemViewHolder: DailyBoardVideoItemViewHolder? = null
 
     // todo : 앱이 처음 실행됐을때 recentVideoItemViewHolder 객체의 null 검사를 방지하기 위해 임의로 만든 플래그값이다. 가급적이면 다른 해결책을 찾아서 이 변수를 사용하지 말자.
     private var _isRecentVideoInitalized: Boolean = false
@@ -75,7 +75,7 @@ class DailyBoardAdapter(
             if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                 val layoutManager = recyclerView.layoutManager as LinearLayoutManager
                 if (_isRecentVideoInitalized)
-                    recentVideoItemViewHolder.releaseVideo()
+                    recentVideoItemViewHolder?.releaseVideo()
 
                 var currentViewHolder =
                     recyclerView.findViewHolderForAdapterPosition(layoutManager.findLastVisibleItemPosition())
@@ -643,13 +643,13 @@ class DailyBoardAdapter(
     }
 
     fun pauseVideoOnstop() {
-        recentVideoItemViewHolder.pauseVideo()
+        recentVideoItemViewHolder?.pauseVideo()
     }
 
     fun releaseVideo() {
-        currentList.forEach {dailyBoard ->
-            if(dailyBoard.viewType == 2){
-                recentVideoItemViewHolder.releaseVideo()
+        currentList.forEach { dailyBoard ->
+            if (dailyBoard.viewType == 2) {
+                recentVideoItemViewHolder?.releaseVideo()
             }
         }
     }

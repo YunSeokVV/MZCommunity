@@ -26,6 +26,11 @@ class Util {
                 this.context = context
         }
 
+        fun getStringResource(resourceId: Int) : String{
+            val result = "android.resource://" + this.context?.applicationContext?.packageName + "/" + resourceId
+            return result
+        }
+
         fun getResourceImage(resourceId: Int) : String{
             val result = "android.resource://" + this.context?.applicationContext?.packageName + "/" + resourceId
             return result
@@ -60,7 +65,7 @@ class Util {
             } else if (key == "viewType") {
                 result = (documentSnapshot.get(key) as? Long ?: 0).toString()
             } else {
-                result = documentSnapshot.get(key) as? String ?: "nothing"
+                result = documentSnapshot.get(key) as? String ?: getStringResource(R.string.nothing)
             }
             return result
         }

@@ -16,6 +16,7 @@ import model.Response
 import model.VersusBoard
 import util.FirebaseAuth
 import util.Util
+import util.Util.Companion.getStringResource
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -77,7 +78,7 @@ class VersusRepostiroyImpl @Inject constructor(
             }
 
             val document = notVotedList[Util.getRanNum(notVotedList.size)]
-            val writerUID : String = document.getString("writerUID") ?: "nothing"
+            val writerUID : String = document.getString("writerUID") ?: getStringResource(R.string.nothing)
             val writerDocu = firestore.collection("MZUsers").document(writerUID).get().await()
 
             val defaultProfile: String = Util.getUnknownProfileImage()

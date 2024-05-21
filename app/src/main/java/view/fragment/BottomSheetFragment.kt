@@ -26,18 +26,13 @@ import dagger.hilt.android.AndroidEntryPoint
 import model.Comment
 import model.LoginedUser
 import util.Util
+import util.Util.Companion.getStringResource
 import view.ProgressDialog
 import viewmodel.BottomSheetFragmentViewModel
 
 
 @AndroidEntryPoint
-class BottomSheetFragment(
-    private val parentUID: String,
-    private val collectionName: String,
-    private val nestedCommentCollection: String,
-    private val commentName: String,
-    private val loginedUser: LoginedUser
-) : BottomSheetDialogFragment() {
+class BottomSheetFragment() : BottomSheetDialogFragment() {
     private lateinit var binding: FragmentBottomSheetBinding
     private val viewModel by viewModels<BottomSheetFragmentViewModel>()
     private lateinit var adapter: DailyBoardCommentAdapter
@@ -54,7 +49,15 @@ class BottomSheetFragment(
             requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
 
         requireActivity().getWindow()
-            .setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_UNSPECIFIED);
+            .setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_UNSPECIFIED)
+
+        val parentUID = arguments?.getString("boardUID") ?: getStringResource(R.string.nothing)
+        val collectionName =
+            arguments?.getString("collectionName") ?: getStringResource(R.string.nothing)
+        val nestedCommentCollection =
+            arguments?.getString("nestedCommentName") ?: getStringResource(R.string.nothing)
+        val commentName = arguments?.getString("commentName") ?: getStringResource(R.string.nothing)
+        val loginedUser = arguments?.getSerializable("loginedUserProfile") as LoginedUser
 
         viewModel.getComments(parentUID, collectionName)
 

@@ -22,7 +22,7 @@ import view.activity.PostingVersusActivity
 import viewmodel.VersusFragmnetViewModel
 
 @AndroidEntryPoint
-class VersusFragment(private val loginedUserProfile: LoginedUser) : Fragment() {
+class VersusFragment() : Fragment() {
     private lateinit var binding: FragmentVersusBinding
     private val viewModel by viewModels<VersusFragmnetViewModel>()
     override fun onCreateView(
@@ -107,13 +107,15 @@ class VersusFragment(private val loginedUserProfile: LoginedUser) : Fragment() {
         })
 
         binding.comment.setOnClickListener {
-            val bottomSheetFragment = BottomSheetFragment(
-                viewModel.boardUID,
-                "versusBoardComment",
-                "versusBoardNestedComment",
-                "versusBoardComment",
-                loginedUserProfile
-            )
+
+            var bundle = Bundle()
+            bundle.putString("boardUID", viewModel.boardUID)
+            bundle.putString("collectionName", "dailyBoardComment")
+            bundle.putString("nestedCommentName", "dailyBoardNestedComment")
+            bundle.putString("commentName", "dailyBoardComment")
+            bundle.putSerializable("loginedUserProfile", getUserBundle())
+            val bottomSheetFragment = BottomSheetFragment()
+            bottomSheetFragment.arguments = bundle
             bottomSheetFragment.show(childFragmentManager, bottomSheetFragment.tag)
         }
 
@@ -237,4 +239,7 @@ class VersusFragment(private val loginedUserProfile: LoginedUser) : Fragment() {
         binding.choosenChoice1Percent.text = "$firstPercent%"
         binding.choosenChoice2Percent.text = "$secondPercent%"
     }
+
+    private fun getUserBundle(): LoginedUser =
+        arguments?.getSerializable("loginedUserProfile") as LoginedUser
 }
