@@ -15,6 +15,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import model.File
 import util.Util
 import util.Util.Companion.getStringResource
+import view.fragment.LoadingDialogFragment
 import viewmodel.PostingMediaActivityViewModel
 
 @AndroidEntryPoint
@@ -22,6 +23,7 @@ class PostingMediaActivity : AppCompatActivity() {
     private val imageAdapter = ImageAdapter(false)
     private val viewModel: PostingMediaActivityViewModel by viewModels()
     private var choosenFiles = mutableListOf<File>()
+    private val loadingDialogFragment = LoadingDialogFragment()
 
     // 업로드할 내용의 타입을 지정. 0 텍스트, 1 사진, 2 동영상
     private var viewType = 0
@@ -34,7 +36,7 @@ class PostingMediaActivity : AppCompatActivity() {
 
         viewModel.isPostingComplete.observe(this, Observer { data ->
             if (data) {
-                Util.showProgressDialog(this, false)
+                loadingDialogFragment.dismiss()
                 ChooseMediaActivity.chooseMediaActivity.finish()
                 finish()
 
@@ -46,7 +48,7 @@ class PostingMediaActivity : AppCompatActivity() {
         }
 
         binding.postBoard.setOnClickListener {
-            Util.showProgressDialog(this, true)
+            loadingDialogFragment.show(supportFragmentManager, loadingDialogFragment.tag)
 
             val contents = if (binding.boardContentes.text.isEmpty()) {
                 binding.boardContentesFull.text.toString()

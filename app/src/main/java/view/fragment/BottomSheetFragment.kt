@@ -27,7 +27,6 @@ import model.Comment
 import model.LoginedUser
 import util.Util
 import util.Util.Companion.getStringResource
-import view.ProgressDialog
 import viewmodel.BottomSheetFragmentViewModel
 
 
@@ -37,14 +36,13 @@ class BottomSheetFragment() : BottomSheetDialogFragment() {
     private val viewModel by viewModels<BottomSheetFragmentViewModel>()
     private lateinit var adapter: DailyBoardCommentAdapter
     private lateinit var nestedRecyclerView: RecyclerView
-
+    private val loadingDialogFragment = LoadingDialogFragment()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentBottomSheetBinding.inflate(inflater)
         val inputComment = binding.inputComment
-        val progressDialog = ProgressDialog(requireContext())
         val imm =
             requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
 
@@ -75,7 +73,7 @@ class BottomSheetFragment() : BottomSheetDialogFragment() {
                     adapter.addComment(loginedUser, inputComment.text.toString(), parentUID)
                 }
                 inputComment.setText("")
-                progressDialog.dismiss()
+                loadingDialogFragment.dismiss()
             }
         })
 
@@ -83,7 +81,7 @@ class BottomSheetFragment() : BottomSheetDialogFragment() {
             if (inputComment.text.toString().isEmpty()) {
                 Util.makeToastMessage("댓글을 입력해주세요!", requireContext())
             } else {
-                progressDialog.show()
+                loadingDialogFragment.show(childFragmentManager, loadingDialogFragment.tag)
                 // 대댓글을 쓰는 경우
                 if (viewModel.isReplyMode) {
                     val reply = Util.removeStr(inputComment.text.toString(), viewModel.tagedUser)

@@ -22,7 +22,7 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class MyPageFragment @Inject constructor() : Fragment() {
-
+    private val loadingDialogFragment = LoadingDialogFragment()
 
     interface loginUserListener {
         fun loginUserListner(loginedUser: LoginedUser)
@@ -74,7 +74,7 @@ class MyPageFragment @Inject constructor() : Fragment() {
                 binding.userName.isEnabled = true
 
                 binding.editProfile.setOnClickListener {
-                    Util.showProgressDialog(requireContext(), true)
+                    loadingDialogFragment.show(childFragmentManager, loadingDialogFragment.tag)
                     viewModel.updateProfile(binding.userName.text.toString(), Uri.parse(profileUri))
                     viewModel.setEditMode()
                 }
@@ -93,7 +93,7 @@ class MyPageFragment @Inject constructor() : Fragment() {
 
         viewModel.loginedUser.observe(requireActivity(), Observer {
             loginedUser.loginUserListner(it)
-            Util.showProgressDialog(requireContext(), false)
+            loadingDialogFragment.dismiss()
         })
 
         Glide.with(requireContext()).load(Uri.parse(getUserBundle().profileUri))
