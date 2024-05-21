@@ -18,9 +18,10 @@ import dagger.hilt.android.AndroidEntryPoint
 import model.LoginedUser
 import util.Util
 import viewmodel.MyPageFragmentViewModel
+import javax.inject.Inject
 
 @AndroidEntryPoint
-class MyPageFragment(private val loginedUserProfile: LoginedUser) : Fragment() {
+class MyPageFragment @Inject constructor() : Fragment() {
 
 
     interface loginUserListener {
@@ -95,11 +96,14 @@ class MyPageFragment(private val loginedUserProfile: LoginedUser) : Fragment() {
             Util.showProgressDialog(requireContext(), false)
         })
 
-        Glide.with(requireContext()).load(Uri.parse(loginedUserProfile.profileUri))
+        Glide.with(requireContext()).load(Uri.parse(getUserBundle().profileUri))
             .into(binding.userProfileImg)
-        binding.userName.setText(loginedUserProfile.nickName)
+        binding.userName.setText(getUserBundle().nickName)
 
         return binding.root
     }
+
+    private fun getUserBundle(): LoginedUser =
+        arguments?.getSerializable("loginedUserProfile") as LoginedUser
 
 }
