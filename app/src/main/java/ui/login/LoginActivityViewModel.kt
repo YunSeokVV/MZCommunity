@@ -11,9 +11,9 @@ import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.orhanobut.logger.Logger
 import dagger.hilt.android.lifecycle.HiltViewModel
+import data.model.Response
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import model.Response
 import domain.login.SignInUsecase
 import javax.inject.Inject
 import domain.signup.SignUpUsecase

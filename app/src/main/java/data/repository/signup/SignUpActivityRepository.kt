@@ -2,21 +2,18 @@ package data.repository.signup
 
 import android.content.Context
 import com.google.firebase.firestore.FirebaseFirestore
+import data.model.Response
 import database.LoginUserDB
+import domain.signup.SignUpActivityRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import model.LoginInfo
 import javax.inject.Inject
 import javax.inject.Singleton
-import model.Response
 
 import util.FirebaseAuth
 
-interface SignUpActivityRepository {
-    suspend fun setUserNickname(nickName: String): Response<Boolean>
 
-    suspend fun saveUserLoginInfo(nickName: String, passwd: String, context : Context): Response<Boolean>
-}
 
 @Singleton
 class SignUpActivityRepositoryImpl @Inject constructor(private val firestore: FirebaseFirestore) :

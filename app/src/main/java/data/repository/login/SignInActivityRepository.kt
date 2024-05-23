@@ -2,16 +2,15 @@ package data.repository.login
 
 import android.content.Context
 import com.orhanobut.logger.Logger
+import data.model.Response
 import database.LoginUserDB
+import domain.login.SignInActivityRepository
 import model.LoginInfo
-import model.Response
 import javax.inject.Inject
 import javax.inject.Singleton
 
 
-interface SignInActivityRepository {
-    suspend fun getSavedUserLoginInfo(context: Context): Response<LoginInfo>
-}
+
 
 @Singleton
 class SignInActivityRepositoryImpl @Inject constructor() : SignInActivityRepository {

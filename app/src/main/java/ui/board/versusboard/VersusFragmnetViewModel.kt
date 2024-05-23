@@ -6,8 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.orhanobut.logger.Logger
 import dagger.hilt.android.lifecycle.HiltViewModel
+import data.model.Response
 import kotlinx.coroutines.launch
-import model.Response
 import model.VersusBoard
 import domain.versus.VersusUsecase
 import util.Util

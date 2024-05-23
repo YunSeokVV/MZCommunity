@@ -6,8 +6,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import data.model.Response
 import kotlinx.coroutines.launch
-import model.Response
 import domain.signup.SignUpUsecase
 import javax.inject.Inject
 

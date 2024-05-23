@@ -6,10 +6,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.orhanobut.logger.Logger
 import dagger.hilt.android.lifecycle.HiltViewModel
+import data.model.Comment
+import data.model.Response
 import kotlinx.coroutines.launch
-import model.Comment
-import model.Response
 import domain.comment.CommentUseCase
+
+
 import javax.inject.Inject
 
 @HiltViewModel
@@ -46,7 +48,6 @@ class BottomSheetFragmentViewModel @Inject constructor(private val commentUseCas
         commentUseCase.getMoreComments(parentUID, collectionName).collect {
             isProgressLoading.value = false
             dailyBoardComments.value = it.toMutableList()
-
             showProgress = false
         }
 
@@ -91,7 +92,6 @@ class BottomSheetFragmentViewModel @Inject constructor(private val commentUseCas
     fun getComments(parentUID: String, collectionName: String) = viewModelScope.launch {
         commentUseCase.getComments(parentUID, collectionName).collect {
             dailyBoardComments.value = it.toMutableList()
-
         }
     }
 

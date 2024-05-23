@@ -1,4 +1,4 @@
-package model
+package data.model
 
 sealed class Response<out T> {
 

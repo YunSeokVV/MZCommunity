@@ -8,8 +8,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.orhanobut.logger.Logger
 import dagger.hilt.android.lifecycle.HiltViewModel
+import data.model.Response
 import kotlinx.coroutines.launch
-import model.Response
 import model.LoginedUser
 import domain.user.UserUsecase
 import javax.inject.Inject

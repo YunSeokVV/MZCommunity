@@ -3,9 +3,7 @@ package domain.user
 import android.content.Context
 import android.net.Uri
 import kotlinx.coroutines.flow.flow
-import data.repository.user.UserRepository
 import javax.inject.Inject
-
 
 class UserUsecase @Inject constructor(private val userRepository: UserRepository){
     suspend fun updateProfile(nickName: String, profile: Uri) = flow {

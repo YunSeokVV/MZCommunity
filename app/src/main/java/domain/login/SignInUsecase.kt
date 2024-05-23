@@ -12,10 +12,8 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
-import data.repository.login.SignInActivityRepository
 import util.FirebaseAuth
 import javax.inject.Inject
-
 class SignInUsecase @Inject constructor(private val signInActivityRepository: SignInActivityRepository) {
     fun signInWithGoogle(completedTask: Task<GoogleSignInAccount>) = callbackFlow {
         try {

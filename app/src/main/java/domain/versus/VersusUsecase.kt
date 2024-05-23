@@ -1,7 +1,6 @@
 package domain.versus
 
 import kotlinx.coroutines.flow.flow
-import data.repository.versus.VersusRepostiroy
 import javax.inject.Inject
 
 class VersusUsecase @Inject constructor(private val versusRepository: VersusRepostiroy) {

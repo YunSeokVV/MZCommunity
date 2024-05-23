@@ -6,51 +6,25 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.storage.FirebaseStorage
 import com.orhanobut.logger.Logger
+import data.model.Comment
+import data.model.Response
+import domain.comment.CommentRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
-import model.Comment
-import model.Response
+
 import util.FirebaseAuth
 import util.Util
 import javax.inject.Inject
 import javax.inject.Singleton
 
-interface CommentRepostiroy {
-
-    suspend fun postComment(
-        contents: String,
-        parentUID: String,
-        collectionName: String
-    ): Response<Boolean>
-
-    suspend fun postReply(
-        contents: String,
-        parentUID: String,
-        nestedCommentCollection: String,
-        commentName: String
-    ): Response<Boolean>
-
-    suspend fun getComments(
-        parentUID: String,
-        collectionName: String
-    ): List<Comment>
-
-    suspend fun getMoreComments(
-        parentUID: String,
-        collectionName: String
-    ): List<Comment>
-
-    suspend fun getNestedComments(parentUID: String, nestedCommentName: String): List<Comment>
-}
-
 @Singleton
-class CommentRepostiroyImpl @Inject constructor(
+class CommentRepositoryImpl @Inject constructor(
     private val fireStoreRef: FirebaseFirestore,
     private val storage: FirebaseStorage,
 ) :
-    CommentRepostiroy {
+    CommentRepository {
     private lateinit var recentTask: Query
     override suspend fun postComment(
         contents: String,

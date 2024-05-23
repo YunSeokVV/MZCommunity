@@ -3,7 +3,6 @@ package domain.dailyboard
 import kotlinx.coroutines.flow.flow
 import model.DailyBoard
 import model.File
-import data.repository.dailyboard.DailyBoardRepository
 import javax.inject.Inject
 
 class DailyBoardUseCase @Inject constructor(private val dailyBoardRepository: DailyBoardRepository){

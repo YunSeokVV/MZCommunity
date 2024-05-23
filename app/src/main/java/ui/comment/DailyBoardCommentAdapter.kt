@@ -10,7 +10,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.mzcommunity.databinding.DailyBoardCommentItemBinding
 import com.example.mzcommunity.databinding.ItemLoadingBinding
-import model.Comment
+import data.model.Comment
+
 import model.LoginedUser
 import ui.LoadingViewHolder
 

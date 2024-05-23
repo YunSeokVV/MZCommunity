@@ -1,4 +1,4 @@
-package module
+package di
 
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.FirebaseFirestore
@@ -9,18 +9,18 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import data.repository.dailyboard.DailyBoardRepository
 import data.repository.dailyboard.DailyBoardRepositoryImpl
-import data.repository.comment.CommentRepostiroy
-import data.repository.comment.CommentRepostiroyImpl
-import data.repository.loading.LoadingRepository
+import data.repository.comment.CommentRepositoryImpl
 import data.repository.loading.LoadingRepositoryImpl
-import data.repository.signup.SignUpActivityRepository
 import data.repository.signup.SignUpActivityRepositoryImpl
-import data.repository.user.UserRepository
 import data.repository.user.UserRepositoryImpl
-import data.repository.versus.VersusRepostiroy
 import data.repository.versus.VersusRepostiroyImpl
+import domain.comment.CommentRepository
+import domain.dailyboard.DailyBoardRepository
+import domain.loading.LoadingRepository
+import domain.signup.SignUpActivityRepository
+import domain.user.UserRepository
+import domain.versus.VersusRepostiroy
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -48,7 +48,7 @@ object FirebaseModule {
     )
 
     @Provides
-    fun provideCommentRepostiroy(storageReference: FirebaseStorage, fireStore : FirebaseFirestore) : CommentRepostiroy = CommentRepostiroyImpl(
+    fun provideCommentRepostiroy(storageReference: FirebaseStorage, fireStore : FirebaseFirestore) : CommentRepository = CommentRepositoryImpl(
         fireStore, storageReference
     )
 

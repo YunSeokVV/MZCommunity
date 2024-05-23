@@ -1,12 +1,11 @@
 package domain.comment
 
 import kotlinx.coroutines.flow.flow
-import data.repository.comment.CommentRepostiroy
 import javax.inject.Inject
 
-class CommentUseCase @Inject constructor(private val commentRepostiroy: CommentRepostiroy) {
+class CommentUseCase @Inject constructor(private val commentRepository: CommentRepository) {
     suspend fun postComment(contents: String, parentUID: String, collectionName: String) = flow {
-        emit(commentRepostiroy.postComment(contents, parentUID, collectionName))
+        emit(commentRepository.postComment(contents, parentUID, collectionName))
     }
 
     suspend fun postReply(
@@ -15,22 +14,22 @@ class CommentUseCase @Inject constructor(private val commentRepostiroy: CommentR
         nestedCommentCollection: String,
         commentName: String
     ) = flow {
-        emit(commentRepostiroy.postReply(contents, parentUID, nestedCommentCollection, commentName))
+        emit(commentRepository.postReply(contents, parentUID, nestedCommentCollection, commentName))
     }
 
     suspend fun getComments(
         parentUID: String,
         collectionName: String,
     ) = flow {
-        emit(commentRepostiroy.getComments(parentUID, collectionName))
+        emit(commentRepository.getComments(parentUID, collectionName))
     }
 
     suspend fun getMoreComments(parentUID: String, collectionName: String) =
         flow {
-            emit(commentRepostiroy.getMoreComments(parentUID, collectionName))
+            emit(commentRepository.getMoreComments(parentUID, collectionName))
         }
 
     suspend fun getNestedComments(parentUID: String, nestedCommentName: String) = flow {
-        emit(commentRepostiroy.getNestedComments(parentUID, nestedCommentName))
+        emit(commentRepository.getNestedComments(parentUID, nestedCommentName))
     }
 }

@@ -5,7 +5,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.mzcommunity.databinding.DailyBoardCommentItemBinding
-import model.Comment
+import data.model.Comment
+
 
 class DailyBoardNestedCommentAdapter(private val neestedComments: List<Comment>, private val postReplyOnClickListener : PostReplyOnClickListener) :
     RecyclerView.Adapter<DailyBoardNestedCommentAdapter.NestedCommentViewHolder>() {

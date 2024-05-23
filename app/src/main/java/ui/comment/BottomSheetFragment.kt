@@ -21,9 +21,11 @@ import com.example.mzcommunity.R
 import com.example.mzcommunity.databinding.FragmentBottomSheetBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
-import model.Comment
+import data.model.Comment
+
 import model.LoginedUser
 import ui.loading.LoadingDialogFragment
+
 import util.Util
 import util.Util.Companion.getStringResource
 

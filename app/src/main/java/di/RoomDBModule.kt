@@ -1,11 +1,11 @@
-package module
+package di
 
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import data.repository.login.SignInActivityRepository
 import data.repository.login.SignInActivityRepositoryImpl
+import domain.login.SignInActivityRepository
 
 @Module
 @InstallIn(SingletonComponent::class)

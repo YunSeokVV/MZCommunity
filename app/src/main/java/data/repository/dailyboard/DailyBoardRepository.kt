@@ -7,6 +7,8 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.storage.FirebaseStorage
 import com.orhanobut.logger.Logger
+import data.model.Response
+import domain.dailyboard.DailyBoardRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -15,26 +17,11 @@ import kotlinx.coroutines.withContext
 import model.DailyBoard
 import model.DailyboardCollection
 import model.File
-import model.Response
 import util.FirebaseAuth
 import util.Util
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.coroutines.resumeWithException
-
-interface DailyBoardRepository {
-    suspend fun postBoard(
-        contents: String,
-        uploadFileUri: List<File>,
-        viewType: Int
-    ): Response<Boolean>
-
-    suspend fun getRandomDailyBoards(): List<DailyBoard>
-
-    suspend fun getDailyBoard(documentId: String): DailyBoard
-
-    suspend fun increaseFavourability(dailyBoard: DailyBoard, isLike: Boolean): Response<Boolean>
-}
 
 @Singleton
 class DailyBoardRepositoryImpl @Inject constructor(

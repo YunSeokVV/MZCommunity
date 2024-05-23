@@ -6,21 +6,19 @@ import android.net.Uri
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.orhanobut.logger.Logger
+import data.model.Response
+import domain.user.UserRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
-import model.Response
 import model.LoginedUser
 import util.FirebaseAuth
 import util.Util
 import javax.inject.Inject
 import javax.inject.Singleton
 
-interface UserRepository {
-    suspend fun updateProfile(nickName: String, profile: Uri): Response<Boolean>
-    suspend fun getUserProfile(context: Context): LoginedUser
-}
+
 
 @Singleton
 class UserRepositoryImpl @Inject constructor(

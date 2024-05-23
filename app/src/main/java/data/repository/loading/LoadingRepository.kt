@@ -5,6 +5,7 @@ import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.orhanobut.logger.Logger
+import domain.loading.LoadingRepository
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.tasks.await
@@ -17,11 +18,7 @@ import util.Util.Companion.getUnknownProfileImage
 import javax.inject.Inject
 import javax.inject.Singleton
 
-interface LoadingRepository {
-    suspend fun getUserProfile(context: Context): LoginedUser
 
-    suspend fun getDailyBoards(): List<DailyBoard>
-}
 
 @Singleton
 class LoadingRepositoryImpl @Inject constructor(

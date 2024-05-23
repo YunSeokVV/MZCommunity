@@ -6,10 +6,10 @@ import androidx.lifecycle.ViewModel
 import com.orhanobut.logger.Logger
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import data.model.Response
 import javax.inject.Inject
 import kotlinx.coroutines.launch
 import model.DailyBoard
-import model.Response
 import domain.dailyboard.DailyBoardUseCase
 
 

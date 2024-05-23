@@ -6,10 +6,11 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.storage.FirebaseStorage
 import com.orhanobut.logger.Logger
+import data.model.Response
+import domain.versus.VersusRepostiroy
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
-import model.Response
 import model.VersusBoard
 import util.FirebaseAuth
 import util.Util
@@ -17,17 +18,7 @@ import util.Util.Companion.getStringResource
 import javax.inject.Inject
 import javax.inject.Singleton
 
-interface VersusRepostiroy {
-    suspend fun postVersusBoard(
-        boardTitle: String,
-        opinion1: String,
-        opinion2: String,
-        writerUID: String
-    ): Response<Boolean>
 
-    suspend fun getRandomVersusBoard() : Response<VersusBoard>
-    suspend fun voteOpinion(opinion1Vote : Boolean, versusBoardUID : String) : Response<Boolean>
-}
 
 @Singleton
 class VersusRepostiroyImpl @Inject constructor(
