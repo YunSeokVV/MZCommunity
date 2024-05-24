@@ -1,11 +1,14 @@
 package data.repository.comment
 
+import android.content.Context
 import android.net.Uri
+import com.example.mzcommunity.R
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.storage.FirebaseStorage
 import com.orhanobut.logger.Logger
+import dagger.hilt.android.qualifiers.ApplicationContext
 import data.model.Comment
 import data.model.Response
 import domain.comment.CommentRepository
@@ -23,6 +26,7 @@ import javax.inject.Singleton
 class CommentRepositoryImpl @Inject constructor(
     private val fireStoreRef: FirebaseFirestore,
     private val storage: FirebaseStorage,
+    @ApplicationContext private val appContext: Context
 ) :
     CommentRepository {
     private lateinit var recentTask: Query
@@ -107,7 +111,7 @@ class CommentRepositoryImpl @Inject constructor(
                     .whereEqualTo("parentUID", parentUID).get().addOnSuccessListener { documents ->
                         documents.forEach {
                             runBlocking {
-                                val defaultProfile: String = Util.getUnknownProfileImage()
+                                val defaultProfile: String = appContext.getDrawable(R.drawable.user_profile2).toString()
                                 val userDoc = fireStore.collection("MZUsers")
                                     .document(it.get("writerUID").toString()).get().await()
                                 val nickName = userDoc.getString("nickName") ?: "알 수 없는 사용자"
@@ -153,7 +157,7 @@ class CommentRepositoryImpl @Inject constructor(
                 documents.forEach {
                     val userDoc = fireStore.collection("MZUsers")
                         .document(it.get("writerUID").toString()).get().await()
-                    val defaultProfile: String = Util.getUnknownProfileImage()
+                    val defaultProfile: String = Util.getUnknownProfileImage(appContext)
                     val profileURL = userDoc.getString("profileURL") ?: defaultProfile
                     val nickName = userDoc.getString("nickName") ?: "알 수 없는 사용자"
                     val comment = Comment(
@@ -188,7 +192,7 @@ class CommentRepositoryImpl @Inject constructor(
                             runBlocking {
                                 val userDoc = fireStore.collection("MZUsers")
                                     .document(it.get("writerUID").toString()).get().await()
-                                val defaultProfile: String = Util.getUnknownProfileImage()
+                                val defaultProfile: String = Util.getUnknownProfileImage(appContext)
                                 val profileURL = userDoc.getString("profileURL") ?: defaultProfile
                                 val nickName = userDoc.get("nickName").toString()
                                 val comment = Comment(

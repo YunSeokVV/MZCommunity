@@ -85,8 +85,6 @@ class VersusFragmnetViewModel @Inject constructor(private val versusUseCase: Ver
         }
     }
 
-    fun calculatePercent(firstOpinion: Int, secondOpinion: Int): Int {
-        return Util.cacluatePercent(firstOpinion, secondOpinion)
-    }
+    fun calculatePercent(firstOpinion: Int, secondOpinion: Int): Int = versusUseCase.calculatePercent(firstOpinion, secondOpinion)
 
 }

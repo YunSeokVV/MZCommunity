@@ -31,7 +31,7 @@ class MyPageFragment @Inject constructor() : Fragment() {
     private lateinit var loginedUser: loginUserListener
     private val viewModel: MyPageFragmentViewModel by viewModels()
     private lateinit var binding: FragmentMyPageBinding
-    private var profileUri: String = Util.getUnknownProfileImage()
+    private var profileUri = String()
 
     private val startForResult =
         registerForActivityResult(ActivityResultContracts.GetContent()) {
@@ -62,6 +62,8 @@ class MyPageFragment @Inject constructor() : Fragment() {
         binding.userProfileImg.setOnClickListener {
             startForResult.launch("image/*")
         }
+
+        profileUri = Util.getUnknownProfileImage(requireActivity())
 
         viewModel.isEditMode.observe(requireActivity(), Observer<Boolean> { data ->
             if (data) {

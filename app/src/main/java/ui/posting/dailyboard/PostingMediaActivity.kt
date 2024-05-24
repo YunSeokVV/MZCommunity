@@ -12,7 +12,6 @@ import com.example.mzcommunity.R
 import com.example.mzcommunity.databinding.ActivityPostingMediaBinding
 import dagger.hilt.android.AndroidEntryPoint
 import model.File
-import util.Util.Companion.getStringResource
 import ui.loading.LoadingDialogFragment
 
 @AndroidEntryPoint
@@ -79,7 +78,7 @@ class PostingMediaActivity : AppCompatActivity() {
         }
 
         if (intent.getSerializableExtra("choosenVideo") != null) {
-            val uri = intent.getStringExtra("choosenVideo") ?: getStringResource(R.string.nothing)
+            val uri = intent.getStringExtra("choosenVideo") ?: this.getString(R.string.nothing)
             binding.choosenVideo.visibility = View.VISIBLE
             binding.choosenPictureList.visibility = View.GONE
             binding.choosenVideo.setVideoURI(Uri.parse(uri))

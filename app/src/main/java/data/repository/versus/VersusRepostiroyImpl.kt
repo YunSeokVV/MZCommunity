@@ -16,6 +16,7 @@ import kotlinx.coroutines.withContext
 import model.VersusBoard
 import util.FirebaseAuth
 import util.Util
+import java.util.Random
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -67,11 +68,11 @@ class VersusRepostiroyImpl @Inject constructor(
                 }
             }
 
-            val document = notVotedList[Util.getRanNum(notVotedList.size)]
-            val writerUID : String = document.getString("writerUID") ?: Util.getStringResource(R.string.nothing)
+            val document = notVotedList[getRanNum(notVotedList.size)]
+            val writerUID : String = document.getString("writerUID") ?: appContext.getString(R.string.nothing)
             val writerDocu = firestore.collection("MZUsers").document(writerUID).get().await()
 
-            val defaultProfile: String = Util.getUnknownProfileImage()
+            val defaultProfile: String = Util.getUnknownProfileImage(appContext)
 
             val nickName = writerDocu.getString("nickName") ?: "알 수 없는 사용자"
             val profileURL = writerDocu.getString("profileURL") ?: defaultProfile
@@ -110,6 +111,12 @@ class VersusRepostiroyImpl @Inject constructor(
             Logger.v(e.message.toString())
             Response.Failure(e)
         }
+    }
+
+    private fun getRanNum(ranNum: Int): Int {
+        // 0~ranNum 사이의 랜덤 숫자
+        val randomNum = Random().nextInt(ranNum)
+        return randomNum
     }
 
 }

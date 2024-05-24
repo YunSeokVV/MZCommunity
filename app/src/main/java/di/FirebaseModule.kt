@@ -40,18 +40,18 @@ object FirebaseModule {
     )
 
     @Provides
-    fun provideDailyBoardRepository(storageReference: FirebaseStorage, fireStore : FirebaseFirestore) : DailyBoardRepository = DailyBoardRepositoryImpl(
-        storageReference, fireStore
+    fun provideDailyBoardRepository(storageReference: FirebaseStorage, fireStore : FirebaseFirestore, @ApplicationContext appContext : Context) : DailyBoardRepository = DailyBoardRepositoryImpl(
+        storageReference, fireStore, appContext
     )
 
     @Provides
-    fun provideLoadingRepository(storageReference: FirebaseStorage, fireStore : FirebaseFirestore) : LoadingRepository = LoadingRepositoryImpl(
-        storageReference, fireStore
+    fun provideLoadingRepository(storageReference: FirebaseStorage, fireStore : FirebaseFirestore, @ApplicationContext appContext : Context) : LoadingRepository = LoadingRepositoryImpl(
+        storageReference, fireStore, appContext
     )
 
     @Provides
-    fun provideCommentRepostiroy(storageReference: FirebaseStorage, fireStore : FirebaseFirestore) : CommentRepository = CommentRepositoryImpl(
-        fireStore, storageReference
+    fun provideCommentRepostiroy(storageReference: FirebaseStorage, fireStore : FirebaseFirestore, @ApplicationContext appContext : Context) : CommentRepository = CommentRepositoryImpl(
+        fireStore, storageReference, appContext
     )
 
     @Provides
@@ -60,8 +60,8 @@ object FirebaseModule {
     )
 
     @Provides
-    fun provideUserRepository(storageReference: FirebaseStorage, fireStore: FirebaseFirestore) : UserRepository = UserRepositoryImpl(
-        storageReference, fireStore
+    fun provideUserRepository(storageReference: FirebaseStorage, fireStore: FirebaseFirestore, @ApplicationContext appContext : Context) : UserRepository = UserRepositoryImpl(
+        storageReference, fireStore, appContext
     )
 
 }

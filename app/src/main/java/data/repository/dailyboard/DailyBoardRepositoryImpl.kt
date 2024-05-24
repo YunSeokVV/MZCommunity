@@ -1,12 +1,15 @@
 package data.repository.dailyboard
 
+import android.content.Context
 import android.net.Uri
+import com.example.mzcommunity.R
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.storage.FirebaseStorage
 import com.orhanobut.logger.Logger
+import dagger.hilt.android.qualifiers.ApplicationContext
 import data.model.Response
 import domain.dailyboard.DailyBoardRepository
 import kotlinx.coroutines.Dispatchers
@@ -18,7 +21,8 @@ import model.DailyBoard
 import model.DailyboardCollection
 import model.File
 import util.FirebaseAuth
-import util.Util
+import util.Util.Companion.parsingDailyBoardFiles
+import util.Util.Companion.getUnknownProfileImage
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.coroutines.resumeWithException
@@ -26,7 +30,8 @@ import kotlin.coroutines.resumeWithException
 @Singleton
 class DailyBoardRepositoryImpl @Inject constructor(
     private val storage: FirebaseStorage,
-    private val fireStoreRef: FirebaseFirestore
+    private val fireStoreRef: FirebaseFirestore,
+    @ApplicationContext private val appContext: Context
 ) :
     DailyBoardRepository {
     override suspend fun postBoard(
@@ -84,7 +89,7 @@ class DailyBoardRepositoryImpl @Inject constructor(
                         val userFavourability = dailyBoardCollection.favourability
                         val viewType = dailyBoardCollection.viewType
 
-                        val defaultProfile: String = Util.getUnknownProfileImage()
+                        val defaultProfile: String = getUnknownProfileImage(appContext)
 
                         val dailyBoard = DailyBoard(
                             userNickName,
@@ -135,7 +140,7 @@ class DailyBoardRepositoryImpl @Inject constructor(
                             val userFavourability = dailyBoardCollection.favourability
                             val viewType = dailyBoardCollection.viewType
 
-                            val defaultProfile: String = Util.getUnknownProfileImage()
+                            val defaultProfile: String = getUnknownProfileImage(appContext)
 
                             val dailyBoard = DailyBoard(
                                 userNickName,
@@ -224,14 +229,35 @@ class DailyBoardRepositoryImpl @Inject constructor(
 
     private fun getDailyBoardCollection(result: DocumentSnapshot): DailyboardCollection {
         return DailyboardCollection(
-            Util.parsingFireStoreDocument(result, "boardContents"),
-            Util.parsingFireStoreDocument(result, "disLike").toInt(),
-            Util.parsingFireStoreDocument(result, "like").toInt(),
-            Util.parsingFireStoreDocument(result, "writerUID"),
-            Util.parsingFireStoreDocument(result, "userFavourability"),
-            Util.parsingDailyBoardFiles(result, "fileURL"),
-            Util.parsingFireStoreDocument(result, "viewType").toInt()
+            parsingFireStoreDocument(result, "boardContents"),
+            parsingFireStoreDocument(result, "disLike").toInt(),
+            parsingFireStoreDocument(result, "like").toInt(),
+            parsingFireStoreDocument(result, "writerUID"),
+            parsingFireStoreDocument(result, "userFavourability"),
+            parsingDailyBoardFiles(result, "fileURL"),
+            parsingFireStoreDocument(result, "viewType").toInt()
         )
     }
 
+
+    private fun parsingFireStoreDocument(documentSnapshot: DocumentSnapshot, key: String): String {
+        var result: String
+        if (key == "disLike") {
+            result = (documentSnapshot.get(key) as? Long ?: 0).toString()
+        } else if (key == "like") {
+            result = (documentSnapshot.get(key) as? Long ?: 0).toString()
+        } else if (key == "writerUID") {
+            result = documentSnapshot.get(key) as? String ?: "noWriterUID"
+        } else if (key == "boardContents") {
+            result = documentSnapshot.get(key) as? String ?: "noBoardContents"
+        } else if (key == "userFavourability") {
+            val userFavour = documentSnapshot.get(key) as? Map<String, Any>
+            result = (userFavour?.get(FirebaseAuth.auth.uid.toString()) ?: "usual").toString()
+        } else if (key == "viewType") {
+            result = (documentSnapshot.get(key) as? Long ?: 0).toString()
+        } else {
+            result = documentSnapshot.get(key) as? String ?: appContext.getString(R.string.nothing)
+        }
+        return result
+    }
 }
