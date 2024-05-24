@@ -5,15 +5,12 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.example.mzcommunity.R
 import com.google.firebase.firestore.DocumentSnapshot
-import view.ProgressDialog
 import java.util.Random
 import kotlin.math.round
 
 class Util {
 
     companion object {
-        private var progressDialog: ProgressDialog? = null
-
         // drawable 자원에 접근하기 위한 context
         private var context : Context? = null
 
@@ -77,18 +74,6 @@ class Util {
             var result = original
             result = result.substring(deleteStr.length)
             return result
-        }
-
-        fun showProgressDialog(context: Context, showDialog: Boolean) {
-
-            progressDialog = progressDialog ?: ProgressDialog(context)
-
-            if (showDialog) {
-                progressDialog?.show()
-            } else {
-                progressDialog?.dismiss()
-                progressDialog = null
-            }
         }
 
         fun getRanNum(ranNum: Int): Int {

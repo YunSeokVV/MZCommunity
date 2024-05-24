@@ -9,6 +9,7 @@ import androidx.room.Query
 import androidx.room.Room
 import androidx.room.Room.databaseBuilder
 import androidx.room.RoomDatabase
+import dagger.hilt.android.qualifiers.ApplicationContext
 import model.LoginInfo
 
 
@@ -19,10 +20,10 @@ abstract class LoginUserDB : RoomDatabase() {
     companion object {
 
         @Synchronized
-        fun getInstance(context: Context): LoginUserDB {
+        fun getInstance(@ApplicationContext appContext: Context): LoginUserDB {
             synchronized(LoginUserDB::class.java){
                 return Room.databaseBuilder(
-                    context,
+                    appContext,
                     LoginUserDB::class.java, "login_user_db"
                 ).build()
             }
