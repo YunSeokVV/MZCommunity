@@ -5,6 +5,7 @@ import android.content.Context
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.common.api.ApiException
@@ -20,12 +21,11 @@ import domain.signup.SignUpUsecase
 
 @HiltViewModel
 class LoginActivityViewModel @Inject constructor(
-    private val application: Application,
     private val signInUsecase: SignInUsecase,
     private val signUpUsecase: SignUpUsecase
-) : AndroidViewModel(application) {
+) : ViewModel() {
     init {
-        getSavedUserLoginInfo(application.applicationContext)
+        getSavedUserLoginInfo()
     }
 
 
@@ -54,8 +54,8 @@ class LoginActivityViewModel @Inject constructor(
     }
 
     // 이메일로 로그인한 사용자의 정보를 불러오는 메소드
-    private fun getSavedUserLoginInfo(context: Context) = viewModelScope.launch(Dispatchers.IO) {
-        signInUsecase.getSavedUserLoginInfo(context).collect {
+    private fun getSavedUserLoginInfo() = viewModelScope.launch(Dispatchers.IO) {
+        signInUsecase.getSavedUserLoginInfo().collect {
             when (it) {
                 is Response.Success -> {
                     if (it.data.loginWay == "email")

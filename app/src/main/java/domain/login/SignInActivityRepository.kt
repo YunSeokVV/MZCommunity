@@ -5,5 +5,5 @@ import data.model.Response
 import model.LoginInfo
 
 interface SignInActivityRepository {
-    suspend fun getSavedUserLoginInfo(context: Context): Response<LoginInfo>
+    suspend fun getSavedUserLoginInfo(): Response<LoginInfo>
 }

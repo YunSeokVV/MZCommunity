@@ -1,10 +1,9 @@
 package ui.mypage
 
-import android.app.Application
 import android.net.Uri
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.orhanobut.logger.Logger
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -15,8 +14,8 @@ import domain.user.UserUsecase
 import javax.inject.Inject
 
 @HiltViewModel
-class MyPageFragmentViewModel @Inject constructor(private val application : Application, private val mypageUsecasae: UserUsecase) :
-    AndroidViewModel(application) {
+class MyPageFragmentViewModel @Inject constructor(private val mypageUsecasae: UserUsecase) :
+    ViewModel() {
 
     private val _isUpdateComplte = MutableLiveData<Boolean>()
     private val _logined_user = MutableLiveData<LoginedUser>()
@@ -38,7 +37,7 @@ class MyPageFragmentViewModel @Inject constructor(private val application : Appl
     }
 
     fun getUserProfile() = viewModelScope.launch {
-        mypageUsecasae.getUserProfile(application.applicationContext).collect {
+        mypageUsecasae.getUserProfile().collect {
             _logined_user.value = it
         }
     }

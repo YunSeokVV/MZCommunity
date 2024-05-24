@@ -1,6 +1,5 @@
 package data.repository.loading
 
-import android.content.Context
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
@@ -27,7 +26,7 @@ class LoadingRepositoryImpl @Inject constructor(
 ) : LoadingRepository {
 
 
-    override suspend fun getUserProfile(context: Context): LoginedUser {
+    override suspend fun getUserProfile(): LoginedUser {
 
         val snapShot =
             fireStoreRef.collection("MZUsers").document(FirebaseAuth.auth.uid.toString()).get()

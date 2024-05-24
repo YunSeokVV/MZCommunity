@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 class SignUpUsecase @Inject constructor(private val signUpActivityRepository: SignUpActivityRepository){
     suspend fun setUserNickname (userNickname: String) = signUpActivityRepository.setUserNickname(userNickname)
-    suspend fun saveUserLoginInfo(email : String, passwd : String, context : Context) = flow{
-        emit(signUpActivityRepository.saveUserLoginInfo(email, passwd, context))
+    suspend fun saveUserLoginInfo(email : String, passwd : String) = flow{
+        emit(signUpActivityRepository.saveUserLoginInfo(email, passwd))
     }
 }

@@ -6,5 +6,5 @@ import data.model.Response
 interface SignUpActivityRepository {
     suspend fun setUserNickname(nickName: String): Response<Boolean>
 
-    suspend fun saveUserLoginInfo(nickName: String, passwd: String, context : Context): Response<Boolean>
+    suspend fun saveUserLoginInfo(nickName: String, passwd: String): Response<Boolean>
 }

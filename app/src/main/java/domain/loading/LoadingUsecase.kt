@@ -8,8 +8,8 @@ import javax.inject.Inject
 
 class LoadingUsecase @Inject constructor(private val loadingRepostiroy : LoadingRepository){
 
-    suspend fun getUserProfile(context : Context) = flow{
-        emit(loadingRepostiroy.getUserProfile(context))
+    suspend fun getUserProfile() = flow{
+        emit(loadingRepostiroy.getUserProfile())
     }
 
     suspend fun getDailyBoards() = flow {

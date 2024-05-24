@@ -1,5 +1,6 @@
 package di
 
+import android.content.Context
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
@@ -8,6 +9,7 @@ import com.google.firebase.storage.storage
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import data.repository.dailyboard.DailyBoardRepositoryImpl
 import data.repository.comment.CommentRepositoryImpl
@@ -33,8 +35,8 @@ object FirebaseModule {
     fun provideStroageRef() = Firebase.storage
 
     @Provides
-    fun provideLoginActivityRepository(fireStore : FirebaseFirestore) : SignUpActivityRepository = SignUpActivityRepositoryImpl(
-        fireStore
+    fun provideLoginActivityRepository(fireStore : FirebaseFirestore,@ApplicationContext appContext : Context) : SignUpActivityRepository = SignUpActivityRepositoryImpl(
+        fireStore, appContext
     )
 
     @Provides
@@ -53,8 +55,8 @@ object FirebaseModule {
     )
 
     @Provides
-    fun provideVersusBoard(storageReference: FirebaseStorage, fireStore: FirebaseFirestore) : VersusRepostiroy = VersusRepostiroyImpl(
-        fireStore, storageReference
+    fun provideVersusBoard(storageReference: FirebaseStorage, fireStore: FirebaseFirestore, @ApplicationContext appContext : Context) : VersusRepostiroy = VersusRepostiroyImpl(
+        fireStore, storageReference, appContext
     )
 
     @Provides

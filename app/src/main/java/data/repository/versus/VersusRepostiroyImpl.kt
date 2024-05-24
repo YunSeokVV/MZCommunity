@@ -1,11 +1,13 @@
 package data.repository.versus
 
+import android.content.Context
 import com.example.mzcommunity.R
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.storage.FirebaseStorage
 import com.orhanobut.logger.Logger
+import dagger.hilt.android.qualifiers.ApplicationContext
 import data.model.Response
 import domain.versus.VersusRepostiroy
 import kotlinx.coroutines.Dispatchers
@@ -14,7 +16,6 @@ import kotlinx.coroutines.withContext
 import model.VersusBoard
 import util.FirebaseAuth
 import util.Util
-import util.Util.Companion.getStringResource
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -23,7 +24,8 @@ import javax.inject.Singleton
 @Singleton
 class VersusRepostiroyImpl @Inject constructor(
     private val firestore: FirebaseFirestore,
-    private val storage: FirebaseStorage
+    private val storage: FirebaseStorage,
+    @ApplicationContext private val appContext: Context
 ) : VersusRepostiroy {
     override suspend fun postVersusBoard(
         boardTitle: String,
@@ -66,7 +68,7 @@ class VersusRepostiroyImpl @Inject constructor(
             }
 
             val document = notVotedList[Util.getRanNum(notVotedList.size)]
-            val writerUID : String = document.getString("writerUID") ?: getStringResource(R.string.nothing)
+            val writerUID : String = document.getString("writerUID") ?: Util.getStringResource(R.string.nothing)
             val writerDocu = firestore.collection("MZUsers").document(writerUID).get().await()
 
             val defaultProfile: String = Util.getUnknownProfileImage()

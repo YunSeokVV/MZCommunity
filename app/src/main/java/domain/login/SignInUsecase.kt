@@ -39,8 +39,8 @@ class SignInUsecase @Inject constructor(private val signInActivityRepository: Si
         awaitClose()
     }
 
-    suspend fun getSavedUserLoginInfo(context: Context) = flow {
-        emit(signInActivityRepository.getSavedUserLoginInfo(context))
+    suspend fun getSavedUserLoginInfo() = flow {
+        emit(signInActivityRepository.getSavedUserLoginInfo())
     }
 
 }

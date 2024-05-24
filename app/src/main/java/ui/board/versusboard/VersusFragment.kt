@@ -233,8 +233,6 @@ class VersusFragment() : Fragment() {
 
     private fun setPercent(){
         val firstPercent : Int = viewModel.calculatePercent(binding.choosenChoice1Count.text.toString().toInt(), binding.choosenChoice2Count.text.toString().toInt())
-        Logger.v(binding.choosenChoice1Count.text.toString())
-        Logger.v(binding.choosenChoice2Count.text.toString())
         val secondPercent : Int = viewModel.calculatePercent(binding.choosenChoice2Count.text.toString().toInt(), binding.choosenChoice1Count.text.toString().toInt())
         binding.choosenChoice1Percent.text = "$firstPercent%"
         binding.choosenChoice2Percent.text = "$secondPercent%"

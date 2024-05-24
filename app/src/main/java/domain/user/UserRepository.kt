@@ -7,5 +7,5 @@ import model.LoginedUser
 
 interface UserRepository {
     suspend fun updateProfile(nickName: String, profile: Uri): Response<Boolean>
-    suspend fun getUserProfile(context: Context): LoginedUser
+    suspend fun getUserProfile(): LoginedUser
 }

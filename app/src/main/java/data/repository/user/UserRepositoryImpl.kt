@@ -49,7 +49,7 @@ class UserRepositoryImpl @Inject constructor(
 
         }
 
-    override suspend fun getUserProfile(context: Context): LoginedUser {
+    override suspend fun getUserProfile(): LoginedUser {
 
         val snapShot =
             fireStoreRef.collection("MZUsers").document(FirebaseAuth.auth.uid.toString()).get()
