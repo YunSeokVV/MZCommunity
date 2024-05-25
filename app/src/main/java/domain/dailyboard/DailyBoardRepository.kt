@@ -1,8 +1,8 @@
 package domain.dailyboard
 
 import data.model.Response
-import model.DailyBoard
-import model.File
+import data.model.DailyBoard
+import data.model.File
 
 interface DailyBoardRepository {
     suspend fun postBoard(

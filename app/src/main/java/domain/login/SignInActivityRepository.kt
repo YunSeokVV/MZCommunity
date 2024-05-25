@@ -1,8 +1,7 @@
 package domain.login
 
-import android.content.Context
 import data.model.Response
-import model.LoginInfo
+import data.model.LoginInfo
 
 interface SignInActivityRepository {
     suspend fun getSavedUserLoginInfo(): Response<LoginInfo>

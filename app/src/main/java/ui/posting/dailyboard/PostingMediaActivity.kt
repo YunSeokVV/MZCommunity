@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mzcommunity.R
 import com.example.mzcommunity.databinding.ActivityPostingMediaBinding
 import dagger.hilt.android.AndroidEntryPoint
-import model.File
+import data.model.File
 import ui.loading.LoadingDialogFragment
 
 @AndroidEntryPoint

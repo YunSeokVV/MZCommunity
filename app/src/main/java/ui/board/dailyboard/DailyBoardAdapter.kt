@@ -18,8 +18,10 @@ import com.example.mzcommunity.databinding.DailyBoardVideoItemListBinding
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.material.tabs.TabLayoutMediator
-import model.DailyBoard
-import model.DailyBoardViewType
+import com.orhanobut.logger.Logger
+import data.model.DailyBoard
+import data.model.DailyBoardViewType
+
 
 class DailyBoardAdapter(
     private val increaseLike: IncreaseLike,
@@ -71,7 +73,10 @@ class DailyBoardAdapter(
                 var currentViewHolder =
                     recyclerView.findViewHolderForAdapterPosition(layoutManager.findLastVisibleItemPosition())
                 // 스크롤해서 ui에 보여진 마지막 아이템이 동영상 타입이라면 재생시킨다.
-                if (currentViewHolder != null && currentViewHolder.itemViewType == DailyBoardViewType.VIDEO) {
+                if (currentViewHolder != null && currentViewHolder.itemViewType.equals(
+                        DailyBoardViewType.VIDEO
+                    )
+                ) {
                     currentViewHolder = currentViewHolder as DailyBoardVideoItemViewHolder
                     currentViewHolder.processVideo(currentViewHolder)
                 }
@@ -579,37 +584,70 @@ class DailyBoardAdapter(
     }
 
     override fun getItemViewType(position: Int): Int {
-        return currentList[position].viewType
+        return currentList[position].viewType.ordinal
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        if (viewType == DailyBoardViewType.TEXT) {
-            val binding =
-                DailyBoardTextItemListBinding.inflate(
-                    LayoutInflater.from(parent.context),
-                    parent,
-                    false
-                )
-            return DailyBoardTextItemViewHolder(binding)
-        } else if (viewType == DailyBoardViewType.IMAGE) {
-            val binding =
-                DailyBoardImageItemListBinding.inflate(
-                    LayoutInflater.from(parent.context),
-                    parent,
-                    false
-                )
-            return DailyBoardImageItemViewHolder(binding)
+        return when (DailyBoardViewType.fromValue(viewType)) {
+            DailyBoardViewType.IMAGE -> {
+                val binding =
+                    DailyBoardImageItemListBinding.inflate(
+                        LayoutInflater.from(parent.context),
+                        parent,
+                        false
+                    )
+                return DailyBoardImageItemViewHolder(binding)
+            }
 
-            // DailyBoardViewType.VIDEO
-        } else {
-            val binding =
-                DailyBoardVideoItemListBinding.inflate(
-                    LayoutInflater.from(parent.context),
-                    parent,
-                    false
-                )
-            return DailyBoardVideoItemViewHolder(binding)
+            DailyBoardViewType.TEXT -> {
+                val binding =
+                    DailyBoardTextItemListBinding.inflate(
+                        LayoutInflater.from(parent.context),
+                        parent,
+                        false
+                    )
+                return DailyBoardTextItemViewHolder(binding)
+            }
+
+            DailyBoardViewType.VIDEO -> {
+                val binding =
+                    DailyBoardVideoItemListBinding.inflate(
+                        LayoutInflater.from(parent.context),
+                        parent,
+                        false
+                    )
+                return DailyBoardVideoItemViewHolder(binding)
+            }
+
+            null -> throw IllegalArgumentException("Invalid view type")
         }
+//        if (viewType.equals(DailyBoardViewType.TEXT)) {
+//            val binding =
+//                DailyBoardTextItemListBinding.inflate(
+//                    LayoutInflater.from(parent.context),
+//                    parent,
+//                    false
+//                )
+//            return DailyBoardTextItemViewHolder(binding)
+//        } else if (viewType.equals(DailyBoardViewType.IMAGE)) {
+//            val binding =
+//                DailyBoardImageItemListBinding.inflate(
+//                    LayoutInflater.from(parent.context),
+//                    parent,
+//                    false
+//                )
+//            return DailyBoardImageItemViewHolder(binding)
+//
+//            // DailyBoardViewType.VIDEO
+//        } else {
+//            val binding =
+//                DailyBoardVideoItemListBinding.inflate(
+//                    LayoutInflater.from(parent.context),
+//                    parent,
+//                    false
+//                )
+//            return DailyBoardVideoItemViewHolder(binding)
+//        }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -639,7 +677,7 @@ class DailyBoardAdapter(
 
     fun releaseVideo() {
         currentList.forEach { dailyBoard ->
-            if (dailyBoard.viewType == 2) {
+            if (dailyBoard.viewType.equals(2)) {
                 recentVideoItemViewHolder?.releaseVideo()
             }
         }

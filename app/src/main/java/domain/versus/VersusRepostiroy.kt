@@ -1,7 +1,7 @@
 package domain.versus
 
 import data.model.Response
-import model.VersusBoard
+import data.model.VersusBoard
 
 interface VersusRepostiroy {
     suspend fun postVersusBoard(

@@ -23,7 +23,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
 import data.model.Comment
 
-import model.LoginedUser
+import data.model.LoginedUser
 import ui.loading.LoadingDialogFragment
 
 import util.Util

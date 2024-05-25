@@ -12,7 +12,7 @@ import com.example.mzcommunity.databinding.DailyBoardCommentItemBinding
 import com.example.mzcommunity.databinding.ItemLoadingBinding
 import data.model.Comment
 
-import model.LoginedUser
+import data.model.LoginedUser
 import ui.LoadingViewHolder
 
 

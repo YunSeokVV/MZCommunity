@@ -1,16 +1,14 @@
 package database
 
 import android.content.Context
-import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Database
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Room
-import androidx.room.Room.databaseBuilder
 import androidx.room.RoomDatabase
 import dagger.hilt.android.qualifiers.ApplicationContext
-import model.LoginInfo
+import data.model.LoginInfo
 
 
 @Database(entities = [LoginInfo::class], version = 1)

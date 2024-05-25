@@ -1,8 +1,8 @@
 package domain.dailyboard
 
 import kotlinx.coroutines.flow.flow
-import model.DailyBoard
-import model.File
+import data.model.DailyBoard
+import data.model.File
 import javax.inject.Inject
 
 class DailyBoardUseCase @Inject constructor(private val dailyBoardRepository: DailyBoardRepository){

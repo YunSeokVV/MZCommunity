@@ -6,7 +6,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import data.model.Response
 import database.LoginUserDB
 import domain.login.SignInActivityRepository
-import model.LoginInfo
+import data.model.LoginInfo
 import javax.inject.Inject
 import javax.inject.Singleton
 

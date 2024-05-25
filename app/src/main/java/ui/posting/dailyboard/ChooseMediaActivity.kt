@@ -18,7 +18,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mzcommunity.R
 import com.example.mzcommunity.databinding.ActivityMultiImagePostingBinding
-import model.File
+import data.model.File
 import util.Util
 
 class ChooseMediaActivity : AppCompatActivity() {

@@ -13,7 +13,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
-import model.LoginedUser
+import data.model.LoginedUser
 import util.FirebaseAuth
 import util.Util
 import javax.inject.Inject

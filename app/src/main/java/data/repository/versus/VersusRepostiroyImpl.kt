@@ -13,7 +13,7 @@ import domain.versus.VersusRepostiroy
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
-import model.VersusBoard
+import data.model.VersusBoard
 import util.FirebaseAuth
 import util.Util
 import java.util.Random

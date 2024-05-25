@@ -1,8 +1,7 @@
 package domain.loading
 
-import android.content.Context
-import model.DailyBoard
-import model.LoginedUser
+import data.model.DailyBoard
+import data.model.LoginedUser
 
 interface LoadingRepository {
     suspend fun getUserProfile(): LoginedUser

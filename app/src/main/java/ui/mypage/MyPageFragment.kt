@@ -15,7 +15,7 @@ import com.example.mzcommunity.R
 import com.example.mzcommunity.databinding.FragmentMyPageBinding
 import com.orhanobut.logger.Logger
 import dagger.hilt.android.AndroidEntryPoint
-import model.LoginedUser
+import data.model.LoginedUser
 import ui.loading.LoadingDialogFragment
 import util.Util
 import javax.inject.Inject

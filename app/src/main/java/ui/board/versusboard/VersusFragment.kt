@@ -14,10 +14,8 @@ import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
 import com.example.mzcommunity.R
 import com.example.mzcommunity.databinding.FragmentVersusBinding
-import com.orhanobut.logger.Logger
 import dagger.hilt.android.AndroidEntryPoint
-import model.LoginedUser
-import util.Util
+import data.model.LoginedUser
 import ui.posting.versusboard.PostingVersusActivity
 import ui.comment.BottomSheetFragment
 

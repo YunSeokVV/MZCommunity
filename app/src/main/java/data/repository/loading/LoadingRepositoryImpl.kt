@@ -11,9 +11,10 @@ import domain.loading.LoadingRepository
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.tasks.await
-import model.DailyBoard
-import model.DailyboardCollection
-import model.LoginedUser
+import data.model.DailyBoard
+import data.model.DailyBoardViewType
+import data.model.DailyboardCollection
+import data.model.LoginedUser
 import util.FirebaseAuth
 import util.Util
 import util.Util.Companion.getUnknownProfileImage
@@ -90,15 +91,24 @@ class LoadingRepositoryImpl @Inject constructor(
 
         }
 
-    private fun getDailyBoardCollection(result: DocumentSnapshot): DailyboardCollection {
+    fun getDailyBoardCollection(document: DocumentSnapshot): DailyboardCollection {
+        val boardContents = parsingFireStoreDocument(document, "boardContents")
+        val disLike = parsingFireStoreDocument(document, "disLike").toInt()
+        val like = parsingFireStoreDocument(document, "like").toInt()
+        val writerUID = parsingFireStoreDocument(document, "writerUID")
+        val favourability = parsingFireStoreDocument(document, "userFavourability")
+        val files = Util.parsingDailyBoardFiles(document, "fileURL")
+        val viewTypeInt = parsingFireStoreDocument(document, "viewType").toInt()
+        val viewType = DailyBoardViewType.fromValue(viewTypeInt) ?: throw IllegalArgumentException("Invalid viewType value")
+
         return DailyboardCollection(
-            parsingFireStoreDocument(result, "boardContents"),
-            parsingFireStoreDocument(result, "disLike").toInt(),
-            parsingFireStoreDocument(result, "like").toInt(),
-            parsingFireStoreDocument(result, "writerUID"),
-            parsingFireStoreDocument(result, "userFavourability"),
-            Util.parsingDailyBoardFiles(result, "fileURL"),
-            parsingFireStoreDocument(result, "viewType").toInt()
+            boardContents,
+            disLike,
+            like,
+            writerUID,
+            favourability,
+            files,
+            viewType
         )
     }
 

@@ -1,4 +1,4 @@
-package model
+package data.model
 
 data class DailyboardCollection(
     val boardContents: String,
@@ -7,5 +7,5 @@ data class DailyboardCollection(
     val writerUID: String,
     val favourability: String,
     val files : List<String>,
-    val viewType : Int
+    val viewType : DailyBoardViewType
 )

@@ -17,9 +17,10 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
-import model.DailyBoard
-import model.DailyboardCollection
-import model.File
+import data.model.DailyBoard
+import data.model.DailyBoardViewType
+import data.model.DailyboardCollection
+import data.model.File
 import util.FirebaseAuth
 import util.Util.Companion.parsingDailyBoardFiles
 import util.Util.Companion.getUnknownProfileImage
@@ -226,19 +227,26 @@ class DailyBoardRepositoryImpl @Inject constructor(
 
         return userFavourability
     }
+    fun getDailyBoardCollection(document: DocumentSnapshot): DailyboardCollection {
+        val boardContents = parsingFireStoreDocument(document, "boardContents")
+        val disLike = parsingFireStoreDocument(document, "disLike").toInt()
+        val like = parsingFireStoreDocument(document, "like").toInt()
+        val writerUID = parsingFireStoreDocument(document, "writerUID")
+        val favourability = parsingFireStoreDocument(document, "userFavourability")
+        val files = parsingDailyBoardFiles(document, "fileURL")
+        val viewTypeInt = parsingFireStoreDocument(document, "viewType").toInt()
+        val viewType = DailyBoardViewType.fromValue(viewTypeInt) ?: DailyBoardViewType.TEXT
 
-    private fun getDailyBoardCollection(result: DocumentSnapshot): DailyboardCollection {
         return DailyboardCollection(
-            parsingFireStoreDocument(result, "boardContents"),
-            parsingFireStoreDocument(result, "disLike").toInt(),
-            parsingFireStoreDocument(result, "like").toInt(),
-            parsingFireStoreDocument(result, "writerUID"),
-            parsingFireStoreDocument(result, "userFavourability"),
-            parsingDailyBoardFiles(result, "fileURL"),
-            parsingFireStoreDocument(result, "viewType").toInt()
+            boardContents,
+            disLike,
+            like,
+            writerUID,
+            favourability,
+            files,
+            viewType
         )
     }
-
 
     private fun parsingFireStoreDocument(documentSnapshot: DocumentSnapshot, key: String): String {
         var result: String

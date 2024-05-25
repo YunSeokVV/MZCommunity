@@ -9,7 +9,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import data.model.Response
 import javax.inject.Inject
 import kotlinx.coroutines.launch
-import model.DailyBoard
+import data.model.DailyBoard
 import domain.dailyboard.DailyBoardUseCase
 
 

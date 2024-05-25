@@ -159,7 +159,7 @@ class CommentRepositoryImpl @Inject constructor(
                         .document(it.get("writerUID").toString()).get().await()
                     val defaultProfile: String = Util.getUnknownProfileImage(appContext)
                     val profileURL = userDoc.getString("profileURL") ?: defaultProfile
-                    val nickName = userDoc.getString("nickName") ?: "알 수 없는 사용자"
+                    val nickName = userDoc.getString("nickName") ?: appContext.getString(R.string.unknown_user)
                     val comment = Comment(
                         Uri.parse(profileURL),
                         nickName,
