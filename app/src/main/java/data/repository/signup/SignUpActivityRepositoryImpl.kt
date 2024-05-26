@@ -8,7 +8,7 @@ import database.LoginUserDB
 import domain.signup.SignUpActivityRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import model.LoginInfo
+import data.model.LoginInfo
 import javax.inject.Inject
 import javax.inject.Singleton
 

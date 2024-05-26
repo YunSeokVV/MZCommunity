@@ -6,13 +6,14 @@ import android.net.Uri
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.orhanobut.logger.Logger
+import dagger.hilt.android.qualifiers.ApplicationContext
 import data.model.Response
 import domain.user.UserRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
-import model.LoginedUser
+import data.model.LoginedUser
 import util.FirebaseAuth
 import util.Util
 import javax.inject.Inject
@@ -23,7 +24,8 @@ import javax.inject.Singleton
 @Singleton
 class UserRepositoryImpl @Inject constructor(
     private val storage: FirebaseStorage,
-    private val fireStoreRef: FirebaseFirestore
+    private val fireStoreRef: FirebaseFirestore,
+    @ApplicationContext private val appContext: Context
 ) : UserRepository {
     override suspend fun updateProfile(nickName: String, profile: Uri) =
         withContext(Dispatchers.IO) {
@@ -55,7 +57,7 @@ class UserRepositoryImpl @Inject constructor(
             fireStoreRef.collection("MZUsers").document(FirebaseAuth.auth.uid.toString()).get()
                 .await()
 
-        val defaultProfile: String = Util.getUnknownProfileImage()
+        val defaultProfile: String = Util.getUnknownProfileImage(appContext)
         val profile = snapShot.getString("profileURL") ?: defaultProfile
         val nickName = snapShot.get("nickName") as? String ?: "알 수 없는 사용자"
         return LoginedUser(profile, nickName)

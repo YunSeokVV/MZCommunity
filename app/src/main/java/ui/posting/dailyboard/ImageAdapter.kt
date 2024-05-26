@@ -8,7 +8,7 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.mzcommunity.R
-import model.File
+import data.model.File
 
 class ImageAdapter(private val isRadius : Boolean) : RecyclerView.Adapter<ImageAdapter.ViewHolder>() {
     private val fileData = ArrayList<File>()

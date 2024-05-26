@@ -8,8 +8,8 @@ import androidx.fragment.app.Fragment
 import com.example.mzcommunity.R
 import com.example.mzcommunity.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
-import model.DailyBoard
-import model.LoginedUser
+import data.model.DailyBoard
+import data.model.LoginedUser
 import ui.board.dailyboard.DailyBoardFragment
 import ui.mypage.MyPageFragment
 import ui.mypage.MyPageFragment.loginUserListener

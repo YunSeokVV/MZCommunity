@@ -1,12 +1,15 @@
 package data.repository.dailyboard
 
+import android.content.Context
 import android.net.Uri
+import com.example.mzcommunity.R
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.storage.FirebaseStorage
 import com.orhanobut.logger.Logger
+import dagger.hilt.android.qualifiers.ApplicationContext
 import data.model.Response
 import domain.dailyboard.DailyBoardRepository
 import kotlinx.coroutines.Dispatchers
@@ -14,11 +17,14 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
-import model.DailyBoard
-import model.DailyboardCollection
-import model.File
+import data.model.DailyBoard
+import data.model.DailyBoardViewType
+import data.model.DailyboardCollection
+import data.model.File
+import data.model.UserFavourability
 import util.FirebaseAuth
-import util.Util
+import util.Util.Companion.parsingDailyBoardFiles
+import util.Util.Companion.getUnknownProfileImage
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.coroutines.resumeWithException
@@ -26,7 +32,8 @@ import kotlin.coroutines.resumeWithException
 @Singleton
 class DailyBoardRepositoryImpl @Inject constructor(
     private val storage: FirebaseStorage,
-    private val fireStoreRef: FirebaseFirestore
+    private val fireStoreRef: FirebaseFirestore,
+    @ApplicationContext private val appContext: Context
 ) :
     DailyBoardRepository {
     override suspend fun postBoard(
@@ -84,7 +91,7 @@ class DailyBoardRepositoryImpl @Inject constructor(
                         val userFavourability = dailyBoardCollection.favourability
                         val viewType = dailyBoardCollection.viewType
 
-                        val defaultProfile: String = Util.getUnknownProfileImage()
+                        val defaultProfile: String = getUnknownProfileImage(appContext)
 
                         val dailyBoard = DailyBoard(
                             userNickName,
@@ -133,9 +140,12 @@ class DailyBoardRepositoryImpl @Inject constructor(
                             val like = dailyBoardCollection.like
                             val disLike = dailyBoardCollection.disLike
                             val userFavourability = dailyBoardCollection.favourability
+                            val favourStr = UserFavourability.fromValue(userFavourability)
+
+
                             val viewType = dailyBoardCollection.viewType
 
-                            val defaultProfile: String = Util.getUnknownProfileImage()
+                            val defaultProfile: String = getUnknownProfileImage(appContext)
 
                             val dailyBoard = DailyBoard(
                                 userNickName,
@@ -170,7 +180,7 @@ class DailyBoardRepositoryImpl @Inject constructor(
                     fireStore.collection("dailyBoard").document(dailyBoard.boardUID)
 
                 // 사용자의 게시글에 대한 호감도가 보통이였던 경우
-                if (dailyBoard.favourability.equals("usual")) {
+                if (dailyBoard.favourability == UserFavourability.USUAL) {
                     if (isLike) {
                         documentReference.update("like", FieldValue.increment(1)).await()
                         documentReference.set(setUserFavour("like"), SetOptions.merge()).await()
@@ -181,7 +191,7 @@ class DailyBoardRepositoryImpl @Inject constructor(
 
 
                     // 사용자의 게시글에 대한 호감도가 좋아요였던 경우
-                } else if (dailyBoard.favourability.equals("like")) {
+                } else if (dailyBoard.favourability == UserFavourability.LIKE) {
                     if (dailyBoard.like != 0)
                         documentReference.update("like", FieldValue.increment(-1)).await()
 
@@ -193,7 +203,7 @@ class DailyBoardRepositoryImpl @Inject constructor(
                     }
 
                     // 사용자의 게시글에 대한 호감도가 싫어요였던 경우
-                } else if (dailyBoard.favourability.equals("disLike")) {
+                } else if (dailyBoard.favourability == UserFavourability.DISLIKE) {
                     if (isLike)
                         documentReference.update("like", FieldValue.increment(1)).await()
                     if (dailyBoard.disLike != 0)
@@ -221,17 +231,45 @@ class DailyBoardRepositoryImpl @Inject constructor(
 
         return userFavourability
     }
+    fun getDailyBoardCollection(document: DocumentSnapshot): DailyboardCollection {
+        val boardContents = parsingFireStoreDocument(document, "boardContents")
+        val disLike = parsingFireStoreDocument(document, "disLike").toInt()
+        val like = parsingFireStoreDocument(document, "like").toInt()
+        val writerUID = parsingFireStoreDocument(document, "writerUID")
+        val favourability = parsingFireStoreDocument(document, "userFavourability")
+        val files = parsingDailyBoardFiles(document, "fileURL")
+        val viewTypeInt = parsingFireStoreDocument(document, "viewType").toInt()
+        val viewType = DailyBoardViewType.fromValue(viewTypeInt) ?: DailyBoardViewType.TEXT
 
-    private fun getDailyBoardCollection(result: DocumentSnapshot): DailyboardCollection {
         return DailyboardCollection(
-            Util.parsingFireStoreDocument(result, "boardContents"),
-            Util.parsingFireStoreDocument(result, "disLike").toInt(),
-            Util.parsingFireStoreDocument(result, "like").toInt(),
-            Util.parsingFireStoreDocument(result, "writerUID"),
-            Util.parsingFireStoreDocument(result, "userFavourability"),
-            Util.parsingDailyBoardFiles(result, "fileURL"),
-            Util.parsingFireStoreDocument(result, "viewType").toInt()
+            boardContents,
+            disLike,
+            like,
+            writerUID,
+            UserFavourability.fromValue(favourability) ?: UserFavourability.USUAL,
+            files,
+            viewType
         )
     }
 
+    private fun parsingFireStoreDocument(documentSnapshot: DocumentSnapshot, key: String): String {
+        var result: String
+        if (key == "disLike") {
+            result = (documentSnapshot.get(key) as? Long ?: 0).toString()
+        } else if (key == "like") {
+            result = (documentSnapshot.get(key) as? Long ?: 0).toString()
+        } else if (key == "writerUID") {
+            result = documentSnapshot.get(key) as? String ?: "noWriterUID"
+        } else if (key == "boardContents") {
+            result = documentSnapshot.get(key) as? String ?: "noBoardContents"
+        } else if (key == "userFavourability") {
+            val userFavour = documentSnapshot.get(key) as? Map<String, Any>
+            result = (userFavour?.get(FirebaseAuth.auth.uid.toString()) ?: "usual").toString()
+        } else if (key == "viewType") {
+            result = (documentSnapshot.get(key) as? Long ?: 0).toString()
+        } else {
+            result = documentSnapshot.get(key) as? String ?: appContext.getString(R.string.nothing)
+        }
+        return result
+    }
 }

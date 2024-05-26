@@ -8,9 +8,8 @@ import com.orhanobut.logger.Logger
 import dagger.hilt.android.lifecycle.HiltViewModel
 import data.model.Response
 import kotlinx.coroutines.launch
-import model.VersusBoard
+import data.model.VersusBoard
 import domain.versus.VersusUsecase
-import util.Util
 import javax.inject.Inject
 
 
@@ -85,8 +84,6 @@ class VersusFragmnetViewModel @Inject constructor(private val versusUseCase: Ver
         }
     }
 
-    fun calculatePercent(firstOpinion: Int, secondOpinion: Int): Int {
-        return Util.cacluatePercent(firstOpinion, secondOpinion)
-    }
+    fun calculatePercent(firstOpinion: Int, secondOpinion: Int): Int = versusUseCase.calculatePercent(firstOpinion, secondOpinion)
 
 }

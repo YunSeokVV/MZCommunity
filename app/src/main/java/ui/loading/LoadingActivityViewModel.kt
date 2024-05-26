@@ -1,15 +1,13 @@
 package ui.loading
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import model.DailyBoard
-import model.LoginedUser
+import data.model.DailyBoard
+import data.model.LoginedUser
 import domain.loading.LoadingUsecase
 import javax.inject.Inject
 

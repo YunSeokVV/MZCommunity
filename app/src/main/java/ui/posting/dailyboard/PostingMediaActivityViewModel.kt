@@ -8,7 +8,7 @@ import com.orhanobut.logger.Logger
 import dagger.hilt.android.lifecycle.HiltViewModel
 import data.model.Response
 import kotlinx.coroutines.launch
-import model.File
+import data.model.File
 import javax.inject.Inject
 import domain.dailyboard.DailyBoardUseCase
 

@@ -10,8 +10,8 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mzcommunity.databinding.FragmentBoardBinding
 import dagger.hilt.android.AndroidEntryPoint
-import model.DailyBoard
-import model.LoginedUser
+import data.model.DailyBoard
+import data.model.LoginedUser
 import ui.comment.BottomSheetFragment
 
 

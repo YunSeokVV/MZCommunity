@@ -1,4 +1,4 @@
-package model
+package data.model
 
 data class VersusBoard(
     val writerUri : String,

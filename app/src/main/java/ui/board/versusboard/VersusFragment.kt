@@ -14,10 +14,8 @@ import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
 import com.example.mzcommunity.R
 import com.example.mzcommunity.databinding.FragmentVersusBinding
-import com.orhanobut.logger.Logger
 import dagger.hilt.android.AndroidEntryPoint
-import model.LoginedUser
-import util.Util
+import data.model.LoginedUser
 import ui.posting.versusboard.PostingVersusActivity
 import ui.comment.BottomSheetFragment
 
@@ -54,11 +52,11 @@ class VersusFragment() : Fragment() {
                 when (event?.action) {
                     // 손을 누른 시점
                     MotionEvent.ACTION_DOWN -> {
-                        binding.choice1.setBackgroundColor(Util.getResourceColor(requireActivity(), R.color.complementary_pink))
+                        binding.choice1.setBackgroundColor(requireActivity().getColor(R.color.complementary_pink))
                     }
                     // 손을 뗀 시점
                     MotionEvent.ACTION_UP -> {
-                        binding.choice1.setBackgroundColor(Util.getResourceColor(requireActivity(), R.color.pink))
+                        binding.choice1.setBackgroundColor(requireActivity().getColor(R.color.pink))
                         vote(true)
                         setPercent()
                     }
@@ -73,11 +71,11 @@ class VersusFragment() : Fragment() {
                 when (event?.action) {
                     // 손을 누른 시점
                     MotionEvent.ACTION_DOWN -> {
-                        binding.choice2.setBackgroundColor(Util.getResourceColor(requireActivity(), R.color.complementary_sky_blue))
+                        binding.choice2.setBackgroundColor(requireActivity().getColor(R.color.complementary_sky_blue))
                     }
                     // 손을 뗀 시점
                     MotionEvent.ACTION_UP -> {
-                        binding.choice2.setBackgroundColor(Util.getResourceColor(requireActivity(), R.color.sky_blue))
+                        binding.choice2.setBackgroundColor(requireActivity().getColor(R.color.sky_blue))
                         vote(false)
                         setPercent()
                     }
@@ -156,12 +154,12 @@ class VersusFragment() : Fragment() {
 
     private fun showAgenda(isShowAgenda: Boolean) {
         if (isShowAgenda) {
-            binding.choice1.setBackgroundColor(Util.getResourceColor(requireActivity(), R.color.pink))
-            binding.choice2.setBackgroundColor(Util.getResourceColor(requireActivity(), R.color.sky_blue))
-            binding.writeNameLayout.setBackgroundColor(Util.getResourceColor(requireActivity(), R.color.white))
-            binding.titleLayout.setBackgroundColor(Util.getResourceColor(requireActivity(), R.color.white))
-            binding.writeName.setTextColor(Util.getResourceColor(requireActivity(), R.color.black))
-            binding.title.setTextColor(Util.getResourceColor(requireActivity(), R.color.black))
+            binding.choice1.setBackgroundColor(requireActivity().getColor(R.color.pink))
+            binding.choice2.setBackgroundColor(requireActivity().getColor(R.color.sky_blue))
+            binding.writeNameLayout.setBackgroundColor(requireActivity().getColor(R.color.white))
+            binding.titleLayout.setBackgroundColor(requireActivity().getColor(R.color.white))
+            binding.writeName.setTextColor(requireActivity().getColor(R.color.black))
+            binding.title.setTextColor(requireActivity().getColor(R.color.black))
             binding.choice1Text.visibility = View.VISIBLE
             binding.comment.visibility = View.VISIBLE
             binding.posting.visibility = View.VISIBLE

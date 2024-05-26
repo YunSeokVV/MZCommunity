@@ -1,4 +1,4 @@
-package model
+package data.model
 
 import android.os.Parcel
 import android.os.Parcelable
@@ -11,8 +11,8 @@ data class DailyBoard(
     val disLike: Int,
     val like: Int,
     val boardUID: String,
-    val favourability: String,
-    val viewType: Int
+    val favourability: UserFavourability,
+    val viewType: DailyBoardViewType
 ) : Serializable, Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString() ?: "",
@@ -22,8 +22,8 @@ data class DailyBoard(
         parcel.readInt(),
         parcel.readInt(),
         parcel.readString() ?: "",
-        parcel.readString() ?: "",
-        parcel.readInt()
+        UserFavourability.fromValue(parcel.readString() ?: "") ?: UserFavourability.USUAL,
+        DailyBoardViewType.values()[parcel.readInt()]
     )
 
     override fun describeContents() = 0
@@ -36,8 +36,8 @@ data class DailyBoard(
         dest.writeInt(disLike)
         dest.writeInt(like)
         dest.writeString(boardUID)
-        dest.writeString(favourability)
-        dest.writeInt(viewType)
+        dest.writeString(favourability.name)
+        dest.writeInt(viewType.ordinal)
     }
 
     companion object CREATOR : Parcelable.Creator<DailyBoard> {

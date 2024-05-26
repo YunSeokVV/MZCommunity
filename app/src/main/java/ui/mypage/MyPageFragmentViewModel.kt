@@ -9,7 +9,7 @@ import com.orhanobut.logger.Logger
 import dagger.hilt.android.lifecycle.HiltViewModel
 import data.model.Response
 import kotlinx.coroutines.launch
-import model.LoginedUser
+import data.model.LoginedUser
 import domain.user.UserUsecase
 import javax.inject.Inject
 

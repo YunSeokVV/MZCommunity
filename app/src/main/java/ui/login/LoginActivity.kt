@@ -46,7 +46,6 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
         Logger.addLogAdapter(AndroidLogAdapter())
-        Util.setResourceContext(applicationContext)
         val binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 

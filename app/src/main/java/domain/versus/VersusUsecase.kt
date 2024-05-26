@@ -2,6 +2,7 @@ package domain.versus
 
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
+import kotlin.math.round
 
 class VersusUsecase @Inject constructor(private val versusRepository: VersusRepostiroy) {
     suspend fun postVersusBoard(
@@ -21,4 +22,6 @@ class VersusUsecase @Inject constructor(private val versusRepository: VersusRepo
     suspend fun voteOpinion(opinion1Vote: Boolean, versusBoardUID : String) = flow{
         emit(versusRepository.voteOpinion(opinion1Vote, versusBoardUID))
     }
+
+    fun calculatePercent(firstOpinion: Int, secondOpinion: Int) : Int = round((firstOpinion.toDouble() / (firstOpinion + secondOpinion) * 100)).toInt()
 }

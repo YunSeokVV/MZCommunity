@@ -23,11 +23,10 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
 import data.model.Comment
 
-import model.LoginedUser
+import data.model.LoginedUser
 import ui.loading.LoadingDialogFragment
 
 import util.Util
-import util.Util.Companion.getStringResource
 
 
 @AndroidEntryPoint
@@ -49,12 +48,13 @@ class BottomSheetFragment() : BottomSheetDialogFragment() {
         requireActivity().getWindow()
             .setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_UNSPECIFIED)
 
-        val parentUID = arguments?.getString("boardUID") ?: getStringResource(R.string.nothing)
+        val parentUID = arguments?.getString("boardUID") ?: requireActivity().getString(R.string.nothing)
         val collectionName =
-            arguments?.getString("collectionName") ?: getStringResource(R.string.nothing)
+            arguments?.getString("collectionName") ?: requireActivity().getString(R.string.nothing)
+
         val nestedCommentCollection =
-            arguments?.getString("nestedCommentName") ?: getStringResource(R.string.nothing)
-        val commentName = arguments?.getString("commentName") ?: getStringResource(R.string.nothing)
+            arguments?.getString("nestedCommentName") ?: requireActivity().getString(R.string.nothing)
+        val commentName = arguments?.getString("commentName") ?: requireActivity().getString(R.string.nothing)
         val loginedUser = arguments?.getSerializable("loginedUserProfile") as LoginedUser
 
         viewModel.getComments(parentUID, collectionName)
@@ -64,7 +64,7 @@ class BottomSheetFragment() : BottomSheetDialogFragment() {
                 if (viewModel.isReplyMode) {
                     adapter.addNestedCommentItem(
                         loginedUser,
-                        Util.removeStr(inputComment.text.toString(), viewModel.tagedUser),
+                        removeStr(inputComment.text.toString(), viewModel.tagedUser),
                         parentUID
                     )
                     nestedRecyclerView.adapter?.notifyItemInserted(adapter.nestedCommentList.size)
@@ -84,7 +84,7 @@ class BottomSheetFragment() : BottomSheetDialogFragment() {
                 loadingDialogFragment.show(childFragmentManager, loadingDialogFragment.tag)
                 // 대댓글을 쓰는 경우
                 if (viewModel.isReplyMode) {
-                    val reply = Util.removeStr(inputComment.text.toString(), viewModel.tagedUser)
+                    val reply = removeStr(inputComment.text.toString(), viewModel.tagedUser)
                     viewModel.postReply(
                         reply,
                         viewModel.choosenReplyUID,
@@ -236,5 +236,11 @@ class BottomSheetFragment() : BottomSheetDialogFragment() {
         inputComment.append(" ")
         inputComment.setSelection(inputComment.length())
         viewModel.isReplyMode = true
+    }
+
+    private fun removeStr(original: String, deleteStr: String): String {
+        var result = original
+        result = result.substring(deleteStr.length)
+        return result
     }
 }
