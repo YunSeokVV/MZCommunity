@@ -8,5 +8,7 @@ enum class DailyBoardViewType(val value: Int) {
         fun fromValue(value: Int): DailyBoardViewType? {
             return values().find { it.value == value }
         }
+
+        fun fromValue(value : DailyBoardViewType) : Int = value.ordinal
     }
 }

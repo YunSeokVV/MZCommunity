@@ -15,6 +15,7 @@ import data.model.DailyBoard
 import data.model.DailyBoardViewType
 import data.model.DailyboardCollection
 import data.model.LoginedUser
+import data.model.UserFavourability
 import util.FirebaseAuth
 import util.Util
 import util.Util.Companion.getUnknownProfileImage
@@ -106,7 +107,7 @@ class LoadingRepositoryImpl @Inject constructor(
             disLike,
             like,
             writerUID,
-            favourability,
+            UserFavourability.fromValue(favourability) ?: UserFavourability.USUAL,
             files,
             viewType
         )

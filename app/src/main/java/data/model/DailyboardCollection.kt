@@ -5,7 +5,7 @@ data class DailyboardCollection(
     val disLike: Int,
     val like: Int,
     val writerUID: String,
-    val favourability: String,
+    val favourability: UserFavourability,
     val files : List<String>,
     val viewType : DailyBoardViewType
 )

@@ -21,6 +21,7 @@ import data.model.DailyBoard
 import data.model.DailyBoardViewType
 import data.model.DailyboardCollection
 import data.model.File
+import data.model.UserFavourability
 import util.FirebaseAuth
 import util.Util.Companion.parsingDailyBoardFiles
 import util.Util.Companion.getUnknownProfileImage
@@ -139,6 +140,9 @@ class DailyBoardRepositoryImpl @Inject constructor(
                             val like = dailyBoardCollection.like
                             val disLike = dailyBoardCollection.disLike
                             val userFavourability = dailyBoardCollection.favourability
+                            val favourStr = UserFavourability.fromValue(userFavourability)
+
+
                             val viewType = dailyBoardCollection.viewType
 
                             val defaultProfile: String = getUnknownProfileImage(appContext)
@@ -176,7 +180,7 @@ class DailyBoardRepositoryImpl @Inject constructor(
                     fireStore.collection("dailyBoard").document(dailyBoard.boardUID)
 
                 // 사용자의 게시글에 대한 호감도가 보통이였던 경우
-                if (dailyBoard.favourability.equals("usual")) {
+                if (dailyBoard.favourability == UserFavourability.USUAL) {
                     if (isLike) {
                         documentReference.update("like", FieldValue.increment(1)).await()
                         documentReference.set(setUserFavour("like"), SetOptions.merge()).await()
@@ -187,7 +191,7 @@ class DailyBoardRepositoryImpl @Inject constructor(
 
 
                     // 사용자의 게시글에 대한 호감도가 좋아요였던 경우
-                } else if (dailyBoard.favourability.equals("like")) {
+                } else if (dailyBoard.favourability == UserFavourability.LIKE) {
                     if (dailyBoard.like != 0)
                         documentReference.update("like", FieldValue.increment(-1)).await()
 
@@ -199,7 +203,7 @@ class DailyBoardRepositoryImpl @Inject constructor(
                     }
 
                     // 사용자의 게시글에 대한 호감도가 싫어요였던 경우
-                } else if (dailyBoard.favourability.equals("disLike")) {
+                } else if (dailyBoard.favourability == UserFavourability.DISLIKE) {
                     if (isLike)
                         documentReference.update("like", FieldValue.increment(1)).await()
                     if (dailyBoard.disLike != 0)
@@ -242,7 +246,7 @@ class DailyBoardRepositoryImpl @Inject constructor(
             disLike,
             like,
             writerUID,
-            favourability,
+            UserFavourability.fromValue(favourability) ?: UserFavourability.USUAL,
             files,
             viewType
         )

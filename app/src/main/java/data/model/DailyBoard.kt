@@ -11,7 +11,7 @@ data class DailyBoard(
     val disLike: Int,
     val like: Int,
     val boardUID: String,
-    val favourability: String,
+    val favourability: UserFavourability,
     val viewType: DailyBoardViewType
 ) : Serializable, Parcelable {
     constructor(parcel: Parcel) : this(
@@ -22,7 +22,7 @@ data class DailyBoard(
         parcel.readInt(),
         parcel.readInt(),
         parcel.readString() ?: "",
-        parcel.readString() ?: "",
+        UserFavourability.fromValue(parcel.readString() ?: "") ?: UserFavourability.USUAL,
         DailyBoardViewType.values()[parcel.readInt()]
     )
 
@@ -36,7 +36,7 @@ data class DailyBoard(
         dest.writeInt(disLike)
         dest.writeInt(like)
         dest.writeString(boardUID)
-        dest.writeString(favourability)
+        dest.writeString(favourability.name)
         dest.writeInt(viewType.ordinal)
     }
 
