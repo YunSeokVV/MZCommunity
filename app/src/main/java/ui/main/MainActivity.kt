@@ -15,6 +15,7 @@ import ui.mypage.MyPageFragment
 import ui.mypage.MyPageFragment.loginUserListener
 import ui.posting.dailyboard.PostingFragment
 import ui.board.versusboard.VersusFragment
+import ui.main.model.Screen
 
 
 @AndroidEntryPoint
@@ -39,7 +40,7 @@ class MainActivity : AppCompatActivity(), loginUserListener {
         supportFragmentManager.beginTransaction()
             .replace(
                 R.id.fragment_container,
-                setFragment(0)
+                setFragment(Screen.DAILY_BOARD)
             ).commit()
 
 
@@ -49,7 +50,7 @@ class MainActivity : AppCompatActivity(), loginUserListener {
                     supportFragmentManager.beginTransaction()
                         .replace(
                             R.id.fragment_container,
-                            setFragment(0)
+                            setFragment(Screen.DAILY_BOARD)
                         )
                         .commit()
                     true
@@ -57,7 +58,7 @@ class MainActivity : AppCompatActivity(), loginUserListener {
 
                 R.id.fragment_versus -> {
                     supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragment_container, setFragment(1))
+                        .replace(R.id.fragment_container, setFragment(Screen.VERSUS_BOARD))
                         .commit()
                     true
                 }
@@ -70,7 +71,7 @@ class MainActivity : AppCompatActivity(), loginUserListener {
 
                 R.id.fragment_my_page -> {
                     supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragment_container, setFragment(2))
+                        .replace(R.id.fragment_container, setFragment(Screen.MY_PAGE))
                         .commit()
                     true
                 }
@@ -85,7 +86,7 @@ class MainActivity : AppCompatActivity(), loginUserListener {
     fun showBoardFragmnet() {
         binding.bottomNavigationView.setSelectedItemId(R.id.fragment_board)
         supportFragmentManager.beginTransaction()
-            .replace(R.id.fragment_container, setFragment(0))
+            .replace(R.id.fragment_container, setFragment(Screen.DAILY_BOARD))
             .commit()
     }
 
@@ -94,31 +95,34 @@ class MainActivity : AppCompatActivity(), loginUserListener {
     }
 
     // todo : emum 적용할 것. 각 screen 에 따라서 보여줘야 할 화면이 달라짐
-    private fun setFragment(screen : Int) : Fragment {
+    private fun setFragment(screen: Screen): Fragment {
         val bundle = Bundle()
         bundle.putSerializable("loginedUserProfile", loginedUserProfile)
 
-        // 일상 게시글
-        if(screen == 0){
-            bundle.putParcelableArrayList("dailyBoards", dailyBoards as ArrayList<out Parcelable?>?)
-            val dailyBoardFragment = DailyBoardFragment()
-            dailyBoardFragment.arguments = bundle
-            return dailyBoardFragment
+        when (screen) {
+            Screen.DAILY_BOARD -> {
+                bundle.putParcelableArrayList(
+                    "dailyBoards",
+                    dailyBoards as ArrayList<out Parcelable?>?
+                )
+                val dailyBoardFragment = DailyBoardFragment()
+                dailyBoardFragment.arguments = bundle
+                return dailyBoardFragment
+            }
+
+            Screen.VERSUS_BOARD -> {
+                val versusFragment = VersusFragment()
+                versusFragment.arguments = bundle
+                return versusFragment
+            }
+
+            Screen.MY_PAGE -> {
+                val mypageFragemnt = MyPageFragment()
+                mypageFragemnt.arguments = bundle
+                return mypageFragemnt
+            }
+
         }
 
-        // 밸런스 게시판
-        if(screen == 1){
-            val versusFragment = VersusFragment()
-            versusFragment.arguments = bundle
-            return versusFragment
-        }
-
-        // 마이페이지
-        if(screen == 2){
-            val mypageFragemnt = MyPageFragment()
-            mypageFragemnt.arguments = bundle
-            return mypageFragemnt
-        }
-        return Fragment()
     }
 }

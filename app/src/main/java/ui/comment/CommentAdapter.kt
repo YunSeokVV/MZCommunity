@@ -19,7 +19,7 @@ import ui.LoadingViewHolder
 private const val ITEM = 0
 private const val LOADING = 1
 
-class DailyBoardCommentAdapter(
+class CommentAdapter(
     private val popstReplyListener: PostReplyOnClickListener,
     private val showCommentListener: ShowCommentListener,
 ) :

@@ -16,11 +16,12 @@ import com.example.mzcommunity.R
 import com.example.mzcommunity.databinding.FragmentVersusBinding
 import dagger.hilt.android.AndroidEntryPoint
 import data.model.LoginedUser
+import ui.base.BaseFragment
 import ui.posting.versusboard.PostingVersusActivity
 import ui.comment.BottomSheetFragment
 
 @AndroidEntryPoint
-class VersusFragment() : Fragment() {
+class VersusFragment() : BaseFragment() {
     private lateinit var binding: FragmentVersusBinding
     private val viewModel by viewModels<VersusFragmnetViewModel>()
     override fun onCreateView(
@@ -106,15 +107,7 @@ class VersusFragment() : Fragment() {
 
         binding.comment.setOnClickListener {
 
-            var bundle = Bundle()
-            bundle.putString("boardUID", viewModel.boardUID)
-            bundle.putString("collectionName", "dailyBoardComment")
-            bundle.putString("nestedCommentName", "dailyBoardNestedComment")
-            bundle.putString("commentName", "dailyBoardComment")
-            bundle.putSerializable("loginedUserProfile", getUserBundle())
-            val bottomSheetFragment = BottomSheetFragment()
-            bottomSheetFragment.arguments = bundle
-            bottomSheetFragment.show(childFragmentManager, bottomSheetFragment.tag)
+            showComment(viewModel.boardUID)
         }
 
         viewModel.voteComplte.observe(requireActivity(), Observer {
@@ -229,13 +222,16 @@ class VersusFragment() : Fragment() {
 
     }
 
-    private fun setPercent(){
-        val firstPercent : Int = viewModel.calculatePercent(binding.choosenChoice1Count.text.toString().toInt(), binding.choosenChoice2Count.text.toString().toInt())
-        val secondPercent : Int = viewModel.calculatePercent(binding.choosenChoice2Count.text.toString().toInt(), binding.choosenChoice1Count.text.toString().toInt())
+    private fun setPercent() {
+        val firstPercent: Int = viewModel.calculatePercent(
+            binding.choosenChoice1Count.text.toString().toInt(),
+            binding.choosenChoice2Count.text.toString().toInt()
+        )
+        val secondPercent: Int = viewModel.calculatePercent(
+            binding.choosenChoice2Count.text.toString().toInt(),
+            binding.choosenChoice1Count.text.toString().toInt()
+        )
         binding.choosenChoice1Percent.text = "$firstPercent%"
         binding.choosenChoice2Percent.text = "$secondPercent%"
     }
-
-    private fun getUserBundle(): LoginedUser =
-        arguments?.getSerializable("loginedUserProfile") as LoginedUser
 }
