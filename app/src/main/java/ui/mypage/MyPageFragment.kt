@@ -16,12 +16,13 @@ import com.example.mzcommunity.databinding.FragmentMyPageBinding
 import com.orhanobut.logger.Logger
 import dagger.hilt.android.AndroidEntryPoint
 import data.model.LoginedUser
+import ui.base.BaseFragment
 import ui.loading.LoadingDialogFragment
 import util.Util
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class MyPageFragment @Inject constructor() : Fragment() {
+class MyPageFragment @Inject constructor() : BaseFragment() {
     private val loadingDialogFragment = LoadingDialogFragment()
 
     interface loginUserListener {
@@ -98,14 +99,12 @@ class MyPageFragment @Inject constructor() : Fragment() {
             loadingDialogFragment.dismiss()
         })
 
-        Glide.with(requireContext()).load(Uri.parse(getUserBundle().profileUri))
+        Glide.with(requireContext())
+            .load(Uri.parse(arguments?.let { getUserBundle(it).profileUri }))
             .into(binding.userProfileImg)
-        binding.userName.setText(getUserBundle().nickName)
+        binding.userName.setText(arguments?.let { getUserBundle(it).nickName })
 
         return binding.root
     }
-
-    private fun getUserBundle(): LoginedUser =
-        arguments?.getSerializable("loginedUserProfile") as LoginedUser
 
 }

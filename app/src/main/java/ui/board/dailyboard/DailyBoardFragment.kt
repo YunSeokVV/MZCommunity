@@ -12,12 +12,13 @@ import com.example.mzcommunity.databinding.FragmentBoardBinding
 import dagger.hilt.android.AndroidEntryPoint
 import data.model.DailyBoard
 import data.model.LoginedUser
+import ui.base.BaseFragment
 import ui.comment.BottomSheetFragment
 
 
 @AndroidEntryPoint
 class DailyBoardFragment(
-) : Fragment() {
+) : BaseFragment() {
     private val viewModel by viewModels<DailyBoardFramgnetViewModel>()
     private lateinit var binding: FragmentBoardBinding
     private var dailyBoardAdapter: DailyBoardAdapter = DailyBoardAdapter(
@@ -45,15 +46,7 @@ class DailyBoardFragment(
         },
         object : DailyBoardAdapter.ShowComment {
             override fun showComment(dailyBoard: DailyBoard) {
-                var bundle = Bundle()
-                bundle.putString("boardUID", dailyBoard.boardUID)
-                bundle.putString("collectionName", "dailyBoardComment")
-                bundle.putString("nestedCommentName", "dailyBoardNestedComment")
-                bundle.putString("commentName", "dailyBoardComment")
-                bundle.putSerializable("loginedUserProfile", getUserBundle())
-                val bottomSheetFragment = BottomSheetFragment()
-                bottomSheetFragment.arguments = bundle
-                bottomSheetFragment.show(childFragmentManager, bottomSheetFragment.tag)
+                showComment(dailyBoard.boardUID)
             }
 
         })
@@ -107,9 +100,6 @@ class DailyBoardFragment(
         if (dailyBoardAdapter.isRecentVideoInitalized())
             dailyBoardAdapter.resumeVideoOnResume()
     }
-
-    private fun getUserBundle(): LoginedUser =
-        arguments?.getSerializable("loginedUserProfile") as LoginedUser
 
     private fun getDailyBoard(): List<DailyBoard> {
 
