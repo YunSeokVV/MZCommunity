@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewbinding.ViewBinding
 import com.bumptech.glide.Glide
 import com.example.mzcommunity.R
 import com.example.mzcommunity.databinding.DailyBoardImageItemListBinding
@@ -21,6 +22,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.orhanobut.logger.Logger
 import data.model.DailyBoard
 import data.model.DailyBoardViewType
+import data.model.UserFavourability
 
 
 class DailyBoardAdapter(
@@ -72,8 +74,10 @@ class DailyBoardAdapter(
 
                 var currentViewHolder =
                     recyclerView.findViewHolderForAdapterPosition(layoutManager.findLastVisibleItemPosition())
+
+
                 // 스크롤해서 ui에 보여진 마지막 아이템이 동영상 타입이라면 재생시킨다.
-                if (currentViewHolder != null && currentViewHolder.itemViewType.equals(
+                if (currentViewHolder != null && currentViewHolder.itemViewType == DailyBoardViewType.fromValue(
                         DailyBoardViewType.VIDEO
                     )
                 ) {
@@ -91,307 +95,25 @@ class DailyBoardAdapter(
 
     inner class DailyBoardImageItemViewHolder(
         private val binding: DailyBoardImageItemListBinding
-    ) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: DailyBoard) {
-            binding.writeName.text = item.writerNickname
-            binding.postingContents.text = item.boardContents
+    ) : DailyBoardBaseAdapter(binding, currentList) {
 
-            if (item.favourability.equals("like")) {
-                setThumbNailColor(true, binding.likeImg)
-                setThumbNailColor(false, binding.disLikeImg)
-            } else if (item.favourability.equals("disLike")) {
-                setThumbNailColor(false, binding.likeImg)
-                setThumbNailColor(true, binding.disLikeImg)
-            } else if (item.favourability.equals("usual")) {
-                setThumbNailColor(false, binding.likeImg)
-                setThumbNailColor(false, binding.disLikeImg)
-            }
-
-            binding.likeCount.text = item.like.toString()
-            binding.disLikeCount.text = item.disLike.toString()
-            binding.dailyImgViewPager.adapter =
-                DailyViewPagerAdapter(
-                    currentList[adapterPosition].files,
-                    currentList[adapterPosition].files.size,
-                )
-            TabLayoutMediator(
-                binding.intoTabLayout,
-                binding.dailyImgViewPager
-            ) { tab, position -> }.attach()
-
-            if (currentList[adapterPosition].files.size == 1) {
-                binding.intoTabLayout.visibility = View.GONE
-            } else {
-                binding.intoTabLayout.visibility = View.VISIBLE
-            }
-
-            Glide.with(binding.root.context).load(Uri.parse(item.writerProfileUri))
-                .into(binding.userProfileImg)
-        }
+        fun getBind(): DailyBoardImageItemListBinding = binding
 
         init {
-            binding.comment.setOnClickListener {
-                val dailyBoard = currentList.get(adapterPosition)
-                showComment.showComment(dailyBoard)
-            }
+            bindClickListener(binding, showComment, increaseLike, increaseDisLike)
 
-            binding.likeImg.setOnClickListener {
-                val dailyBoard = currentList.get(adapterPosition)
-                increaseLike.increaseLike(dailyBoard, adapterPosition)
-
-                // 좋아요 버튼의 색깔을 파란색으로 변경
-                if (dailyBoard.favourability.equals("usual")) {
-                    setThumbNailColor(true, binding.likeImg)
-
-                    // 좋아요 +1
-                    binding.likeCount.text =
-                        setFavourCount((binding.likeCount.text.toString()).toInt(), true).toString()
-
-                    // 사용자가 이전에 싫어요를 눌렀다가 좋아요를 누른 경우
-                } else if (dailyBoard.favourability.equals("disLike")) {
-                    setThumbNailColor(true, binding.likeImg)
-                    setThumbNailColor(false, binding.disLikeImg)
-
-                    // 좋아요 +1, 싫어요 -1
-                    binding.likeCount.text =
-                        setFavourCount((binding.likeCount.text.toString()).toInt(), true).toString()
-                    binding.disLikeCount.text =
-                        setFavourCount(
-                            (binding.disLikeCount.text.toString()).toInt(),
-                            false
-                        ).toString()
-
-                    // 사용자가 이전에 좋아요를 눌렀다가 다시 한번 좋아요를 누르는 경우
-                } else if (dailyBoard.favourability.equals("like")) {
-                    setThumbNailColor(false, binding.likeImg)
-
-                    // 좋아요 -1
-                    binding.likeCount.text =
-                        setFavourCount(
-                            (binding.likeCount.text.toString()).toInt(),
-                            false
-                        ).toString()
-                }
-
-            }
-
-            binding.disLikeImg.setOnClickListener {
-                val dailyBoard = currentList.get(adapterPosition)
-                increaseDisLike.increaseDisLike(dailyBoard, adapterPosition)
-
-                // 싫어요 버튼의 색깔을 파란색으로 변경
-                if (dailyBoard.favourability.equals("usual")) {
-                    setThumbNailColor(true, binding.disLikeImg)
-
-                    // 싫어요 +1
-                    binding.disLikeCount.text =
-                        setFavourCount(
-                            (binding.disLikeCount.text.toString()).toInt(),
-                            true
-                        ).toString()
-
-                    // 사용자가 이전에 싫어요를 눌렀다가 다시 싫어요를 누른 경우
-                } else if (dailyBoard.favourability.equals("disLike")) {
-                    setThumbNailColor(false, binding.disLikeImg)
-
-                    // 싫어요 -1
-                    binding.disLikeCount.text =
-                        setFavourCount(
-                            (binding.disLikeCount.text.toString()).toInt(),
-                            false
-                        ).toString()
-
-                    // 사용자가 이전에 좋아요를 눌렀다가 싫어요를 누르는 경우
-                } else if (dailyBoard.favourability.equals("like")) {
-                    setThumbNailColor(false, binding.likeImg)
-                    setThumbNailColor(true, binding.disLikeImg)
-
-                    // 좋아요 -1, 싫어요 +1
-                    binding.likeCount.text =
-                        setFavourCount(
-                            (binding.likeCount.text.toString()).toInt(),
-                            false
-                        ).toString()
-                    binding.disLikeCount.text =
-                        setFavourCount(
-                            (binding.disLikeCount.text.toString()).toInt(),
-                            true
-                        ).toString()
-                }
-
-            }
-
-        }
-
-        fun setFavourCount(originalCount: Int, increase: Boolean): Int {
-            var result = originalCount
-            if (increase) {
-                result += 1
-            } else if (!increase) {
-                result -= 1
-            }
-
-            if (result == 0)
-                return 0
-
-            return result
-        }
-
-        fun setThumbNailColor(isActive: Boolean, thumbNail: View) {
-            var color = ContextCompat.getColor(binding.root.context, R.color.theme)
-            if (isActive) {
-                color = ContextCompat.getColor(binding.root.context, R.color.theme)
-            } else {
-                color = ContextCompat.getColor(binding.root.context, R.color.black)
-            }
-            val colorStateList = ColorStateList.valueOf(color)
-            thumbNail.setBackgroundTintList(colorStateList)
         }
 
     }
 
     inner class DailyBoardTextItemViewHolder(
         private val binding: DailyBoardTextItemListBinding
-    ) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: DailyBoard) {
-            binding.writeName.text = item.writerNickname
-            binding.postingContents.text = item.boardContents
+    ) : DailyBoardBaseAdapter(binding, currentList) {
 
-            if (item.favourability.equals("like")) {
-                setThumbNailColor(true, binding.likeImg)
-                setThumbNailColor(false, binding.disLikeImg)
-            } else if (item.favourability.equals("disLike")) {
-                setThumbNailColor(false, binding.likeImg)
-                setThumbNailColor(true, binding.disLikeImg)
-            } else if (item.favourability.equals("usual")) {
-                setThumbNailColor(false, binding.likeImg)
-                setThumbNailColor(false, binding.disLikeImg)
-            }
-
-            binding.likeCount.text = item.like.toString()
-            binding.disLikeCount.text = item.disLike.toString()
-
-            Glide.with(binding.root.context).load(Uri.parse(item.writerProfileUri))
-                .into(binding.userProfileImg)
-        }
+        fun getBind(): DailyBoardTextItemListBinding = binding
 
         init {
-            binding.comment.setOnClickListener {
-                val dailyBoard = currentList.get(adapterPosition)
-                showComment.showComment(dailyBoard)
-            }
-
-            binding.likeImg.setOnClickListener {
-                val dailyBoard = currentList.get(adapterPosition)
-                increaseLike.increaseLike(dailyBoard, adapterPosition)
-
-                // 좋아요 버튼의 색깔을 파란색으로 변경
-                if (dailyBoard.favourability == "usual") {
-                    setThumbNailColor(true, binding.likeImg)
-
-                    // 좋아요 +1
-                    binding.likeCount.text =
-                        setFavourCount((binding.likeCount.text.toString()).toInt(), true).toString()
-
-                    // 사용자가 이전에 싫어요를 눌렀다가 좋아요를 누른 경우
-                } else if (dailyBoard.favourability == "disLike") {
-                    setThumbNailColor(true, binding.likeImg)
-                    setThumbNailColor(false, binding.disLikeImg)
-
-                    // 좋아요 +1, 싫어요 -1
-                    binding.likeCount.text =
-                        setFavourCount((binding.likeCount.text.toString()).toInt(), true).toString()
-                    binding.disLikeCount.text =
-                        setFavourCount(
-                            (binding.disLikeCount.text.toString()).toInt(),
-                            false
-                        ).toString()
-
-                    // 사용자가 이전에 좋아요를 눌렀다가 다시 한번 좋아요를 누르는 경우
-                } else if (dailyBoard.favourability == "like") {
-                    setThumbNailColor(false, binding.likeImg)
-
-                    // 좋아요 -1
-                    binding.likeCount.text =
-                        setFavourCount(
-                            (binding.likeCount.text.toString()).toInt(),
-                            false
-                        ).toString()
-                }
-
-            }
-
-            binding.disLikeImg.setOnClickListener {
-                val dailyBoard = currentList.get(adapterPosition)
-                increaseDisLike.increaseDisLike(dailyBoard, adapterPosition)
-
-                // 싫어요 버튼의 색깔을 파란색으로 변경
-                if (dailyBoard.favourability.equals("usual")) {
-                    setThumbNailColor(true, binding.disLikeImg)
-
-                    // 싫어요 +1
-                    binding.disLikeCount.text =
-                        setFavourCount(
-                            (binding.disLikeCount.text.toString()).toInt(),
-                            true
-                        ).toString()
-
-                    // 사용자가 이전에 싫어요를 눌렀다가 다시 싫어요를 누른 경우
-                } else if (dailyBoard.favourability.equals("disLike")) {
-                    setThumbNailColor(false, binding.disLikeImg)
-
-                    // 싫어요 -1
-                    binding.disLikeCount.text =
-                        setFavourCount(
-                            (binding.disLikeCount.text.toString()).toInt(),
-                            false
-                        ).toString()
-
-                    // 사용자가 이전에 좋아요를 눌렀다가 싫어요를 누르는 경우
-                } else if (dailyBoard.favourability.equals("like")) {
-                    setThumbNailColor(false, binding.likeImg)
-                    setThumbNailColor(true, binding.disLikeImg)
-
-                    // 좋아요 -1, 싫어요 +1
-                    binding.likeCount.text =
-                        setFavourCount(
-                            (binding.likeCount.text.toString()).toInt(),
-                            false
-                        ).toString()
-                    binding.disLikeCount.text =
-                        setFavourCount(
-                            (binding.disLikeCount.text.toString()).toInt(),
-                            true
-                        ).toString()
-                }
-
-            }
-
-        }
-
-        fun setFavourCount(originalCount: Int, increase: Boolean): Int {
-            var result = originalCount
-            if (increase) {
-                result += 1
-            } else if (!increase) {
-                result -= 1
-            }
-
-            if (result == 0)
-                return 0
-
-            return result
-        }
-
-        fun setThumbNailColor(isActive: Boolean, thumbNail: View) {
-            var color = ContextCompat.getColor(binding.root.context, R.color.theme)
-            if (isActive) {
-                color = ContextCompat.getColor(binding.root.context, R.color.theme)
-            } else {
-                color = ContextCompat.getColor(binding.root.context, R.color.black)
-            }
-            val colorStateList = ColorStateList.valueOf(color)
-            thumbNail.backgroundTintList = colorStateList
+            bindClickListener(binding, showComment, increaseLike, increaseDisLike)
         }
 
     }
@@ -399,7 +121,9 @@ class DailyBoardAdapter(
 
     inner class DailyBoardVideoItemViewHolder(
         private val binding: DailyBoardVideoItemListBinding
-    ) : RecyclerView.ViewHolder(binding.root) {
+    ) : DailyBoardBaseAdapter(binding, currentList) {
+
+        fun getBind(): DailyBoardVideoItemListBinding = binding
 
         fun pauseVideo() {
             binding.playerView.player?.pause()
@@ -433,152 +157,8 @@ class DailyBoardAdapter(
             }
         }
 
-        fun bind(item: DailyBoard, position: Int, holder: DailyBoardVideoItemViewHolder) {
-            binding.writeName.text = item.writerNickname
-            binding.postingContents.text = item.boardContents
-
-            if (item.favourability.equals("like")) {
-                setThumbNailColor(true, binding.likeImg)
-                setThumbNailColor(false, binding.disLikeImg)
-            } else if (item.favourability.equals("disLike")) {
-                setThumbNailColor(false, binding.likeImg)
-                setThumbNailColor(true, binding.disLikeImg)
-            } else if (item.favourability.equals("usual")) {
-                setThumbNailColor(false, binding.likeImg)
-                setThumbNailColor(false, binding.disLikeImg)
-            }
-
-            binding.likeCount.text = item.like.toString()
-            binding.disLikeCount.text = item.disLike.toString()
-
-            Glide.with(binding.root.context).load(Uri.parse(item.writerProfileUri))
-                .into(binding.userProfileImg)
-
-
-            if (position == 0) {
-                processVideo(holder)
-            }
-        }
-
         init {
-            binding.comment.setOnClickListener {
-                val dailyBoard = currentList.get(adapterPosition)
-                showComment.showComment(dailyBoard)
-            }
-
-            binding.likeImg.setOnClickListener {
-                val dailyBoard = currentList.get(adapterPosition)
-                increaseLike.increaseLike(dailyBoard, adapterPosition)
-                releaseVideo()
-
-                // 좋아요 버튼의 색깔을 파란색으로 변경
-                if (dailyBoard.favourability.equals("usual")) {
-                    setThumbNailColor(true, binding.likeImg)
-
-                    // 좋아요 +1
-                    binding.likeCount.text =
-                        setFavourCount((binding.likeCount.text.toString()).toInt(), true).toString()
-
-                    // 사용자가 이전에 싫어요를 눌렀다가 좋아요를 누른 경우
-                } else if (dailyBoard.favourability.equals("disLike")) {
-                    setThumbNailColor(true, binding.likeImg)
-                    setThumbNailColor(false, binding.disLikeImg)
-
-                    // 좋아요 +1, 싫어요 -1
-                    binding.likeCount.text =
-                        setFavourCount((binding.likeCount.text.toString()).toInt(), true).toString()
-                    binding.disLikeCount.text =
-                        setFavourCount(
-                            (binding.disLikeCount.text.toString()).toInt(),
-                            false
-                        ).toString()
-
-                    // 사용자가 이전에 좋아요를 눌렀다가 다시 한번 좋아요를 누르는 경우
-                } else if (dailyBoard.favourability.equals("like")) {
-                    setThumbNailColor(false, binding.likeImg)
-
-                    // 좋아요 -1
-                    binding.likeCount.text =
-                        setFavourCount(
-                            (binding.likeCount.text.toString()).toInt(),
-                            false
-                        ).toString()
-                }
-
-            }
-
-            binding.disLikeImg.setOnClickListener {
-                val dailyBoard = currentList.get(adapterPosition)
-                increaseDisLike.increaseDisLike(dailyBoard, adapterPosition)
-                releaseVideo()
-
-                // 싫어요 버튼의 색깔을 파란색으로 변경
-                if (dailyBoard.favourability.equals("usual")) {
-                    setThumbNailColor(true, binding.disLikeImg)
-
-                    // 싫어요 +1
-                    binding.disLikeCount.text =
-                        setFavourCount(
-                            (binding.disLikeCount.text.toString()).toInt(),
-                            true
-                        ).toString()
-
-                    // 사용자가 이전에 싫어요를 눌렀다가 다시 싫어요를 누른 경우
-                } else if (dailyBoard.favourability.equals("disLike")) {
-                    setThumbNailColor(false, binding.disLikeImg)
-
-                    // 싫어요 -1
-                    binding.disLikeCount.text =
-                        setFavourCount(
-                            (binding.disLikeCount.text.toString()).toInt(),
-                            false
-                        ).toString()
-
-                    // 사용자가 이전에 좋아요를 눌렀다가 싫어요를 누르는 경우
-                } else if (dailyBoard.favourability.equals("like")) {
-                    setThumbNailColor(false, binding.likeImg)
-                    setThumbNailColor(true, binding.disLikeImg)
-
-                    // 좋아요 -1, 싫어요 +1
-                    binding.likeCount.text =
-                        setFavourCount(
-                            (binding.likeCount.text.toString()).toInt(),
-                            false
-                        ).toString()
-                    binding.disLikeCount.text =
-                        setFavourCount(
-                            (binding.disLikeCount.text.toString()).toInt(),
-                            true
-                        ).toString()
-                }
-
-            }
-
-        }
-
-        fun setFavourCount(originalCount: Int, increase: Boolean): Int {
-            var result = originalCount
-            if (increase) {
-                result += 1
-            } else if (!increase) {
-                result -= 1
-            }
-
-            if (result == 0)
-                return 0
-
-            return result
-        }
-
-        fun setThumbNailColor(isActive: Boolean, thumbNail: View) {
-            var color = ContextCompat.getColor(binding.root.context, R.color.theme)
-            if (isActive) {
-                color = ContextCompat.getColor(binding.root.context, R.color.theme)
-            } else {
-                color = ContextCompat.getColor(binding.root.context, R.color.black)
-            }
-            val colorStateList = ColorStateList.valueOf(color)
-            thumbNail.setBackgroundTintList(colorStateList)
+            bindClickListener(binding, showComment, increaseLike, increaseDisLike)
         }
 
     }
@@ -619,53 +199,79 @@ class DailyBoardAdapter(
                 return DailyBoardVideoItemViewHolder(binding)
             }
 
-            null -> throw IllegalArgumentException("Invalid view type")
+            else -> {
+                val binding =
+                    DailyBoardImageItemListBinding.inflate(
+                        LayoutInflater.from(parent.context),
+                        parent,
+                        false
+                    )
+                return DailyBoardImageItemViewHolder(binding)
+            }
         }
-//        if (viewType.equals(DailyBoardViewType.TEXT)) {
-//            val binding =
-//                DailyBoardTextItemListBinding.inflate(
-//                    LayoutInflater.from(parent.context),
-//                    parent,
-//                    false
-//                )
-//            return DailyBoardTextItemViewHolder(binding)
-//        } else if (viewType.equals(DailyBoardViewType.IMAGE)) {
-//            val binding =
-//                DailyBoardImageItemListBinding.inflate(
-//                    LayoutInflater.from(parent.context),
-//                    parent,
-//                    false
-//                )
-//            return DailyBoardImageItemViewHolder(binding)
-//
-//            // DailyBoardViewType.VIDEO
-//        } else {
-//            val binding =
-//                DailyBoardVideoItemListBinding.inflate(
-//                    LayoutInflater.from(parent.context),
-//                    parent,
-//                    false
-//                )
-//            return DailyBoardVideoItemViewHolder(binding)
-//        }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (currentList[position].viewType) {
             DailyBoardViewType.IMAGE -> {
-                (holder as DailyBoardImageItemViewHolder).bind(currentList[position])
+                if (holder is DailyBoardImageItemViewHolder) {
+                    val binding = holder.getBind()
+                    holder.bindView(
+                        binding,
+                        currentList[position],
+                        binding.writeName,
+                        binding.postingContents,
+                        binding.likeImg,
+                        binding.disLikeImg,
+                        binding.likeCount,
+                        binding.disLikeCount,
+                        binding.userProfileImg
+                    )
+
+                    binding.dailyImgViewPager.adapter =
+                        DailyViewPagerAdapter(
+                            currentList[position].files,
+                            currentList[position].files.size,
+                        )
+
+                    TabLayoutMediator(
+                        binding.intoTabLayout,
+                        binding.dailyImgViewPager
+                    ) { tab, position -> }.attach()
+
+                    if (currentList[position].files.size == 1) {
+                        binding.intoTabLayout.visibility = View.GONE
+                    } else {
+                        binding.intoTabLayout.visibility = View.VISIBLE
+                    }
+
+                }
+
             }
 
             DailyBoardViewType.TEXT -> {
-                (holder as DailyBoardTextItemViewHolder).bind(currentList[position])
+                if (holder is DailyBoardTextItemViewHolder) {
+                    val binding = holder.getBind()
+                    holder.bindView(
+                        binding,
+                        currentList[position],
+                        binding.writeName,
+                        binding.postingContents,
+                        binding.likeImg,
+                        binding.disLikeImg,
+                        binding.likeCount,
+                        binding.disLikeCount,
+                        binding.userProfileImg
+                    )
+                }
             }
 
             DailyBoardViewType.VIDEO -> {
-                (holder as DailyBoardVideoItemViewHolder).bind(
-                    currentList[position],
-                    position,
-                    holder
-                )
+                if (holder is DailyBoardVideoItemViewHolder) {
+                    val viedeoHolder =
+                        holder.bindView(holder.getBind(), currentList[position], holder)
+                    viedeoHolder.processVideo(viedeoHolder)
+                }
             }
         }
 
@@ -677,7 +283,7 @@ class DailyBoardAdapter(
 
     fun releaseVideo() {
         currentList.forEach { dailyBoard ->
-            if (dailyBoard.viewType.equals(2)) {
+            if (dailyBoard.viewType == DailyBoardViewType.VIDEO) {
                 recentVideoItemViewHolder?.releaseVideo()
             }
         }
@@ -690,4 +296,5 @@ class DailyBoardAdapter(
             }
         }
     }
+
 }
