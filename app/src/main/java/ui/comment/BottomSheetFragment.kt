@@ -33,7 +33,7 @@ import util.Util
 class BottomSheetFragment() : BottomSheetDialogFragment() {
     private lateinit var binding: FragmentBottomSheetBinding
     private val viewModel by viewModels<BottomSheetFragmentViewModel>()
-    private lateinit var adapter: DailyBoardCommentAdapter
+    private lateinit var adapter: CommentAdapter
     private lateinit var nestedRecyclerView: RecyclerView
     private val loadingDialogFragment = LoadingDialogFragment()
     override fun onCreateView(
@@ -103,15 +103,15 @@ class BottomSheetFragment() : BottomSheetDialogFragment() {
         binding.comment.layoutManager =
             LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false)
 
-        adapter = DailyBoardCommentAdapter(
-            object : DailyBoardCommentAdapter.PostReplyOnClickListener {
+        adapter = CommentAdapter(
+            object : CommentAdapter.PostReplyOnClickListener {
                 override fun postReplyClick(comment: Comment, recyclerView: RecyclerView) {
                     nestedRecyclerView = recyclerView
                     setTagedUser(comment)
                 }
 
             },
-            object : DailyBoardCommentAdapter.ShowCommentListener {
+            object : CommentAdapter.ShowCommentListener {
                 override fun showNestedComment(comment: Comment, recyclerView: RecyclerView) {
                     nestedRecyclerView = recyclerView
                     val parentUID = comment.commentUID
@@ -120,16 +120,16 @@ class BottomSheetFragment() : BottomSheetDialogFragment() {
                         requireActivity(),
                         Observer { nestedComments ->
                             adapter.setNestedCommentsList(nestedComments)
-                            val dailyBoardNestedCommentAdapter = DailyBoardNestedCommentAdapter(
+                            val nestedCommentAdapter = NestedCommentAdapter(
                                 adapter.nestedCommentList,
                                 object :
-                                    DailyBoardNestedCommentAdapter.PostReplyOnClickListener {
+                                    NestedCommentAdapter.PostReplyOnClickListener {
                                     override fun postReplyClick(comment: Comment) {
                                         setTagedUser(comment, parentUID)
                                     }
 
                                 })
-                            nestedRecyclerView.adapter = dailyBoardNestedCommentAdapter
+                            nestedRecyclerView.adapter = nestedCommentAdapter
                         })
                 }
 

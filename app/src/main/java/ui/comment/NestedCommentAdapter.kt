@@ -8,8 +8,8 @@ import com.example.mzcommunity.databinding.DailyBoardCommentItemBinding
 import data.model.Comment
 
 
-class DailyBoardNestedCommentAdapter(private val neestedComments: List<Comment>, private val postReplyOnClickListener : PostReplyOnClickListener) :
-    RecyclerView.Adapter<DailyBoardNestedCommentAdapter.NestedCommentViewHolder>() {
+class NestedCommentAdapter(private val neestedComments: List<Comment>, private val postReplyOnClickListener : PostReplyOnClickListener) :
+    RecyclerView.Adapter<NestedCommentAdapter.NestedCommentViewHolder>() {
 
     interface PostReplyOnClickListener {
         fun postReplyClick(comment: Comment)
