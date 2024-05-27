@@ -2,13 +2,14 @@ package domain.dailyboard
 
 import data.model.Response
 import data.model.DailyBoard
+import data.model.DailyBoardViewType
 import data.model.File
 
 interface DailyBoardRepository {
     suspend fun postBoard(
         contents: String,
         uploadFileUri: List<File>,
-        viewType: Int
+        viewType: DailyBoardViewType
     ): Response<Boolean>
 
     suspend fun getRandomDailyBoards(): List<DailyBoard>

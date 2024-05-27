@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mzcommunity.R
 import com.example.mzcommunity.databinding.ActivityPostingMediaBinding
 import dagger.hilt.android.AndroidEntryPoint
+import data.model.DailyBoardViewType
 import data.model.File
 import ui.loading.LoadingDialogFragment
 
@@ -20,9 +21,7 @@ class PostingMediaActivity : AppCompatActivity() {
     private val viewModel: PostingMediaActivityViewModel by viewModels()
     private var choosenFiles = mutableListOf<File>()
     private val loadingDialogFragment = LoadingDialogFragment()
-
-    // 업로드할 내용의 타입을 지정. 0 텍스트, 1 사진, 2 동영상
-    private var viewType = 0
+    private var viewType : DailyBoardViewType = DailyBoardViewType.TEXT
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_posting_media)
@@ -61,7 +60,7 @@ class PostingMediaActivity : AppCompatActivity() {
             binding.boardContentesFull.visibility = View.VISIBLE
             binding.choosenPictureList.visibility = View.GONE
             binding.boardContentes.visibility = View.GONE
-            viewType = 0
+            viewType = DailyBoardViewType.TEXT
             return
         }
 
@@ -73,7 +72,7 @@ class PostingMediaActivity : AppCompatActivity() {
                 LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
             imageAdapter.setImages(uploadFileUri)
             choosenFiles.addAll(uploadFileUri)
-            viewType = 1
+            viewType = DailyBoardViewType.IMAGE
             return
         }
 
@@ -85,7 +84,7 @@ class PostingMediaActivity : AppCompatActivity() {
             binding.choosenVideo.setOnPreparedListener { mediaPlayer ->
                 mediaPlayer.start()
             }
-            viewType = 2
+            viewType = DailyBoardViewType.VIDEO
             val video = listOf<File>(File(uri))
             choosenFiles.addAll(video)
             return

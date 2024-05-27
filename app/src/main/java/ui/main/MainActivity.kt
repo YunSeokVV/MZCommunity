@@ -94,7 +94,6 @@ class MainActivity : AppCompatActivity(), loginUserListener {
         loginedUserProfile = loginedUser
     }
 
-    // todo : emum 적용할 것. 각 screen 에 따라서 보여줘야 할 화면이 달라짐
     private fun setFragment(screen: Screen): Fragment {
         val bundle = Bundle()
         bundle.putSerializable("loginedUserProfile", loginedUserProfile)

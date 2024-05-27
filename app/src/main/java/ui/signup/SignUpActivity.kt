@@ -24,7 +24,6 @@ class SignUpActivity : AppCompatActivity() {
     private val viewModel by viewModels<SignUpActivityViewModel>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_sign_up)
         val binding = ActivitySignUpBinding.inflate(layoutInflater)
         setContentView(binding.root)
         binding.signUpEmailBtn.setOnClickListener {
