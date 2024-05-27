@@ -13,7 +13,6 @@ import com.example.mzcommunity.databinding.ItemLoadingBinding
 import data.model.Comment
 
 import data.model.LoginedUser
-import ui.LoadingViewHolder
 
 
 private const val ITEM = 0
@@ -38,7 +37,13 @@ class CommentAdapter(
 
     fun addComment(loginedUser: LoginedUser, contents: String, parentUID: String) {
         val comment =
-            Comment(Uri.parse(loginedUser.profileUri), loginedUser.nickName, contents, parentUID, false)
+            Comment(
+                Uri.parse(loginedUser.profileUri),
+                loginedUser.nickName,
+                contents,
+                parentUID,
+                false
+            )
         comments.add(0, comment)
         notifyItemInserted(0)
     }
@@ -78,11 +83,8 @@ class CommentAdapter(
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        if (holder is DailyBoardCommentViewHolder) {
+        if (holder is DailyBoardCommentViewHolder)
             comments.get(position)?.let { holder.bind(it) }
-        } else if (holder is LoadingViewHolder) {
-            holder.showLoading(holder, position)
-        }
     }
 
     override fun getItemCount() = comments.size
@@ -119,9 +121,15 @@ class CommentAdapter(
         nestedCommentList = comments.toMutableList()
     }
 
-    fun addNestedCommentItem(loginedUser: LoginedUser, contents: String, parentUID: String){
+    fun addNestedCommentItem(loginedUser: LoginedUser, contents: String, parentUID: String) {
         val comment =
-            Comment(Uri.parse(loginedUser.profileUri), loginedUser.nickName, contents, parentUID, false)
+            Comment(
+                Uri.parse(loginedUser.profileUri),
+                loginedUser.nickName,
+                contents,
+                parentUID,
+                false
+            )
 
         nestedCommentList.add(comment)
     }
