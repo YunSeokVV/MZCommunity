@@ -1,3 +1,4 @@
+import java.util.Properties
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -6,9 +7,11 @@ plugins {
     id("dagger.hilt.android.plugin")
 
 }
+var properties = Properties()
+properties.load(project.rootProject.file("local.properties").inputStream())
+
 
 android {
-
     signingConfigs {
         create("release") {
             keyAlias = "key0"
@@ -28,6 +31,7 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField("String", "GOOGLE_WEB_CLIENT_ID", "${properties.getProperty("googleID")}")
     }
 
     buildTypes {
@@ -49,6 +53,7 @@ android {
 
     buildFeatures {
         viewBinding = true
+        buildConfig = true
     }
 }
 
@@ -59,8 +64,8 @@ dependencies {
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
 
     // roomDB
-    implementation ("androidx.room:room-runtime:2.5.2")
-    kapt ("androidx.room:room-compiler:2.5.2")
+    implementation("androidx.room:room-runtime:2.5.2")
+    kapt("androidx.room:room-compiler:2.5.2")
 
     //exoPlayer
     implementation("com.google.android.exoplayer:exoplayer-core:2.18.2")
