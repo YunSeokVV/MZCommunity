@@ -74,7 +74,7 @@ class VersusRepostiroyImpl @Inject constructor(
 
             val defaultProfile: String = Util.getUnknownProfileImage(appContext)
 
-            val nickName = writerDocu.getString("nickName") ?: "알 수 없는 사용자"
+            val nickName = writerDocu.getString("nickName") ?: appContext.getString(R.string.unknown_user)
             val profileURL = writerDocu.getString("profileURL") ?: defaultProfile
             val boardTitle = document.get("boardTitle") as? String ?: "주제"
             val opinion1 = document.get("opinion1") as? String ?: "의견1"

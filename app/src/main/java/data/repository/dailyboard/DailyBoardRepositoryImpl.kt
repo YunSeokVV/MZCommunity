@@ -84,7 +84,7 @@ class DailyBoardRepositoryImpl @Inject constructor(
 
                         val boardUID = document.id
                         val userNickName =
-                            userInfoSnapshot.getString("nickName") ?: "알 수 없는 사용자"
+                            userInfoSnapshot.getString("nickName") ?: appContext.getString(R.string.unknown_user)
                         val boardContents = dailyBoardCollection.boardContents
                         val like = dailyBoardCollection.like
                         val disLike = dailyBoardCollection.disLike
@@ -135,7 +135,7 @@ class DailyBoardRepositoryImpl @Inject constructor(
 
                             val boardUID = result.id
                             val userNickName =
-                                userInfoSnapshot.getString("nickName") ?: "알 수 없는 사용자"
+                                userInfoSnapshot.getString("nickName") ?: appContext.getString(R.string.unknown_user)
                             val boardContents = dailyBoardCollection.boardContents
                             val like = dailyBoardCollection.like
                             val disLike = dailyBoardCollection.disLike

@@ -38,7 +38,7 @@ class CommentAdapter(
     fun addComment(loginedUser: LoginedUser, contents: String, parentUID: String) {
         val comment =
             Comment(
-                Uri.parse(loginedUser.profileUri),
+                loginedUser.profileUri,
                 loginedUser.nickName,
                 contents,
                 parentUID,
@@ -95,7 +95,7 @@ class CommentAdapter(
         val nestedRecyclerView = binding.nestedCommentRecyler
 
         fun bind(item: Comment) {
-            Glide.with(binding.root.context).load(item.witerUri).into(binding.userProfileImg)
+            Glide.with(binding.root.context).load(Uri.parse(item.witerUri)).into(binding.userProfileImg)
             binding.writeName.setText(item.writerName)
             binding.postingContents.setText(item.contents)
             binding.selectReply.setOnClickListener {
@@ -124,7 +124,7 @@ class CommentAdapter(
     fun addNestedCommentItem(loginedUser: LoginedUser, contents: String, parentUID: String) {
         val comment =
             Comment(
-                Uri.parse(loginedUser.profileUri),
+                loginedUser.profileUri,
                 loginedUser.nickName,
                 contents,
                 parentUID,

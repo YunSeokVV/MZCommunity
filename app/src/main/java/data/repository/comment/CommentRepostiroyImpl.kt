@@ -111,14 +111,13 @@ class CommentRepositoryImpl @Inject constructor(
                     .whereEqualTo("parentUID", parentUID).get().addOnSuccessListener { documents ->
                         documents.forEach {
                             runBlocking {
-                                val defaultProfile: String = appContext.getDrawable(R.drawable.user_profile2).toString()
+                                val defaultProfile: String = Util.getUnknownProfileImage(appContext)
                                 val userDoc = fireStore.collection("MZUsers")
                                     .document(it.get("writerUID").toString()).get().await()
-                                val nickName = userDoc.getString("nickName") ?: "알 수 없는 사용자"
-
+                                val nickName = userDoc.getString("nickName") ?: appContext.getString(R.string.unknown_user)
                                 val profileURL = userDoc.getString("profileURL") ?: defaultProfile
                                 val comment = Comment(
-                                    Uri.parse(profileURL),
+                                    profileURL,
                                     nickName,
                                     it.get("commentContents").toString(),
                                     it.id,
@@ -161,7 +160,7 @@ class CommentRepositoryImpl @Inject constructor(
                     val profileURL = userDoc.getString("profileURL") ?: defaultProfile
                     val nickName = userDoc.getString("nickName") ?: appContext.getString(R.string.unknown_user)
                     val comment = Comment(
-                        Uri.parse(profileURL),
+                        profileURL,
                         nickName,
                         it.get("commentContents").toString(),
                         it.id,
@@ -194,9 +193,9 @@ class CommentRepositoryImpl @Inject constructor(
                                     .document(it.get("writerUID").toString()).get().await()
                                 val defaultProfile: String = Util.getUnknownProfileImage(appContext)
                                 val profileURL = userDoc.getString("profileURL") ?: defaultProfile
-                                val nickName = userDoc.get("nickName").toString()
+                                val nickName = userDoc.getString("nickName") ?: Util.getUnknownUserNickname(appContext)
                                 val comment = Comment(
-                                    Uri.parse(profileURL),
+                                    profileURL,
                                     nickName,
                                     it.get("commentContents").toString(),
                                     it.id,

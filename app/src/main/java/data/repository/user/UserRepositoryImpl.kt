@@ -2,6 +2,7 @@ package data.repository.user
 
 import android.content.Context
 import android.net.Uri
+import com.example.mzcommunity.R
 
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
@@ -59,7 +60,7 @@ class UserRepositoryImpl @Inject constructor(
 
         val defaultProfile: String = Util.getUnknownProfileImage(appContext)
         val profile = snapShot.getString("profileURL") ?: defaultProfile
-        val nickName = snapShot.get("nickName") as? String ?: "알 수 없는 사용자"
+        val nickName = snapShot.get("nickName") as? String ?: appContext.getString(R.string.unknown_user)
         return LoginedUser(profile, nickName)
     }
 }

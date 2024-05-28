@@ -1,9 +1,7 @@
 package data.model
 
-import android.net.Uri
-
 data class Comment(
-    val witerUri: Uri,
+    val witerUri: String,
     val writerName: String,
     val contents: String,
     val commentUID: String,

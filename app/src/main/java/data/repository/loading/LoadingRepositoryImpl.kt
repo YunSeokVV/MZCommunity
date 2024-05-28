@@ -40,7 +40,7 @@ class LoadingRepositoryImpl @Inject constructor(
         val defaultProfile: String = getUnknownProfileImage(appContext)
 
         val profile = snapShot.getString("profileURL") ?: defaultProfile
-        val nickName = snapShot.get("nickName") as? String ?: "알 수 없는 사용자"
+        val nickName = snapShot.get("nickName") as? String ?: appContext.getString(R.string.unknown_user)
         return LoginedUser(profile, nickName)
     }
 
@@ -59,7 +59,7 @@ class LoadingRepositoryImpl @Inject constructor(
                                     fireStoreRef.collection("MZUsers")
                                         .document(dailyBoardCollection.writerUID).get().await()
                                 val userNickName =
-                                    userInfoSnapshot.getString("nickName") ?: "알 수 없는 사용자"
+                                    userInfoSnapshot.getString("nickName") ?: appContext.getString(R.string.unknown_user)
                                 val boardUID = document.id
 
                                 val boardContents = dailyBoardCollection.boardContents
