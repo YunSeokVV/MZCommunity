@@ -12,6 +12,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
 import com.example.mzcommunity.R
+import com.example.mzcommunity.databinding.FragmentLoadingDialogBinding
 import com.example.mzcommunity.databinding.FragmentMyPageBinding
 import com.orhanobut.logger.Logger
 import dagger.hilt.android.AndroidEntryPoint
@@ -22,7 +23,7 @@ import util.Util
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class MyPageFragment @Inject constructor() : BaseFragment() {
+class MyPageFragment @Inject constructor() : BaseFragment<FragmentMyPageBinding>() {
     private val loadingDialogFragment = LoadingDialogFragment()
 
     interface loginUserListener {
@@ -31,7 +32,6 @@ class MyPageFragment @Inject constructor() : BaseFragment() {
 
     private lateinit var loginedUser: loginUserListener
     private val viewModel: MyPageFragmentViewModel by viewModels()
-    private lateinit var binding: FragmentMyPageBinding
     private var profileUri = String()
 
     private val startForResult =
@@ -52,11 +52,9 @@ class MyPageFragment @Inject constructor() : BaseFragment() {
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentMyPageBinding.inflate(layoutInflater)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
         binding.editProfile.setOnClickListener {
             viewModel.setEditMode()
         }
@@ -103,8 +101,12 @@ class MyPageFragment @Inject constructor() : BaseFragment() {
             .load(Uri.parse(arguments?.let { getUserBundle(it).profileUri }))
             .into(binding.userProfileImg)
         binding.userName.setText(arguments?.let { getUserBundle(it).nickName })
-
-        return binding.root
     }
+
+
+    override fun getFragmentBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ): FragmentMyPageBinding = FragmentMyPageBinding.inflate(layoutInflater)
 
 }

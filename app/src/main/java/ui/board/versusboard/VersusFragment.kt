@@ -21,15 +21,11 @@ import ui.posting.versusboard.PostingVersusActivity
 import ui.comment.BottomSheetFragment
 
 @AndroidEntryPoint
-class VersusFragment() : BaseFragment() {
-    private lateinit var binding: FragmentVersusBinding
+class VersusFragment() : BaseFragment<FragmentVersusBinding>() {
     private val viewModel by viewModels<VersusFragmnetViewModel>()
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentVersusBinding.inflate(inflater)
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         binding.posting.setOnClickListener {
             val intent = Intent(
@@ -113,9 +109,11 @@ class VersusFragment() : BaseFragment() {
         viewModel.voteComplte.observe(requireActivity(), Observer {
             showNextVote()
         })
-
-        return binding.root
     }
+    override fun getFragmentBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ): FragmentVersusBinding = FragmentVersusBinding.inflate(inflater)
 
     fun vote(isFirstOpinion: Boolean) {
         viewModel.voteOpinion(isFirstOpinion)
