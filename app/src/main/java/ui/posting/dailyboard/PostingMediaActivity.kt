@@ -13,10 +13,11 @@ import com.example.mzcommunity.databinding.ActivityPostingMediaBinding
 import dagger.hilt.android.AndroidEntryPoint
 import data.model.DailyBoardViewType
 import data.model.File
+import ui.base.BaseActivity
 import ui.loading.LoadingDialogFragment
 
 @AndroidEntryPoint
-class PostingMediaActivity : AppCompatActivity() {
+class PostingMediaActivity : BaseActivity<ActivityPostingMediaBinding>({ActivityPostingMediaBinding.inflate(it)}) {
     private val imageAdapter = ImageAdapter(false)
     private val viewModel: PostingMediaActivityViewModel by viewModels()
     private var choosenFiles = mutableListOf<File>()
@@ -24,9 +25,6 @@ class PostingMediaActivity : AppCompatActivity() {
     private var viewType : DailyBoardViewType = DailyBoardViewType.TEXT
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_posting_media)
-        val binding = ActivityPostingMediaBinding.inflate(layoutInflater)
-        setContentView(binding.root)
         handleIntent(binding, getIntent())
 
         viewModel.isPostingComplete.observe(this, Observer { data ->
