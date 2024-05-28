@@ -3,13 +3,13 @@ package ui.main
 import android.os.Bundle
 import android.os.Parcelable
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import com.example.mzcommunity.R
 import com.example.mzcommunity.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
+import com.example.mzcommunity.R
 import data.model.DailyBoard
 import data.model.LoginedUser
+import ui.base.BaseActivity
 import ui.board.dailyboard.DailyBoardFragment
 import ui.mypage.MyPageFragment
 import ui.mypage.MyPageFragment.loginUserListener
@@ -19,9 +19,8 @@ import ui.main.model.Screen
 
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity(), loginUserListener {
+class MainActivity : BaseActivity<ActivityMainBinding>({ActivityMainBinding.inflate(it)}), loginUserListener {
     private val viewModel: MainActivityViewModel by viewModels()
-    private lateinit var binding: ActivityMainBinding
     private lateinit var loginedUserProfile: LoginedUser
 
     private val dailyBoards: ArrayList<DailyBoard> by lazy {
@@ -30,8 +29,6 @@ class MainActivity : AppCompatActivity(), loginUserListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
 
         val intent = intent
         val userProfile: LoginedUser = intent.getSerializableExtra("userProfile") as LoginedUser
@@ -94,7 +91,6 @@ class MainActivity : AppCompatActivity(), loginUserListener {
         loginedUserProfile = loginedUser
     }
 
-    // todo : emum 적용할 것. 각 screen 에 따라서 보여줘야 할 화면이 달라짐
     private fun setFragment(screen: Screen): Fragment {
         val bundle = Bundle()
         bundle.putSerializable("loginedUserProfile", loginedUserProfile)

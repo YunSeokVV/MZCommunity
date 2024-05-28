@@ -1,5 +1,6 @@
 package ui.comment
 
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -18,7 +19,7 @@ class NestedCommentAdapter(private val neestedComments: List<Comment>, private v
     inner class NestedCommentViewHolder(private val binding: DailyBoardCommentItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(item: Comment) {
-            Glide.with(binding.root.context).load(item.witerUri).into(binding.userProfileImg)
+            Glide.with(binding.root.context).load(Uri.parse(item.witerUri)).into(binding.userProfileImg)
             binding.writeName.setText(item.writerName)
             binding.postingContents.setText(item.contents)
             binding.selectReply.setOnClickListener {

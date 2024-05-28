@@ -39,7 +39,7 @@ class DailyBoardRepositoryImpl @Inject constructor(
     override suspend fun postBoard(
         contents: String,
         uploadFileUri: List<File>,
-        viewType: Int
+        viewType: DailyBoardViewType
     ): Response<Boolean> = withContext(Dispatchers.IO) {
         try {
             val fireStore = fireStoreRef
@@ -48,7 +48,7 @@ class DailyBoardRepositoryImpl @Inject constructor(
                 "like" to 0,
                 "disLike" to 0,
                 "writerUID" to FirebaseAuth.auth.uid,
-                "viewType" to viewType
+                "viewType" to viewType.ordinal
             )
             val urls = mutableListOf<String>()
             val documentReference = fireStore.collection("dailyBoard").add(board).await()
@@ -84,7 +84,7 @@ class DailyBoardRepositoryImpl @Inject constructor(
 
                         val boardUID = document.id
                         val userNickName =
-                            userInfoSnapshot.getString("nickName") ?: "알 수 없는 사용자"
+                            userInfoSnapshot.getString("nickName") ?: appContext.getString(R.string.unknown_user)
                         val boardContents = dailyBoardCollection.boardContents
                         val like = dailyBoardCollection.like
                         val disLike = dailyBoardCollection.disLike
@@ -135,7 +135,7 @@ class DailyBoardRepositoryImpl @Inject constructor(
 
                             val boardUID = result.id
                             val userNickName =
-                                userInfoSnapshot.getString("nickName") ?: "알 수 없는 사용자"
+                                userInfoSnapshot.getString("nickName") ?: appContext.getString(R.string.unknown_user)
                             val boardContents = dailyBoardCollection.boardContents
                             val like = dailyBoardCollection.like
                             val disLike = dailyBoardCollection.disLike

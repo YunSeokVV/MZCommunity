@@ -8,10 +8,11 @@ import androidx.lifecycle.Observer
 import com.example.mzcommunity.R
 import com.example.mzcommunity.databinding.ActivityLoadingBinding
 import dagger.hilt.android.AndroidEntryPoint
+import ui.base.BaseActivity
 import ui.main.MainActivity
 
 @AndroidEntryPoint
-class LoadingActivity : AppCompatActivity() {
+class LoadingActivity : BaseActivity<ActivityLoadingBinding>({ActivityLoadingBinding.inflate(it)}) {
     private val viewModel : LoadingActivityViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

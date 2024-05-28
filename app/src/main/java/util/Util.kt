@@ -20,6 +20,12 @@ class Util {
             return result
         }
 
+        fun getUnknownUserNickname(context: Context) : String {
+            val result =
+                "android.resource://" + context.packageName + "/" + R.string.unknown_user
+            return result
+        }
+
         fun parsingDailyBoardFiles(documentSnapshot: DocumentSnapshot, key: String): List<String> =
             documentSnapshot.get(key) as? List<String> ?: listOf()
     }

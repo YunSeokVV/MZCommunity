@@ -18,9 +18,9 @@ import ui.comment.BottomSheetFragment
 
 @AndroidEntryPoint
 class DailyBoardFragment(
-) : BaseFragment() {
+) : BaseFragment<FragmentBoardBinding>() {
     private val viewModel by viewModels<DailyBoardFramgnetViewModel>()
-    private lateinit var binding: FragmentBoardBinding
+    
     private var dailyBoardAdapter: DailyBoardAdapter = DailyBoardAdapter(
         object : DailyBoardAdapter.IncreaseLike {
             override fun increaseLike(dailyBoard: DailyBoard, adapterPosition: Int) {
@@ -51,11 +51,8 @@ class DailyBoardFragment(
 
         })
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentBoardBinding.inflate(inflater)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         binding.dailyBoards.layoutManager =
             LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false)
@@ -85,8 +82,13 @@ class DailyBoardFragment(
                 }
             }
         })
+    }
 
-        return binding.root
+    override fun getFragmentBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ): FragmentBoardBinding {
+        return FragmentBoardBinding.inflate(inflater)
     }
 
     override fun onStop() {

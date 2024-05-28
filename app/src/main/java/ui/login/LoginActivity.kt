@@ -12,6 +12,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import com.example.mzcommunity.BuildConfig
 import com.example.mzcommunity.R
+import com.example.mzcommunity.databinding.ActivityLoadingBinding
 import com.example.mzcommunity.databinding.ActivityLoginBinding
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -22,13 +23,14 @@ import com.orhanobut.logger.AndroidLogAdapter
 import com.orhanobut.logger.Logger
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import ui.base.BaseActivity
 import util.FirebaseAuth
 import util.Util
 import ui.loading.LoadingActivity
 import ui.signup.SignUpActivity
 
 @AndroidEntryPoint
-class LoginActivity : AppCompatActivity() {
+class LoginActivity : BaseActivity<ActivityLoginBinding>({ ActivityLoginBinding.inflate(it) }) {
     private val loginActivityViewModel: LoginActivityViewModel by viewModels()
 
     private var resultLauncher =

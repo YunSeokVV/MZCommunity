@@ -1,22 +1,21 @@
 package ui.posting.versusboard
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.lifecycle.Observer
+import com.example.mzcommunity.R
 import com.example.mzcommunity.databinding.ActivityPostingVersusBinding
 import dagger.hilt.android.AndroidEntryPoint
+import ui.base.BaseActivity
 import util.FirebaseAuth
 import ui.loading.LoadingDialogFragment
 
 @AndroidEntryPoint
-class PostingVersusActivity : AppCompatActivity() {
+class PostingVersusActivity : BaseActivity<ActivityPostingVersusBinding>({ActivityPostingVersusBinding.inflate(it)}) {
     private val viewModel: PostingVersusActivityViewModel by viewModels()
     private val loadingDialogFragment = LoadingDialogFragment()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val binding = ActivityPostingVersusBinding.inflate(layoutInflater)
-        setContentView(binding.root)
         binding.posting.setOnClickListener {
             val inputTitle = binding.inputTitle.text.toString()
             val inputOpinion1 = binding.inputOpinion1.text.toString()

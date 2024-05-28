@@ -13,22 +13,24 @@ import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.ActivityChooserView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mzcommunity.R
+import com.example.mzcommunity.databinding.ActivityLoadingBinding
 import com.example.mzcommunity.databinding.ActivityMultiImagePostingBinding
 import data.model.File
+import ui.base.BaseActivity
 import util.Util
 
-class ChooseMediaActivity : AppCompatActivity() {
+class ChooseMediaActivity : BaseActivity<ActivityMultiImagePostingBinding>({ActivityMultiImagePostingBinding.inflate(it)}) {
     companion object {
         var chooseMediaActivity = ChooseMediaActivity()
     }
 
     private val imageAdapter = ImageAdapter(true)
     private var cam_uri: Uri =Uri.parse("")
-    private lateinit var binding: ActivityMultiImagePostingBinding
 
     private val photo = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult(),
@@ -57,10 +59,7 @@ class ChooseMediaActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_multi_image_posting)
         chooseMediaActivity = this
-        binding = ActivityMultiImagePostingBinding.inflate(layoutInflater)
-        setContentView(binding.root)
 
         val imagesRecyclerView = binding.choosenPictureList
 
