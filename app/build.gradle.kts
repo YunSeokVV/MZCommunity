@@ -15,9 +15,9 @@ android {
     signingConfigs {
         create("release") {
             keyAlias = "key0"
-            storeFile = file("C:\\Users\\asus vivo\\AndroidStudioProjects\\keystorePath\\key.jks")
-            storePassword = "@!dakota3276"
-            keyPassword = "@!dakota3276"
+            storeFile = file(properties.getProperty("storeFile"))
+            storePassword = properties.getProperty("storePassword")
+            keyPassword = properties.getProperty("keyPassword")
         }
     }
     namespace = "com.example.mzcommunity"
@@ -36,11 +36,18 @@ android {
 
     buildTypes {
         release {
+            manifestPlaceholders += mapOf()
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("release")
+            manifestPlaceholders["appName"] = "MZ커뮤니티"
+        }
+
+        debug {
+            manifestPlaceholders["appName"] = "MZ커뮤니티 for Debug"
         }
     }
     compileOptions {
