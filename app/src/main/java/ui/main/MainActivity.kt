@@ -62,7 +62,11 @@ class MainActivity : BaseActivity<ActivityMainBinding>({ActivityMainBinding.infl
 
                 R.id.fragment_write_board -> {
                     supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragment_container, PostingFragment()).commit()
+                        .replace(
+                            R.id.fragment_container,
+                            setFragment(Screen.POSTING_BOARD)
+                        )
+                        .commit()
                     true
                 }
 
@@ -110,6 +114,13 @@ class MainActivity : BaseActivity<ActivityMainBinding>({ActivityMainBinding.infl
                 val versusFragment = VersusFragment()
                 versusFragment.arguments = bundle
                 return versusFragment
+            }
+
+
+            Screen.POSTING_BOARD -> {
+                val postingFragment = PostingFragment()
+                postingFragment.arguments = bundle
+                return postingFragment
             }
 
             Screen.MY_PAGE -> {

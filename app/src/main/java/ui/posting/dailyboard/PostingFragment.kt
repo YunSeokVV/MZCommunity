@@ -7,19 +7,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.mzcommunity.R
+import com.example.mzcommunity.databinding.FragmentPostingBinding
+import ui.base.BaseFragment
 import ui.main.MainActivity
 
-class PostingFragment : Fragment() {
+class PostingFragment : BaseFragment<FragmentPostingBinding>() {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
         // 게시글 작성이 완료된 시점에 일상게시글 화면을 보여준다
         val rootActivity = activity as MainActivity
         rootActivity.showBoardFragmnet()
@@ -29,10 +25,11 @@ class PostingFragment : Fragment() {
             ChooseMediaActivity::class.java
         )
         startActivity(intent)
-
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_posting, container, false)
     }
+    override fun getFragmentBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ): FragmentPostingBinding = FragmentPostingBinding.inflate(inflater)
 
 
 }
