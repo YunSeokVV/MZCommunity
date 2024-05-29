@@ -20,7 +20,7 @@ import ui.comment.BottomSheetFragment
 class DailyBoardFragment(
 ) : BaseFragment<FragmentBoardBinding>() {
     private val viewModel by viewModels<DailyBoardFramgnetViewModel>()
-    
+
     private var dailyBoardAdapter: DailyBoardAdapter = DailyBoardAdapter(
         object : DailyBoardAdapter.IncreaseLike {
             override fun increaseLike(dailyBoard: DailyBoard, adapterPosition: Int) {
@@ -64,22 +64,12 @@ class DailyBoardFragment(
         binding.swipeRefreshLayout.setOnRefreshListener {
             dailyBoardAdapter.releaseVideo()
             viewModel.getRandomDailyBoards()
-            viewModel.isRfreshing = true
         }
 
         viewModel.dailyBoards.observe(requireActivity(), Observer {
             dailyBoardAdapter.submitList(it.toMutableList()) {
-                if (viewModel.isRfreshing) {
-                    binding.dailyBoards.scrollToPosition(0)
-                    viewModel.isRfreshing = false
-                }
-            }
-
-            binding.dailyBoards.post {
+                binding.dailyBoards.scrollToPosition(0)
                 binding.swipeRefreshLayout.isRefreshing = false
-                if (binding.swipeRefreshLayout.isRefreshing) {
-                    binding.swipeRefreshLayout.isRefreshing = false
-                }
             }
         })
     }

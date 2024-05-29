@@ -21,7 +21,6 @@ abstract class BaseFragment<T : ViewBinding> : Fragment() {
     ): View? {
         _binding = getFragmentBinding(inflater, container)
 
-        //return super.onCreateView(inflater, container, savedInstanceState)
         return binding.root
     }
 

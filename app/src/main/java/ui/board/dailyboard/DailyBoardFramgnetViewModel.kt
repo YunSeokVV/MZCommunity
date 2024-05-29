@@ -15,10 +15,6 @@ import domain.dailyboard.DailyBoardUseCase
 
 @HiltViewModel
 class DailyBoardFramgnetViewModel @Inject constructor(private val dailyBoardUseCase: DailyBoardUseCase) : ViewModel(){
-
-    // 리사이클러뷰가 새로고침중인지 체크해주는 플래그값이다.
-    var isRfreshing = false
-
     private val _dailyBoards = MutableLiveData<List<DailyBoard>>()
 
     // isLike : true인 경우 좋아요 버튼을 눌렀을때를 의미한다. false 인 경우에는 disLike 버튼을 눌렀다는 것을 의미
