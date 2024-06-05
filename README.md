@@ -6,7 +6,7 @@
 
 
 
-목차
+**목차**
 
 1. 앱의기능
 
@@ -18,9 +18,8 @@
 
 
 
-###  1. 앱의 기능
+#  1. 앱의 기능
 
----
 
 
 
@@ -34,9 +33,9 @@
 
 ![](https://private-user-images.githubusercontent.com/43668299/336374684-8dd5f620-56ba-4fa0-ac1c-71f1608361bd.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MTc0OTE3NTAsIm5iZiI6MTcxNzQ5MTQ1MCwicGF0aCI6Ii80MzY2ODI5OS8zMzYzNzQ2ODQtOGRkNWY2MjAtNTZiYS00ZmEwLWFjMWMtNzFmMTYwODM2MWJkLnBuZz9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNDA2MDQlMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjQwNjA0VDA4NTczMFomWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPTNjODI3NDExMzgxNTI0NDVlNDk4ZTBjMDYzMzgzNjQ3MzAyZTA2NzNjZTJiZTJmYTFjM2VmZThlN2E4YWNlNTcmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0JmFjdG9yX2lkPTAma2V5X2lkPTAmcmVwb19pZD0wIn0.cXjLu0U0sCi5GRlNwVc_r58x9ff0Ag-3b40ghXoscE4)
 
----
 
-# 구현한 기능들
+
+# 기능 상세설명
 
 **1.로그인**
 
@@ -76,9 +75,9 @@
 
 
 
-### 2. 사용한 기술 & 라이브러리
+# 2. 사용한 기술 & 라이브러리
 
----
+
 
 Coroutine + Flow를 활용해서 비동기 처리 작업을 진행
 
@@ -101,27 +100,19 @@ Coroutine + Flow를 활용해서 비동기 처리 작업을 진행
 
 
 
-### 3. Architecture
+# 3. Architecture
 
----
 
 **MZ 커뮤니티는** MVVM 아키텍쳐를 기반으로 하고 있습니다. View, Domain, Repository 계층으로 나뉩니다.
 
 ![](https://private-user-images.githubusercontent.com/43668299/336415568-28ff5465-3ee4-468f-92a1-5fa105c34c38.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MTc1NjU0OTEsIm5iZiI6MTcxNzU2NTE5MSwicGF0aCI6Ii80MzY2ODI5OS8zMzY0MTU1NjgtMjhmZjU0NjUtM2VlNC00NjhmLTkyYTEtNWZhMTA1YzM0YzM4LnBuZz9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNDA2MDUlMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjQwNjA1VDA1MjYzMVomWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPTJhODRlNGJhMjc3M2MxODVlODljZjczZjM4OGFlNGFhYmI3MWZlODgwYzU0OGVmYzIwODM0OTdlYTMwMjFlMjgmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0JmFjdG9yX2lkPTAma2V5X2lkPTAmcmVwb19pZD0wIn0.3Gtdv67QLhPAXUsEb7P-tutq4Sfu97G41CyoTUUXfQA)
 
-### 4. 시연영상 링크
 
-___
-
+# 4. 시연영상 링크
 
 
 
-
-
-
-### 5. 실행파일
-
-___
+# 5. 실행파일
 
 [https://github.com/YunSeokVV/MZCommunity/releases/tag/v0.1.0](https://github.com/YunSeokVV/MZCommunity/releases/tag/v0.1.0)
 
