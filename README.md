@@ -17,7 +17,9 @@
 
 3. Architecture
 
-4. app apk
+4. 시연영상 링크
+
+5. 실행파일
 
 
 
