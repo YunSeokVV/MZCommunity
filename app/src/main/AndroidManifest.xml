@@ -23,6 +23,7 @@
             android:exported="false" />
         <activity
             android:name="ui.posting.versusboard.PostingVersusActivity"
+            android:windowSoftInputMode="adjustResize"
             android:exported="false" />
         <activity
             android:name="ui.posting.dailyboard.PostingMediaActivity"
