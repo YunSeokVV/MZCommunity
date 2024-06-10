@@ -4,16 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mzcommunity.databinding.FragmentBoardBinding
 import dagger.hilt.android.AndroidEntryPoint
 import data.model.DailyBoard
-import data.model.LoginedUser
 import ui.base.BaseFragment
-import ui.comment.BottomSheetFragment
 
 
 @AndroidEntryPoint
@@ -23,10 +20,10 @@ class DailyBoardFragment(
 
     private var dailyBoardAdapter: DailyBoardAdapter = DailyBoardAdapter(
         object : DailyBoardAdapter.IncreaseLike {
-            override fun increaseLike(dailyBoard: DailyBoard, adapterPosition: Int) {
+            override fun increaseLike(adapterPosition: Int) {
                 viewModel.increaseFavourability(
-                    dailyBoard,
-                    dailyBoard.boardUID,
+                    viewModel.getCurrentDailyBoard(adapterPosition),
+                    viewModel.getCurrentDailyBoard(adapterPosition).boardUID,
                     adapterPosition,
                     true
                 )
@@ -34,10 +31,10 @@ class DailyBoardFragment(
 
         },
         object : DailyBoardAdapter.IncreaseDisLike {
-            override fun increaseDisLike(dailyBoard: DailyBoard, adapterPosition: Int) {
+            override fun increaseDisLike(adapterPosition: Int) {
                 viewModel.increaseFavourability(
-                    dailyBoard,
-                    dailyBoard.boardUID,
+                    viewModel.getCurrentDailyBoard(adapterPosition),
+                    viewModel.getCurrentDailyBoard(adapterPosition).boardUID,
                     adapterPosition,
                     false
                 )
@@ -45,8 +42,8 @@ class DailyBoardFragment(
 
         },
         object : DailyBoardAdapter.ShowComment {
-            override fun showComment(dailyBoard: DailyBoard) {
-                showComment(dailyBoard.boardUID)
+            override fun showComment(adapterPosition: Int) {
+                showComment(viewModel.getCurrentDailyBoard(adapterPosition).boardUID)
             }
 
         })
@@ -64,12 +61,23 @@ class DailyBoardFragment(
         binding.swipeRefreshLayout.setOnRefreshListener {
             dailyBoardAdapter.releaseVideo()
             viewModel.getRandomDailyBoards()
+            viewModel.isRfreshing = true
         }
 
         viewModel.dailyBoards.observe(requireActivity(), Observer {
             dailyBoardAdapter.submitList(it.toMutableList()) {
-                binding.dailyBoards.scrollToPosition(0)
+                if (viewModel.isRfreshing) {
+                    binding.dailyBoards.scrollToPosition(0)
+                    viewModel.isRfreshing = false
+                    dailyBoardAdapter.notifyDataSetChanged()
+                }
+            }
+
+            binding.dailyBoards.post {
                 binding.swipeRefreshLayout.isRefreshing = false
+                if (binding.swipeRefreshLayout.isRefreshing) {
+                    binding.swipeRefreshLayout.isRefreshing = false
+                }
             }
         })
     }
