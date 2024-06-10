@@ -7,6 +7,7 @@ import androidx.activity.viewModels
 import androidx.lifecycle.Observer
 import com.example.mzcommunity.R
 import com.example.mzcommunity.databinding.ActivityLoadingBinding
+import com.orhanobut.logger.Logger
 import dagger.hilt.android.AndroidEntryPoint
 import ui.base.BaseActivity
 import ui.main.MainActivity
@@ -27,7 +28,7 @@ class LoadingActivity : BaseActivity<ActivityLoadingBinding>({ActivityLoadingBin
                 val dailyBoards = ArrayList(viewModel.dailyBoards.value)
 
                 intent.putExtra("userProfile", userProfile)
-                intent.putExtra("dailyBoards", dailyBoards)
+                intent.putParcelableArrayListExtra("dailyBoards", dailyBoards)
                 startActivity(intent)
                 finish()
             }

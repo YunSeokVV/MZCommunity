@@ -7,9 +7,10 @@ enum class UserFavourability(val value : String) {
 
     companion object {
         fun fromValue(value: String): UserFavourability? {
-            return values().find { it.value == value }
+            if(value == "LIKE" || value == "like")return LIKE
+            else if(value == "DISLIKE" || value == "disLike")return  DISLIKE
+            else return USUAL
         }
-
         fun fromValue(value: UserFavourability): String = value.name
 
     }

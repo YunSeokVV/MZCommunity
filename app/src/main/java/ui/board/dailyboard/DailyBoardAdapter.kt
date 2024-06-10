@@ -44,15 +44,15 @@ class DailyBoardAdapter(
     }
 
     interface IncreaseLike {
-        fun increaseLike(dailyBoard: DailyBoard, adapterPosition: Int)
+        fun increaseLike(adapterPosition: Int)
     }
 
     interface IncreaseDisLike {
-        fun increaseDisLike(dailyBoard: DailyBoard, adapterPosition: Int)
+        fun increaseDisLike(adapterPosition: Int)
     }
 
     interface ShowComment {
-        fun showComment(dailyBoard: DailyBoard)
+        fun showComment(adapterPosition: Int)
     }
 
     // 백그라운드에 갔을때 재생중인 동영상을 멈추기 위해 존재하는 변수

@@ -73,18 +73,19 @@ class DailyBoardRepositoryImpl @Inject constructor(
     override suspend fun getRandomDailyBoards(): List<DailyBoard> = withContext(Dispatchers.IO) {
         var randomedDailyBoards = ArrayList<DailyBoard>()
         val result = fireStoreRef.collection("dailyBoard").get().await()
-        result.documents.forEach {document->
+        result.documents.forEach { document ->
             val dailyBoardCollection = getDailyBoardCollection(document)
             try {
                 runBlocking {
-                    withContext(Dispatchers.IO){
+                    withContext(Dispatchers.IO) {
                         val userInfoSnapshot =
                             fireStoreRef.collection("MZUsers")
                                 .document(dailyBoardCollection.writerUID).get().await()
 
                         val boardUID = document.id
                         val userNickName =
-                            userInfoSnapshot.getString("nickName") ?: appContext.getString(R.string.unknown_user)
+                            userInfoSnapshot.getString("nickName")
+                                ?: appContext.getString(R.string.unknown_user)
                         val boardContents = dailyBoardCollection.boardContents
                         val like = dailyBoardCollection.like
                         val disLike = dailyBoardCollection.disLike
@@ -117,7 +118,6 @@ class DailyBoardRepositoryImpl @Inject constructor(
         randomedDailyBoards.shuffle()
         // 랜덤으로 6개의 일상 게시글을 추출한다
         randomedDailyBoards = ArrayList(randomedDailyBoards.subList(0, 6))
-        Logger.v(randomedDailyBoards.toString())
         return@withContext randomedDailyBoards
     }
 
@@ -135,7 +135,8 @@ class DailyBoardRepositoryImpl @Inject constructor(
 
                             val boardUID = result.id
                             val userNickName =
-                                userInfoSnapshot.getString("nickName") ?: appContext.getString(R.string.unknown_user)
+                                userInfoSnapshot.getString("nickName")
+                                    ?: appContext.getString(R.string.unknown_user)
                             val boardContents = dailyBoardCollection.boardContents
                             val like = dailyBoardCollection.like
                             val disLike = dailyBoardCollection.disLike
@@ -204,14 +205,19 @@ class DailyBoardRepositoryImpl @Inject constructor(
 
                     // 사용자의 게시글에 대한 호감도가 싫어요였던 경우
                 } else if (dailyBoard.favourability == UserFavourability.DISLIKE) {
-                    if (isLike)
+                    // 좋아요 버튼을 누른경우
+                    if (isLike) {
                         documentReference.update("like", FieldValue.increment(1)).await()
-                    if (dailyBoard.disLike != 0)
-                        documentReference.update("disLike", FieldValue.increment(-1)).await()
-                    if (isLike)
+                        if (dailyBoard.disLike != 0)
+                            documentReference.update("disLike", FieldValue.increment(-1)).await()
                         documentReference.set(setUserFavour("like"), SetOptions.merge()).await()
-                    else
+                        // 싫어요 버튼을 누른경우
+                    } else {
+                        if (dailyBoard.disLike != 0)
+                            documentReference.update("disLike", FieldValue.increment(-1)).await()
                         documentReference.set(setUserFavour("usual"), SetOptions.merge()).await()
+                    }
+
                 }
 
                 Response.Success(true)

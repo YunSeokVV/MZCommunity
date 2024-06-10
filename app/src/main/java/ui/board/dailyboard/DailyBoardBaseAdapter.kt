@@ -15,6 +15,7 @@ import com.example.mzcommunity.databinding.DailyBoardImageItemListBinding
 import com.example.mzcommunity.databinding.DailyBoardTextItemListBinding
 import com.example.mzcommunity.databinding.DailyBoardVideoItemListBinding
 import com.google.android.material.tabs.TabLayoutMediator
+import com.orhanobut.logger.Logger
 import data.model.DailyBoard
 import data.model.UserFavourability
 
@@ -157,13 +158,12 @@ open class DailyBoardBaseAdapter(
         increaseDisLike: DailyBoardAdapter.IncreaseDisLike
     ) {
         comment.setOnClickListener {
-            val dailyBoard = currentList.get(adapterPosition)
-            showComment.showComment(dailyBoard)
+            showComment.showComment(adapterPosition)
         }
 
         likeImg.setOnClickListener {
             val dailyBoard = currentList.get(adapterPosition)
-            increaseLike.increaseLike(dailyBoard, adapterPosition)
+            increaseLike.increaseLike(adapterPosition)
 
             // 좋아요 버튼의 색깔을 파란색으로 변경
             if (dailyBoard.favourability == UserFavourability.USUAL) {
@@ -209,7 +209,7 @@ open class DailyBoardBaseAdapter(
 
         disLikeImg.setOnClickListener {
             val dailyBoard = currentList.get(adapterPosition)
-            increaseDisLike.increaseDisLike(dailyBoard, adapterPosition)
+            increaseDisLike.increaseDisLike(adapterPosition)
 
             // 싫어요 버튼의 색깔을 파란색으로 변경
             if (dailyBoard.favourability == UserFavourability.USUAL) {
