@@ -69,13 +69,6 @@ class DailyBoardFragment(
                 if (viewModel.isRfreshing) {
                     binding.dailyBoards.scrollToPosition(0)
                     viewModel.isRfreshing = false
-                    dailyBoardAdapter.notifyDataSetChanged()
-                }
-            }
-
-            binding.dailyBoards.post {
-                binding.swipeRefreshLayout.isRefreshing = false
-                if (binding.swipeRefreshLayout.isRefreshing) {
                     binding.swipeRefreshLayout.isRefreshing = false
                 }
             }
