@@ -112,6 +112,21 @@ Coroutine + Flow를 활용해서 비동기 처리 작업을 진행
 
 ![](https://private-user-images.githubusercontent.com/43668299/336415568-28ff5465-3ee4-468f-92a1-5fa105c34c38.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MTc1NjU0OTEsIm5iZiI6MTcxNzU2NTE5MSwicGF0aCI6Ii80MzY2ODI5OS8zMzY0MTU1NjgtMjhmZjU0NjUtM2VlNC00NjhmLTkyYTEtNWZhMTA1YzM0YzM4LnBuZz9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNDA2MDUlMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjQwNjA1VDA1MjYzMVomWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPTJhODRlNGJhMjc3M2MxODVlODljZjczZjM4OGFlNGFhYmI3MWZlODgwYzU0OGVmYzIwODM0OTdlYTMwMjFlMjgmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0JmFjdG9yX2lkPTAma2V5X2lkPTAmcmVwb19pZD0wIn0.3Gtdv67QLhPAXUsEb7P-tutq4Sfu97G41CyoTUUXfQA)
 
+MZ 커뮤니티는 세가지 계층으로 구성되어 있습니다.
+
+**UI 계층** 
+- 앱을 동작하기 위해 비즈니스 로직에서 받아온 데이터를 적절하게 사용자에게 표현해주는 역할을 합니다. 이 계층은 비즈니스 로직의 데이터를 알아선 안됩니다.
+viewModel의 liveData가 외부에서 받아오는 데이터를 관찰하고 있다가 변화가 감지되면 이를 사용자가 봐야할 ui에 적용시켜줍니다.
+
+**Domain 계층**
+- 도메인 계층을 도입함으로서 향후 앱의 기능이 추가되거나 수정이 될경우 유지보수에 용이한 이점을 얻었습니다. 사용자의 동작을 최소한의 기능단위로 나누었습니다.
+
+**Data 계층**
+- 외부의 데이터를 받아오는 역할을 해줍니다. 여기서 외부는 서버, 로컬 디비를 의미합니다. Repository(저장소)를 포함하고 있고 이 계층은 다른 어떠한 계층에도 의존하지 않습니다.
+
+각 계층은 자신의 역할에만 집중하고 있고 자신과 무관한 역할의 일은 하지 않습니다.
+상위계층에서 하위계층(UI -> Domain -> Data)으로 의존관계는 Hilt라이브러리를 활용해서 구현하였습니다. 
+
 
 # 4. 시연영상 링크
 
