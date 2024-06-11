@@ -5,6 +5,8 @@ import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -44,10 +46,25 @@ class DailyBoardAdapter(
     }
 
     interface IncreaseLike {
+        fun setViews(
+            adapterPosition: Int,
+            likeCount: TextView,
+            disLikeCount: TextView,
+            likeImg: Button,
+            disLikeImg: Button
+        )
+
         fun increaseLike(adapterPosition: Int)
     }
 
     interface IncreaseDisLike {
+        fun setViews(
+            adapterPosition: Int,
+            likeCount: TextView,
+            disLikeCount: TextView,
+            likeImg: Button,
+            disLikeImg: Button
+        )
         fun increaseDisLike(adapterPosition: Int)
     }
 

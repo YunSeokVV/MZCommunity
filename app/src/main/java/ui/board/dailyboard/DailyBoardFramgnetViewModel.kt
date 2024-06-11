@@ -65,7 +65,7 @@ class DailyBoardFramgnetViewModel @Inject constructor(private val dailyBoardUseC
         _dailyBoards.value = dailyBoards
     }
 
-    fun getCurrentDailyBoard(position : Int) : DailyBoard{
+    fun getCurrentDailyBoard(position: Int): DailyBoard {
         val currentBoards = ArrayList(_dailyBoards.value)
         return currentBoards[position]
     }

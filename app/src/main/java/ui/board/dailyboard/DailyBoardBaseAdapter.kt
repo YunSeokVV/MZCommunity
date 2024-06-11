@@ -103,7 +103,6 @@ open class DailyBoardBaseAdapter(
                 binding.disLikeImg,
                 binding.likeCount,
                 binding.disLikeCount,
-                binding,
                 showComment,
                 increaseLike,
                 increaseDisLike
@@ -115,7 +114,6 @@ open class DailyBoardBaseAdapter(
                 binding.disLikeImg,
                 binding.likeCount,
                 binding.disLikeCount,
-                binding,
                 showComment,
                 increaseLike,
                 increaseDisLike
@@ -127,7 +125,6 @@ open class DailyBoardBaseAdapter(
                 binding.disLikeImg,
                 binding.likeCount,
                 binding.disLikeCount,
-                binding,
                 showComment,
                 increaseLike,
                 increaseDisLike
@@ -152,7 +149,6 @@ open class DailyBoardBaseAdapter(
         disLikeImg: Button,
         likeCount: TextView,
         disLikeCount: TextView,
-        binding: ViewBinding,
         showComment: DailyBoardAdapter.ShowComment,
         increaseLike: DailyBoardAdapter.IncreaseLike,
         increaseDisLike: DailyBoardAdapter.IncreaseDisLike
@@ -162,119 +158,15 @@ open class DailyBoardBaseAdapter(
         }
 
         likeImg.setOnClickListener {
-            val dailyBoard = currentList.get(adapterPosition)
+            increaseLike.setViews(adapterPosition, likeCount, disLikeCount, likeImg, disLikeImg)
             increaseLike.increaseLike(adapterPosition)
-
-            // 좋아요 버튼의 색깔을 파란색으로 변경
-            if (dailyBoard.favourability == UserFavourability.USUAL) {
-                setThumbNailColor(true, likeImg, binding)
-                // 좋아요 +1
-                likeCount.text =
-                    setFavourCount((likeCount.text.toString()).toInt(), true).toString()
-
-                return@setOnClickListener
-            }
-            // 사용자가 이전에 싫어요를 눌렀다가 좋아요를 누른 경우
-            if (dailyBoard.favourability == UserFavourability.DISLIKE) {
-                setThumbNailColor(true, likeImg, binding)
-                setThumbNailColor(false, disLikeImg, binding)
-
-                // 좋아요 +1, 싫어요 -1
-                likeCount.text =
-                    setFavourCount((likeCount.text.toString()).toInt(), true).toString()
-                disLikeCount.text =
-                    setFavourCount(
-                        (disLikeCount.text.toString()).toInt(),
-                        false
-                    ).toString()
-
-                return@setOnClickListener
-            }
-
-            // 사용자가 이전에 좋아요를 눌렀다가 다시 한번 좋아요를 누르는 경우
-            if (dailyBoard.favourability == UserFavourability.LIKE) {
-                setThumbNailColor(false, likeImg, binding)
-
-                // 좋아요 -1
-                likeCount.text =
-                    setFavourCount(
-                        (likeCount.text.toString()).toInt(),
-                        false
-                    ).toString()
-
-                return@setOnClickListener
-            }
 
         }
 
         disLikeImg.setOnClickListener {
-            val dailyBoard = currentList.get(adapterPosition)
+            increaseDisLike.setViews(adapterPosition, likeCount, disLikeCount, likeImg, disLikeImg)
             increaseDisLike.increaseDisLike(adapterPosition)
-
-            // 싫어요 버튼의 색깔을 파란색으로 변경
-            if (dailyBoard.favourability == UserFavourability.USUAL) {
-                setThumbNailColor(true, disLikeImg, binding)
-
-                // 싫어요 +1
-                disLikeCount.text =
-                    setFavourCount(
-                        (disLikeCount.text.toString()).toInt(),
-                        true
-                    ).toString()
-
-                return@setOnClickListener
-            }
-
-            // 사용자가 이전에 싫어요를 눌렀다가 다시 싫어요를 누른 경우
-            else if (dailyBoard.favourability == UserFavourability.DISLIKE) {
-                setThumbNailColor(false, disLikeImg, binding)
-
-                // 싫어요 -1
-                disLikeCount.text =
-                    setFavourCount(
-                        (disLikeCount.text.toString()).toInt(),
-                        false
-                    ).toString()
-
-                return@setOnClickListener
-            }
-
-            // 사용자가 이전에 좋아요를 눌렀다가 싫어요를 누르는 경우
-            else if (dailyBoard.favourability == UserFavourability.LIKE) {
-                setThumbNailColor(false, likeImg, binding)
-                setThumbNailColor(true, disLikeImg, binding)
-
-                // 좋아요 -1, 싫어요 +1
-                likeCount.text =
-                    setFavourCount(
-                        (likeCount.text.toString()).toInt(),
-                        false
-                    ).toString()
-                disLikeCount.text =
-                    setFavourCount(
-                        (disLikeCount.text.toString()).toInt(),
-                        true
-                    ).toString()
-
-                return@setOnClickListener
-            }
-
         }
 
     }
-
-    private fun setFavourCount(originalCount: Int, increase: Boolean): Int {
-        var result = originalCount
-        if (increase) {
-            result += 1
-        } else if (!increase) {
-            result -= 1
-        }
-
-        if (result == 0)
-            return 0
-
-        return result
-    }
-
 }
