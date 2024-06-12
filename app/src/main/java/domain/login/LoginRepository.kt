@@ -1,8 +1,8 @@
 package domain.login
 
-import data.model.Response
 import data.model.LoginInfo
+import data.model.Response
 
-interface SignInActivityRepository {
+interface LoginRepository {
     suspend fun getSavedUserLoginInfo(): Response<LoginInfo>
 }

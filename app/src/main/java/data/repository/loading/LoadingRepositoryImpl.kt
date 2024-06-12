@@ -29,8 +29,6 @@ class LoadingRepositoryImpl @Inject constructor(
     private val fireStoreRef: FirebaseFirestore,
     @ApplicationContext private val appContext: Context
 ) : LoadingRepository {
-
-
     override suspend fun getUserProfile(): LoginedUser {
 
         val snapShot =

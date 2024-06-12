@@ -11,10 +11,10 @@ import data.model.Response
 import kotlinx.coroutines.launch
 import data.model.File
 import javax.inject.Inject
-import domain.dailyboard.DailyBoardUseCase
+import domain.dailyboard.PostDailyBoardUsecase
 
 @HiltViewModel
-class PostingMediaActivityViewModel @Inject constructor(private val dailyBoardUseCase: DailyBoardUseCase) :
+class PostingMediaActivityViewModel @Inject constructor(private val postDailyBoardUsecase: PostDailyBoardUsecase) :
     ViewModel() {
 
     private val _isPostingComplete = MutableLiveData<Boolean>()
@@ -25,7 +25,7 @@ class PostingMediaActivityViewModel @Inject constructor(private val dailyBoardUs
         }
 
     fun createPost(contetns: String, uploadFileUri: List<File>, viewType: DailyBoardViewType) = viewModelScope.launch {
-        dailyBoardUseCase.postDailyBoardRepository(contetns, uploadFileUri, viewType).collect {
+        postDailyBoardUsecase(contetns, uploadFileUri, viewType).collect {
             when (it) {
                 is Response.Success -> {
                     _isPostingComplete.value = it.data?:false

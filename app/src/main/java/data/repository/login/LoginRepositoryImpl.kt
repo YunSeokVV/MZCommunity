@@ -3,18 +3,15 @@ package data.repository.login
 import android.content.Context
 import com.orhanobut.logger.Logger
 import dagger.hilt.android.qualifiers.ApplicationContext
+import data.model.LoginInfo
 import data.model.Response
 import database.LoginUserDB
-import domain.login.SignInActivityRepository
-import data.model.LoginInfo
+import domain.login.LoginRepository
 import javax.inject.Inject
 import javax.inject.Singleton
 
-
-
-
 @Singleton
-class SignInActivityRepositoryImpl @Inject constructor(@ApplicationContext private val appContext: Context) : SignInActivityRepository {
+class LoginRepositoryImpl @Inject constructor(@ApplicationContext private val appContext : Context) : LoginRepository {
     override suspend fun getSavedUserLoginInfo(): Response<LoginInfo> {
         return try{
             val response = LoginUserDB.getInstance(appContext).getEventsDao().getUserInfo()
@@ -24,5 +21,4 @@ class SignInActivityRepositoryImpl @Inject constructor(@ApplicationContext priva
             Response.Failure(e)
         }
     }
-
 }

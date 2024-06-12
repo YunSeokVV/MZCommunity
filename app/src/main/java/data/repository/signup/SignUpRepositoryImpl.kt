@@ -3,28 +3,22 @@ package data.repository.signup
 import android.content.Context
 import com.example.mzcommunity.R
 import com.google.firebase.firestore.FirebaseFirestore
-import com.orhanobut.logger.Logger
 import dagger.hilt.android.qualifiers.ApplicationContext
+import data.model.LoginInfo
 import data.model.Response
 import database.LoginUserDB
-import domain.signup.SignUpActivityRepository
+import domain.signup.SignUpRepository
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import data.model.LoginInfo
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
-import javax.inject.Inject
-import javax.inject.Singleton
-
+import kotlinx.coroutines.withContext
 import util.FirebaseAuth
+import javax.inject.Inject
 
-
-@Singleton
-class SignUpActivityRepositoryImpl @Inject constructor(
+class SignUpRepositoryImpl @Inject constructor(
     private val firestore: FirebaseFirestore,
     @ApplicationContext private val appContext: Context
-) :
-    SignUpActivityRepository {
+) : SignUpRepository {
     override suspend fun setUserNickname(nickName: String): Response<Boolean> =
         withContext(Dispatchers.IO) {
             runBlocking {
@@ -63,6 +57,4 @@ class SignUpActivityRepositoryImpl @Inject constructor(
                 Response.Failure(e)
             }
         }
-
-
 }

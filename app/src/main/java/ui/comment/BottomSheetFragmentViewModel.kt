@@ -9,13 +9,23 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import data.model.Comment
 import data.model.Response
 import kotlinx.coroutines.launch
-import domain.comment.CommentUseCase
+import domain.comment.GetCommentUsecase
+import domain.comment.GetMoreCommentsUsecase
+import domain.comment.GetNestedCommentsUsecase
+import domain.comment.PostCommentUsecase
+import domain.comment.PostReplyUsecase
 
 
 import javax.inject.Inject
 
 @HiltViewModel
-class BottomSheetFragmentViewModel @Inject constructor(private val commentUseCase: CommentUseCase) :
+class BottomSheetFragmentViewModel @Inject constructor(
+    private val getMoreCommentsUsecase: GetMoreCommentsUsecase,
+    private val postCommentUsecase: PostCommentUsecase,
+    private val postReplyUsecase: PostReplyUsecase,
+    private val getCommentUsecase: GetCommentUsecase,
+    private val getNestedCommentsUsecase: GetNestedCommentsUsecase
+) :
     ViewModel() {
 
     var showProgress: Boolean = false
@@ -45,7 +55,7 @@ class BottomSheetFragmentViewModel @Inject constructor(private val commentUseCas
         }
 
     fun getMoreComments(parentUID: String, collectionName: String) = viewModelScope.launch {
-        commentUseCase.getMoreComments(parentUID, collectionName).collect {
+        getMoreCommentsUsecase.invoke(parentUID, collectionName).collect {
             isProgressLoading.value = false
             dailyBoardComments.value = it.toMutableList()
             showProgress = false
@@ -55,7 +65,7 @@ class BottomSheetFragmentViewModel @Inject constructor(private val commentUseCas
 
     fun postComment(contents: String, parentUID: String, collectionName: String) =
         viewModelScope.launch {
-            commentUseCase.postComment(contents, parentUID, collectionName).collect {
+            postCommentUsecase(contents, parentUID, collectionName).collect {
                 when (it) {
                     is Response.Success -> {
                         _isPostingComplte.value = it.data ?: false
@@ -75,7 +85,7 @@ class BottomSheetFragmentViewModel @Inject constructor(private val commentUseCas
         nestedCommentCollection: String,
         commentName: String
     ) = viewModelScope.launch {
-        commentUseCase.postReply(contents, parentUID, nestedCommentCollection, commentName)
+        postReplyUsecase(contents, parentUID, nestedCommentCollection, commentName)
             .collect {
                 when (it) {
                     is Response.Success -> {
@@ -90,13 +100,13 @@ class BottomSheetFragmentViewModel @Inject constructor(private val commentUseCas
     }
 
     fun getComments(parentUID: String, collectionName: String) = viewModelScope.launch {
-        commentUseCase.getComments(parentUID, collectionName).collect {
+        getCommentUsecase(parentUID, collectionName).collect {
             dailyBoardComments.value = it.toMutableList()
         }
     }
 
     fun getNestedComments(parentUID: String, nestedCommentName: String) = viewModelScope.launch {
-        commentUseCase.getNestedComments(parentUID, nestedCommentName).collect {
+        getNestedCommentsUsecase(parentUID, nestedCommentName).collect {
             _nestedComments.value = it
         }
     }

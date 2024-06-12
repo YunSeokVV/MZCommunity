@@ -10,11 +10,15 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import data.model.Response
 import kotlinx.coroutines.launch
 import data.model.LoginedUser
-import domain.user.UserUsecase
+import domain.user.GetUserProfileUsecase
+import domain.user.UpdateProfileUsecase
 import javax.inject.Inject
 
 @HiltViewModel
-class MyPageFragmentViewModel @Inject constructor(private val mypageUsecasae: UserUsecase) :
+class MyPageFragmentViewModel @Inject constructor(
+    private val updateProfileUsecase: UpdateProfileUsecase,
+    private val getUserProfileUsecase: GetUserProfileUsecase
+) :
     ViewModel() {
 
     private val _isUpdateComplte = MutableLiveData<Boolean>()
@@ -37,13 +41,13 @@ class MyPageFragmentViewModel @Inject constructor(private val mypageUsecasae: Us
     }
 
     fun getUserProfile() = viewModelScope.launch {
-        mypageUsecasae.getUserProfile().collect {
+        getUserProfileUsecase().collect {
             _logined_user.value = it
         }
     }
 
     fun updateProfile(nickName: String, profile: Uri) = viewModelScope.launch {
-        mypageUsecasae.updateProfile(nickName, profile).collect {
+        updateProfileUsecase(nickName, profile).collect {
             when (it) {
                 is Response.Success -> {
                     _isUpdateComplte.value = it.data ?: false

@@ -9,12 +9,18 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import data.model.Response
 import kotlinx.coroutines.launch
 import data.model.VersusBoard
-import domain.versus.VersusUsecase
+import domain.versus.CalculatePercentUsecase
+import domain.versus.GetRandomVersusBoardUsecase
+import domain.versus.VoteOpinionUsecase
 import javax.inject.Inject
 
 
 @HiltViewModel
-class VersusFragmnetViewModel @Inject constructor(private val versusUseCase: VersusUsecase) :
+class VersusFragmnetViewModel @Inject constructor(
+    private val getRandomVersusBoardUsecase: GetRandomVersusBoardUsecase,
+    private val voteOpinionUsecase: VoteOpinionUsecase,
+    private val calculatePercentUsecase: CalculatePercentUsecase
+) :
     ViewModel() {
     private var _boardUID = String()
     val boardUID: String
@@ -48,7 +54,7 @@ class VersusFragmnetViewModel @Inject constructor(private val versusUseCase: Ver
 
     fun getRandomVersusBoard() =
         viewModelScope.launch {
-            versusUseCase.getRandomVersusBoard().collect {
+            getRandomVersusBoardUsecase().collect {
                 when (it) {
                     is Response.Success -> {
                         val value = it.data
@@ -70,7 +76,7 @@ class VersusFragmnetViewModel @Inject constructor(private val versusUseCase: Ver
     }
 
     fun voteOpinion(opinion1Vote: Boolean) = viewModelScope.launch {
-        versusUseCase.voteOpinion(opinion1Vote, _boardUID).collect {
+        voteOpinionUsecase(opinion1Vote, _boardUID).collect {
             Logger.v(it.toString())
             when (it) {
                 is Response.Success -> {
@@ -84,6 +90,7 @@ class VersusFragmnetViewModel @Inject constructor(private val versusUseCase: Ver
         }
     }
 
-    fun calculatePercent(firstOpinion: Int, secondOpinion: Int): Int = versusUseCase.calculatePercent(firstOpinion, secondOpinion)
+    fun calculatePercent(firstOpinion: Int, secondOpinion: Int): Int =
+        calculatePercentUsecase.calculatePercent(firstOpinion, secondOpinion)
 
 }
