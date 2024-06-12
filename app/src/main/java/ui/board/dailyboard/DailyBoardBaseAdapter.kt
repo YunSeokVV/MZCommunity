@@ -160,13 +160,21 @@ open class DailyBoardBaseAdapter(
         likeImg.setOnClickListener {
             increaseLike.setViews(adapterPosition, likeCount, disLikeCount, likeImg, disLikeImg)
             increaseLike.increaseLike(adapterPosition)
-
+            disableFavourabilityBtn(likeImg, disLikeImg)
         }
 
         disLikeImg.setOnClickListener {
             increaseDisLike.setViews(adapterPosition, likeCount, disLikeCount, likeImg, disLikeImg)
             increaseDisLike.increaseDisLike(adapterPosition)
+            disableFavourabilityBtn(likeImg, disLikeImg)
         }
 
+    }
+
+    private fun disableFavourabilityBtn(likeImg : Button, disLikeImg: Button){
+        likeImg.isEnabled = false
+        disLikeImg.isEnabled = false
+        likeImg.postDelayed({likeImg.isEnabled = true}, 500)
+        disLikeImg.postDelayed({disLikeImg.isEnabled = true}, 500)
     }
 }
