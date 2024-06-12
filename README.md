@@ -133,7 +133,5 @@ viewModel의 liveData가 외부에서 받아오는 데이터를 관찰하고 있
 
 
 # 5. 실행파일
-
-[https://github.com/YunSeokVV/MZCommunity/releases/tag/v0.1.0](https://github.com/YunSeokVV/MZCommunity/releases/tag/v0.1.0)
-
+[https://github.com/YunSeokVV/MZCommunity/releases/tag/v1.0.0](https://github.com/YunSeokVV/MZCommunity/releases/tag/v1.0.0)
 
