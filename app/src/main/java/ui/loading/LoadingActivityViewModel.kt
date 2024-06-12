@@ -8,12 +8,14 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import data.model.DailyBoard
 import data.model.LoginedUser
-import domain.loading.LoadingUsecase
+import domain.loading.GetDailyBoardsUsecase
+import domain.loading.GetUserProfileUsecase
 import javax.inject.Inject
 
 @HiltViewModel
 class LoadingActivityViewModel @Inject constructor(
-    private val loadingUsecase: LoadingUsecase
+    private val getDailyBoardsUsecase: GetDailyBoardsUsecase,
+    private val getUserProfileUsecase: GetUserProfileUsecase
 ) : ViewModel() {
     init {
         getDailyBoards()
@@ -33,14 +35,14 @@ class LoadingActivityViewModel @Inject constructor(
 
     val loadComplete : LiveData<Boolean> get() = _loadComplete
     private fun getUserProfile() = viewModelScope.launch {
-        loadingUsecase.getUserProfile().collect { user ->
+        getUserProfileUsecase().collect { user ->
             _logined_userInfo.value = user
             checkLoadedDataComplete()
         }
     }
 
     private fun getDailyBoards() = viewModelScope.launch {
-        loadingUsecase.getDailyBoards().collect {
+        getDailyBoardsUsecase().collect {
             _dailyBoards.value = it
             checkLoadedDataComplete()
         }
@@ -51,5 +53,4 @@ class LoadingActivityViewModel @Inject constructor(
             _loadComplete.value = true
         }
     }
-
 }

@@ -7,12 +7,12 @@ import androidx.lifecycle.viewModelScope
 import com.orhanobut.logger.Logger
 import dagger.hilt.android.lifecycle.HiltViewModel
 import data.model.Response
+import domain.versus.PostVersusBoardUsecase
 import kotlinx.coroutines.launch
-import domain.versus.VersusUsecase
 import javax.inject.Inject
 
 @HiltViewModel
-class PostingVersusActivityViewModel @Inject constructor(private val versusUsecase: VersusUsecase) :
+class PostingVersusActivityViewModel @Inject constructor(private val postVersusBoardUsecase : PostVersusBoardUsecase) :
     ViewModel() {
 
     private val _postingResponse = MutableLiveData<Boolean>(false)
@@ -27,7 +27,7 @@ class PostingVersusActivityViewModel @Inject constructor(private val versusUseca
         opinion2: String,
         writerUID: String
     ) = viewModelScope.launch {
-        versusUsecase.postVersusBoard(boardTitle, opinion1, opinion2, writerUID).collect{
+        postVersusBoardUsecase(boardTitle, opinion1, opinion2, writerUID).collect{
             when(it){
                 is Response.Success -> {
                     _postingResponse.value = it.data?:false

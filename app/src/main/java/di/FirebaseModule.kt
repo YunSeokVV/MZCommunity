@@ -14,13 +14,13 @@ import dagger.hilt.components.SingletonComponent
 import data.repository.dailyboard.DailyBoardRepositoryImpl
 import data.repository.comment.CommentRepositoryImpl
 import data.repository.loading.LoadingRepositoryImpl
-import data.repository.signup.SignUpActivityRepositoryImpl
+import data.repository.signup.SignUpRepositoryImpl
 import data.repository.user.UserRepositoryImpl
 import data.repository.versus.VersusRepostiroyImpl
 import domain.comment.CommentRepository
 import domain.dailyboard.DailyBoardRepository
 import domain.loading.LoadingRepository
-import domain.signup.SignUpActivityRepository
+import domain.signup.SignUpRepository
 import domain.user.UserRepository
 import domain.versus.VersusRepostiroy
 
@@ -35,7 +35,7 @@ object FirebaseModule {
     fun provideStroageRef() = Firebase.storage
 
     @Provides
-    fun provideLoginActivityRepository(fireStore : FirebaseFirestore,@ApplicationContext appContext : Context) : SignUpActivityRepository = SignUpActivityRepositoryImpl(
+    fun provideSignUpRepository(fireStore : FirebaseFirestore,@ApplicationContext appContext : Context) : SignUpRepository = SignUpRepositoryImpl(
         fireStore, appContext
     )
 

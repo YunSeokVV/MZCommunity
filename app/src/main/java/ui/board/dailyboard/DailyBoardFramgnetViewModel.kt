@@ -10,11 +10,17 @@ import data.model.Response
 import javax.inject.Inject
 import kotlinx.coroutines.launch
 import data.model.DailyBoard
-import domain.dailyboard.DailyBoardUseCase
+import domain.dailyboard.GetDailyBoardUsecase
+import domain.dailyboard.GetRandomDailyBoardsUsecase
+import domain.dailyboard.SetDailyBoardFavourabilityUsecase
 
 
 @HiltViewModel
-class DailyBoardFramgnetViewModel @Inject constructor(private val dailyBoardUseCase: DailyBoardUseCase) :
+class DailyBoardFramgnetViewModel @Inject constructor(
+    private val getRandomDailyBoardsUsecase: GetRandomDailyBoardsUsecase,
+    private val setDailyBoardFavourabilityUsecase: SetDailyBoardFavourabilityUsecase,
+    private val getDailyBoardUsecase: GetDailyBoardUsecase
+) :
     ViewModel() {
     private val _dailyBoards = MutableLiveData<List<DailyBoard>>()
 
@@ -22,7 +28,7 @@ class DailyBoardFramgnetViewModel @Inject constructor(private val dailyBoardUseC
     var isRfreshing = false
 
     fun getRandomDailyBoards() = viewModelScope.launch {
-        dailyBoardUseCase.getRandomDailyBoards().collect {
+        getRandomDailyBoardsUsecase().collect {
             _dailyBoards.postValue(it)
         }
     }
@@ -34,7 +40,7 @@ class DailyBoardFramgnetViewModel @Inject constructor(private val dailyBoardUseC
         adapterPosition: Int,
         isLike: Boolean
     ) = viewModelScope.launch {
-        dailyBoardUseCase.increaseFavourability(dailyBoard, isLike).collect {
+        setDailyBoardFavourabilityUsecase(dailyBoard, isLike).collect {
             when (it) {
                 is Response.Success -> {
                     getDailyBoard(documentId, adapterPosition)
@@ -54,7 +60,7 @@ class DailyBoardFramgnetViewModel @Inject constructor(private val dailyBoardUseC
         }
 
     fun getDailyBoard(documentId: String, adapterPosition: Int) = viewModelScope.launch {
-        dailyBoardUseCase.getDailyBoard(documentId).collect {
+        getDailyBoardUsecase(documentId).collect {
             val updateList = _dailyBoards.value?.toMutableList() ?: mutableListOf()
             updateList.set(adapterPosition, it)
             _dailyBoards.value = updateList

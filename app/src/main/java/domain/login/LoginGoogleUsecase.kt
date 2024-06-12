@@ -1,6 +1,5 @@
 package domain.login
 
-import android.content.Context
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
@@ -10,12 +9,12 @@ import com.orhanobut.logger.Logger
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import util.FirebaseAuth
 import javax.inject.Inject
-class SignInUsecase @Inject constructor(private val signInActivityRepository: SignInActivityRepository) {
-    fun signInWithGoogle(completedTask: Task<GoogleSignInAccount>) = callbackFlow {
+
+class LoginGoogleUsecase @Inject constructor() {
+    operator fun invoke(completedTask: Task<GoogleSignInAccount>) = callbackFlow {
         try {
             val account = completedTask.getResult(ApiException::class.java)
             val mAuth = FirebaseAuth.auth
@@ -38,9 +37,4 @@ class SignInUsecase @Inject constructor(private val signInActivityRepository: Si
         }
         awaitClose()
     }
-
-    suspend fun getSavedUserLoginInfo() = flow {
-        emit(signInActivityRepository.getSavedUserLoginInfo())
-    }
-
 }
