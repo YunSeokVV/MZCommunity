@@ -92,7 +92,7 @@ Coroutine + Flow를 활용해서 비동기 처리 작업을 진행
   - ViewBinding
   - Hilt
   - ViewPager2
-  - swiperefreshlayout
+  - Swiperefreshlayout
 - Architecture
   - MVVM Architecture
   - Domain Layer
@@ -116,7 +116,7 @@ MZ 커뮤니티는 세가지 계층으로 구성되어 있습니다.
 
 **UI 계층** 
 - 앱을 동작하기 위해 비즈니스 로직에서 받아온 데이터를 적절하게 사용자에게 표현해주는 역할을 합니다. 이 계층은 비즈니스 로직의 데이터를 알아선 안됩니다.
-viewModel의 liveData가 외부에서 받아오는 데이터를 관찰하고 있다가 변화가 감지되면 이를 사용자가 봐야할 ui에 적용시켜줍니다.
+ViewModel의 LiveData가 외부에서 받아오는 데이터를 관찰하고 있다가 변화가 감지되면 이를 사용자가 봐야할 UI에 적용시켜줍니다.
 
 **Domain 계층**
 - 도메인 계층을 도입함으로서 향후 앱의 기능이 추가되거나 수정이 될경우 유지보수에 용이한 이점을 얻었습니다. 사용자의 동작을 최소한의 기능단위로 나누었습니다.
