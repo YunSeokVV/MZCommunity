@@ -104,7 +104,7 @@ Coroutine + Flow를 활용해서 비동기 처리 작업을 진행
 
 **MZ 커뮤니티는** MVVM 아키텍쳐를 기반으로 하고 있습니다. View, Domain, Repository 계층으로 나뉩니다.
 
-![](https://private-user-images.githubusercontent.com/43668299/336415568-28ff5465-3ee4-468f-92a1-5fa105c34c38.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MTc1NjU0OTEsIm5iZiI6MTcxNzU2NTE5MSwicGF0aCI6Ii80MzY2ODI5OS8zMzY0MTU1NjgtMjhmZjU0NjUtM2VlNC00NjhmLTkyYTEtNWZhMTA1YzM0YzM4LnBuZz9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNDA2MDUlMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjQwNjA1VDA1MjYzMVomWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPTJhODRlNGJhMjc3M2MxODVlODljZjczZjM4OGFlNGFhYmI3MWZlODgwYzU0OGVmYzIwODM0OTdlYTMwMjFlMjgmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0JmFjdG9yX2lkPTAma2V5X2lkPTAmcmVwb19pZD0wIn0.3Gtdv67QLhPAXUsEb7P-tutq4Sfu97G41CyoTUUXfQA)
+![](https://raw.githubusercontent.com/YunSeokVV/MZCommunity/master/previews/AppArchitecture.png)
 
 MZ 커뮤니티는 세가지 계층으로 구성되어 있습니다.
 
@@ -123,7 +123,7 @@ ViewModel의 LiveData가 외부에서 받아오는 데이터를 관찰하고 있
 
 
 # 4. 시연영상 링크
-[https://www.youtube.com/watch?v=UAquv6Xn-Xw)
+https://www.youtube.com/watch?v=UAquv6Xn-Xw
 
 # 5. 실행파일
 [https://github.com/YunSeokVV/MZCommunity/releases/tag/v1.0.0](https://github.com/YunSeokVV/MZCommunity/releases/tag/v1.0.0)
